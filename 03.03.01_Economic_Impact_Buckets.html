@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 03 — Economic Impact Buckets</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #fff; color: #1D1D1F; padding: 40px 28px; max-width: 700px; margin: 0 auto; }
+@media (prefers-color-scheme: dark) { body { background: #1a1a1a; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 5px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 3px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.rule { font-size: 13px; color: #0C447C; background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 20px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .rule { background: #0a1f3a; color: #B5D4F4; } }
+.bucket { border-radius: 12px; padding: 16px 18px; margin-bottom: 8px; }
+.b-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.b-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px; white-space: nowrap; }
+.b-name { font-size: 15px; font-weight: 600; }
+.b-def { font-size: 13px; line-height: 1.55; margin-bottom: 8px; }
+.b-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.b-field { border-radius: 8px; padding: 8px 12px; }
+.b-field-label { font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 3px; }
+.b-field-text { font-size: 12px; line-height: 1.45; font-family: "SFMono-Regular", Menlo, monospace; }
+
+.b1 { background: #E6F1FB; }
+.b1 .b-badge { background: #185FA5; color: #fff; }
+.b1 .b-name { color: #0C447C; }
+.b1 .b-def { color: #185FA5; }
+.b1 .b-field { background: #B5D4F4; }
+.b1 .b-field-label { color: #0C447C; }
+.b1 .b-field-text { color: #042C53; }
+
+.b2 { background: #FAEEDA; }
+.b2 .b-badge { background: #BA7517; color: #fff; }
+.b2 .b-name { color: #633806; }
+.b2 .b-def { color: #854F0B; }
+.b2 .b-field { background: #FAC775; }
+.b2 .b-field-label { color: #633806; }
+.b2 .b-field-text { color: #412402; }
+
+.b3 { background: #FAECE7; }
+.b3 .b-badge { background: #993C1D; color: #fff; }
+.b3 .b-name { color: #712B13; }
+.b3 .b-def { color: #993C1D; }
+.b3 .b-field { background: #F5C4B3; }
+.b3 .b-field-label { color: #712B13; }
+.b3 .b-field-text { color: #4A1B0C; }
+
+.b4 { background: #F1EFE8; }
+.b4 .b-badge { background: #5F5E5A; color: #fff; }
+.b4 .b-name { color: #2C2C2A; }
+.b4 .b-def { color: #5F5E5A; }
+.b4 .b-field { background: #D3D1C7; }
+.b4 .b-field-label { color: #444441; }
+.b4 .b-field-text { color: #2C2C2A; }
+
+@media (prefers-color-scheme: dark) {
+  .b1 { background: #0a1f3a; } .b1 .b-def { color: #85B7EB; } .b1 .b-field { background: #0C447C; } .b1 .b-field-text { color: #B5D4F4; } .b1 .b-field-label { color: #85B7EB; }
+  .b2 { background: #2a1a00; } .b2 .b-def { color: #EF9F27; } .b2 .b-field { background: #412402; } .b2 .b-field-text { color: #FAC775; } .b2 .b-field-label { color: #EF9F27; }
+  .b3 { background: #2a1208; } .b3 .b-def { color: #F0997B; } .b3 .b-field { background: #4A1B0C; } .b3 .b-field-text { color: #F5C4B3; } .b3 .b-field-label { color: #F0997B; }
+  .b4 { background: #222; } .b4 .b-def { color: #888780; } .b4 .b-field { background: #333; } .b4 .b-field-text { color: #D3D1C7; } .b4 .b-field-label { color: #888780; }
+}
+.selection-note { font-size: 12px; color: #0F6E56; background: #E1F5EE; border-left: 3px solid #0F6E56; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 16px; line-height: 1.6; }
+@media (prefers-color-scheme: dark) { .selection-note { background: #052e1e; color: #9FE1CB; } }
+.caption { margin-top: 16px; font-size: 12px; color: #8E8E93; border-top: 0.5px solid #D1D1D6; padding-top: 12px; }
+@media (prefers-color-scheme: dark) { .caption { border-top-color: #2a2a2a; } }
+@media print { body { padding: 20px; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 03, Section 3 · Reference Card</div>
+<h1>Economic Impact Buckets — four formulas</h1>
+<p class="sub">When the propagation chain terminates at a KPI, identify which bucket that KPI belongs to and apply the corresponding formula.</p>
+<div class="rule">One failure per formula per diagnosis. If multiple buckets are affected, calculate each separately and sum. Present the largest bucket first — this is the economic anchor that creates urgency.</div>
+
+<div class="bucket b1">
+  <div class="b-header"><span class="b-badge">Retention / LTV</span><span class="b-name">Impact on student tenure</span></div>
+  <div class="b-def">How much profit is lost from students who enrolled but left before reaching full LTV.</div>
+  <div class="b-row">
+    <div class="b-field"><div class="b-field-label">Primary KPI signal</div><div class="b-field-text">Retention %, avg months enrolled, LTV per student</div></div>
+    <div class="b-field"><div class="b-field-label">Formula</div><div class="b-field-text">LTV = T × M × R<br>(Tuition × Margin × Months)</div></div>
+  </div>
+</div>
+
+<div class="bucket b2">
+  <div class="b-header"><span class="b-badge">Conversion</span><span class="b-name">Impact on trial-to-enrollment pipeline</span></div>
+  <div class="b-def">How much profit is lost from trials that never enrolled — students acquired but not converted.</div>
+  <div class="b-row">
+    <div class="b-field"><div class="b-field-label">Primary KPI signal</div><div class="b-field-text">Trial conversion %, 30-day post-enroll churn %</div></div>
+    <div class="b-field"><div class="b-field-label">Formula</div><div class="b-field-text">(Baseline% − Actual%) × Monthly Trials × LTV</div></div>
+  </div>
+</div>
+
+<div class="bucket b3">
+  <div class="b-header"><span class="b-badge">Utilization</span><span class="b-name">Impact on scheduled vs. delivered lessons</span></div>
+  <div class="b-def">Capacity sold but not consumed — rescheduled without resolution, cancelled without rebooking.</div>
+  <div class="b-row">
+    <div class="b-field"><div class="b-field-label">Primary KPI signal</div><div class="b-field-text">Lesson delivery rate, prime-time slot fill %</div></div>
+    <div class="b-field"><div class="b-field-label">Formula</div><div class="b-field-text">(Scheduled − Delivered) × Lesson Value × 52</div></div>
+  </div>
+</div>
+
+<div class="bucket b4">
+  <div class="b-header"><span class="b-badge">Cost Inefficiency</span><span class="b-name">Admin labor inflation</span></div>
+  <div class="b-def">Excess manual overhead that inflates cost per student without improving revenue.</div>
+  <div class="b-row">
+    <div class="b-field"><div class="b-field-label">Primary KPI signal</div><div class="b-field-text">Admin labor hours/week, cost per student served</div></div>
+    <div class="b-field"><div class="b-field-label">Formula</div><div class="b-field-text">Excess Hours/Week × Hourly Rate × 52</div></div>
+  </div>
+</div>
+
+<div class="selection-note">Formula selection test: Did the student enroll? If yes → LTV formula. If no → Conversion Loss. If enrolled, attended, then left early → LTV on the early departure delta, not Conversion Loss.</div>
+<div class="caption">GroovConnect OAS™ · Module 03 · Printable reference — keep face-down until Section 3.</div>
+</body>
+</html>

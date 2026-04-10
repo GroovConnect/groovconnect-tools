@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 08 — Certification Gate</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.gate-note { font-size: 13px; color: #0C447C; background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 8px; line-height: 1.6; }
+@media (prefers-color-scheme: dark) { .gate-note { background: #0a1f3a; color: #B5D4F4; } }
+.action-bias-note { font-size: 13px; color: #791F1F; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 8px 14px; margin-bottom: 20px; line-height: 1.5; }
+@media (prefers-color-scheme: dark) { .action-bias-note { background: #2a0a0a; color: #F09595; } }
+.trainee-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.trainee-row label { font-size: 13px; color: #6E6E73; white-space: nowrap; }
+.trainee-row input { font-family: inherit; font-size: 14px; padding: 8px 12px; border: 0.5px solid #AEAEB2; border-radius: 8px; background: #fff; color: #1D1D1F; flex: 1; }
+@media (prefers-color-scheme: dark) { .trainee-row input { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+.req-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 12px; padding: 15px 18px; margin-bottom: 6px; display: flex; gap: 14px; align-items: flex-start; cursor: pointer; user-select: none; transition: background .12s; }
+@media (prefers-color-scheme: dark) { .req-card { background: #1e1e1e; border-color: #333; } }
+.req-card:hover { background: #fafafa; }
+@media (prefers-color-scheme: dark) { .req-card:hover { background: #252525; } }
+.req-card.pass { border-left: 3px solid #0F6E56; background: #f0fdf8; }
+@media (prefers-color-scheme: dark) { .req-card.pass { background: #0a1f15; } }
+.checkbox { width: 22px; height: 22px; border: 1.5px solid #D1D1D6; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+.checkbox.checked { background: #0F6E56; border-color: #0F6E56; }
+.checkbox.checked::after { content: ''; display: block; width: 5px; height: 9px; border: 2px solid #fff; border-top: none; border-left: none; transform: rotate(45deg) translate(-1px,-1px); }
+.req-name { font-size: 14px; font-weight: 500; color: #1D1D1F; margin-bottom: 3px; }
+@media (prefers-color-scheme: dark) { .req-name { color: #e8e8e8; } }
+.req-std { font-size: 12px; color: #6E6E73; line-height: 1.5; }
+.fail-btn { font-family: inherit; font-size: 11px; padding: 3px 10px; border-radius: 6px; border: 0.5px solid #F09595; background: transparent; color: #A32D2D; cursor: pointer; margin-top: 5px; }
+.fail-mode { font-size: 12px; color: #A32D2D; margin-top: 5px; display: none; line-height: 1.5; }
+.fail-mode.show { display: block; }
+.result-bar { margin: 14px 0; padding: 14px 18px; border-radius: 12px; font-size: 15px; font-weight: 500; text-align: center; background: #F1EFE8; color: #6E6E73; }
+.result-bar.pass { background: #E1F5EE; color: #085041; }
+@media (prefers-color-scheme: dark) { .result-bar { background: #222; color: #9a9a9a; } .result-bar.pass { background: #052e1e; color: #9FE1CB; } }
+.controls { display: flex; gap: 8px; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 08, Section 9 · Certification Gate</div>
+<h1>Module 08 — certification criteria</h1>
+<p class="sub">Tap each requirement to mark Pass. All 5 must pass before Module 09 is unlocked.</p>
+<div class="gate-note">Gate check: every trainee passes the Breath Test for diagnosis delivery. Direct Correction in the correct three-part format for three consecutive scenarios. Commitment sequence produces a documented next step with a specific owner, date, and review point.</div>
+<div class="action-bias-note">If a trainee passes Sims 1–4 but fails Sim 5: the failure mode is almost always Action Bias — recommending before the diagnosis is complete when the operator signals urgency. Return to Module 04, Section 4 (Signal vs. Noise) and re-run the urgency drill before re-administering Sim 5.</div>
+
+<div class="trainee-row">
+  <label>Trainee</label>
+  <input type="text" id="trainee-name" placeholder="Enter trainee name">
+</div>
+
+<div id="req-list"></div>
+<div class="result-bar" id="result-bar">0 / 5 passed</div>
+<div class="controls">
+  <button class="secondary" onclick="resetAll()">Reset</button>
+  <button class="secondary" onclick="window.print()">Print</button>
+</div>
+
+<script>
+const REQS = [
+  { name: '30-Second Insight Delivery', std: 'Full five-step chain delivered in under 30 seconds. Fewer than 2 filler words. Economic figure stated without qualifier or apology.', fail: 'Delivery exceeds 30 seconds. Or any filler word appears more than twice. Or any qualifier attached to the economic figure ("roughly," "maybe around," "might be").' },
+  { name: 'Resistance Handling', std: 'All four resistance types identified within 10 seconds each. Acknowledge → Clarify → Reframe → Resolve applied without deviation or defensive language across all four types.', fail: 'Any defensive response. Any concession on the diagnosis. Identifying the wrong resistance type. Using A→C→R→R out of sequence.' },
+  { name: 'Preemptive Strike', std: 'Three unvoiced operator concerns addressed proactively before the operator raises them. Each framed in operator-relevant language — revenue, time, or identity.', fail: 'Addressing a concern after the operator voices it. Or a preemptive frame that sounds like a concession rather than a reframe. Or using a generic template not tied to the specific operator\'s signals.' },
+  { name: 'Commitment Sequence', std: 'All four commitment elements produced: specific named solution, named role (not "the team"), specific date (not a range), scheduled review with a specific date.', fail: 'Any step that uses a range instead of a specific date. Or assigns ownership to "the team." Or ends with "let\'s follow up" instead of a scheduled review date.' },
+  { name: 'Direct Correction — three consecutive', std: 'Three consecutive Direct Correction deliveries in the correct three-part format: observation → insight → action. No hedging, no softening, no validation of false premises.', fail: 'Any delivery where the observation is softened, the insight is qualified, or the action is framed as optional. "You might want to consider" is not an action statement.' },
+];
+const state = new Array(REQS.length).fill(false);
+const showFail = new Array(REQS.length).fill(false);
+function render() {
+  document.getElementById('req-list').innerHTML = REQS.map((r, i) => `
+    <div class="req-card${state[i]?' pass':''}" onclick="toggle(${i})">
+      <div class="checkbox${state[i]?' checked':''}"></div>
+      <div style="flex:1">
+        <div class="req-name">${r.name}</div>
+        <div class="req-std">${r.std}</div>
+        <button class="fail-btn" onclick="toggleFail(event,${i})">${showFail[i]?'Hide':'Show'} failure mode</button>
+        <div class="fail-mode${showFail[i]?' show':''}">${r.fail}</div>
+      </div>
+    </div>`).join('');
+  const passed = state.filter(Boolean).length;
+  const bar = document.getElementById('result-bar');
+  bar.className = 'result-bar' + (passed===REQS.length?' pass':'');
+  bar.textContent = passed===REQS.length ? '✓ All 5 passed — Module 09 unlocked' : `${passed} / ${REQS.length} passed`;
+}
+function toggle(i){state[i]=!state[i];render();}
+function toggleFail(e,i){e.stopPropagation();showFail[i]=!showFail[i];render();}
+function resetAll(){state.fill(false);showFail.fill(false);document.getElementById('trainee-name').value='';render();}
+render();
+</script>
+</body>
+</html>

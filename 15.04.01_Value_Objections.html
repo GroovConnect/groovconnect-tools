@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 15 — Value Quantification & Objection Handling</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.view-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 13px; font-weight: 500; padding: 7px 18px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.act-vq { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.tab.act-obj { background: #FAEEDA; border-color: #BA7517; color: #854F0B; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+/* Value Quantification */
+.vq-rule { font-size: 13px; color: #0C447C; background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .vq-rule { background: #0a1f3a; color: #B5D4F4; } }
+.formula-bar { background: #E6F1FB; border-radius: 10px; padding: 12px 18px; text-align: center; margin-bottom: 16px; }
+.formula-text { font-size: 14px; font-weight: 600; color: #0C447C; font-family: "SFMono-Regular", Menlo, monospace; }
+@media (prefers-color-scheme: dark) { .formula-bar { background: #0a1f3a; } .formula-text { color: #85B7EB; } }
+.vq-inputs { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.vq-row { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 10px; padding: 10px 14px; display: flex; align-items: center; gap: 12px; }
+@media (prefers-color-scheme: dark) { .vq-row { background: #1e1e1e; border-color: #333; } }
+.vq-sym { font-size: 16px; font-weight: 600; color: #185FA5; font-family: "SFMono-Regular", Menlo, monospace; min-width: 30px; }
+.vq-label { font-size: 13px; color: #1D1D1F; flex: 1; }
+@media (prefers-color-scheme: dark) { .vq-label { color: #e8e8e8; } }
+input[type=number] { font-family: inherit; font-size: 13px; padding: 6px 10px; border: 0.5px solid #AEAEB2; border-radius: 7px; background: #fff; color: #1D1D1F; width: 80px; }
+@media (prefers-color-scheme: dark) { input[type=number] { background: #2a2a2a; border-color: #444; color: #e8e8e8; } }
+.vq-result { background: #E1F5EE; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { .vq-result { background: #052e1e; } }
+.vq-result-label { font-size: 12px; color: #0F6E56; font-weight: 600; margin-bottom: 4px; }
+.vq-result-value { font-size: 28px; font-weight: 500; color: #085041; font-variant-numeric: tabular-nums; }
+@media (prefers-color-scheme: dark) { .vq-result-value { color: #9FE1CB; } }
+.vq-result-formula { font-size: 12px; color: #0F6E56; margin-top: 4px; font-family: "SFMono-Regular", Menlo, monospace; }
+.ks-note { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .ks-note { background: #2a0a0a; color: #F09595; } }
+/* Objections */
+.bridge-rule { font-size: 13px; color: #633806; background: #FAEEDA; border-left: 3px solid #BA7517; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .bridge-rule { background: #2a1a00; color: #FAC775; } }
+.obj-card { border-radius: 12px; padding: 14px 18px; margin-bottom: 6px; cursor: pointer; transition: opacity .12s; }
+.obj-card:hover { opacity: .93; }
+.obj-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.obj-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px; white-space: nowrap; }
+.obj-statement { font-size: 13px; font-style: italic; flex: 1; line-height: 1.4; }
+.obj-detail { margin-top: 10px; display: none; }
+.obj-detail.show { display: block; }
+.obj-bridge-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.obj-bridge-block { border-radius: 8px; padding: 8px 12px; }
+.ob-label { font-size: 10px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 3px; }
+.ob-text { font-size: 12px; line-height: 1.5; }
+.ob-not { background: #FCEBEB; } .ob-not .ob-label { color: #A32D2D; } .ob-not .ob-text { color: #791F1F; }
+.o-cost { background: #FAECE7; } .o-cost .obj-badge { background: #993C1D; color: #fff; } .o-cost .obj-statement { color: #712B13; } .o-cost .ob-bridge-block { background: #F5C4B3; } .o-cost .ob-label { color: #712B13; } .o-cost .ob-text { color: #4A1B0C; }
+.o-past { background: #EEEDFE; } .o-past .obj-badge { background: #534AB7; color: #fff; } .o-past .obj-statement { color: #26215C; } .o-past .ob-bridge-block { background: #CECBF6; } .o-past .ob-label { color: #3C3489; } .o-past .ob-text { color: #26215C; }
+.o-adopt { background: #FAEEDA; } .o-adopt .obj-badge { background: #BA7517; color: #fff; } .o-adopt .obj-statement { color: #633806; } .o-adopt .ob-bridge-block { background: #FAC775; } .o-adopt .ob-label { color: #633806; } .o-adopt .ob-text { color: #412402; }
+.o-price { background: #FCEBEB; } .o-price .obj-badge { background: #A32D2D; color: #fff; } .o-price .obj-statement { color: #791F1F; } .o-price .ob-bridge-block { background: #F7C1C1; } .o-price .ob-label { color: #791F1F; } .o-price .ob-text { color: #501313; }
+@media (prefers-color-scheme: dark) {
+  .o-cost{background:#2a1208}.o-cost .obj-statement{color:#F5C4B3}.o-cost .ob-bridge-block{background:#4A1B0C}.o-cost .ob-text{color:#F5C4B3}
+  .o-past{background:#1a1730}.o-past .obj-statement{color:#CECBF6}.o-past .ob-bridge-block{background:#26215C}.o-past .ob-text{color:#CECBF6}
+  .o-adopt{background:#2a1a00}.o-adopt .obj-statement{color:#FAC775}.o-adopt .ob-bridge-block{background:#412402}.o-adopt .ob-text{color:#FAC775}
+  .o-price{background:#2a0a0a}.o-price .obj-statement{color:#F7C1C1}.o-price .ob-bridge-block{background:#3a1010}.o-price .ob-text{color:#F7C1C1}
+  .ob-not{background:#2a0a0a}.ob-not .ob-text{color:#F09595}
+}
+.controls { display: flex; gap: 8px; margin-top: 4px; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 15, Sections 3–4 · Value Quantification & Objection Handling</div>
+<h1>Value Quantification & Evidence-Bridge</h1>
+<p class="sub">Calculate the economic anchor first. Every objection returns to this figure — not to enthusiasm, not to features.</p>
+
+<div class="view-tabs">
+  <button class="tab act-vq" id="tab-vq" onclick="switchView('vq')">Value Quantification</button>
+  <button class="tab" id="tab-obj" onclick="switchView('obj')">Objection Handling</button>
+</div>
+
+<!-- VALUE QUANTIFICATION -->
+<div class="panel active" id="panel-vq">
+  <div class="vq-rule">State the inputs, then the formula, then the output — in that order, every time. An operator who can see the formula can verify it. An operator who only sees the number can only accept or reject it.</div>
+  <div class="formula-bar">
+    <div class="formula-text">Value Recovered = (Baseline% − Current%) × Active Students × LTV</div>
+  </div>
+  <div class="vq-inputs">
+    <div class="vq-row"><span class="vq-sym">B</span><span class="vq-label">Baseline retention % (network avg)</span><input type="number" id="vq_base" value="85" min="0" max="100" oninput="calcVQ()"></div>
+    <div class="vq-row"><span class="vq-sym">C</span><span class="vq-label">Current school retention %</span><input type="number" id="vq_curr" value="71" min="0" max="100" oninput="calcVQ()"></div>
+    <div class="vq-row"><span class="vq-sym">S</span><span class="vq-label">Active students</span><input type="number" id="vq_students" value="200" min="1" oninput="calcVQ()"></div>
+    <div class="vq-row"><span class="vq-sym">L</span><span class="vq-label">LTV per student ($)</span><input type="number" id="vq_ltv" value="1092" min="0" oninput="calcVQ()"></div>
+  </div>
+  <div class="vq-result">
+    <div class="vq-result-label">Value Recovered (annual)</div>
+    <div class="vq-result-value" id="vq-val">—</div>
+    <div class="vq-result-formula" id="vq-formula"></div>
+  </div>
+  <div class="ks-note">Kill Switch: trainee quotes a dollar figure without showing the formula derivation, or uses an estimated figure. "The figure is the load-bearing element of the close." State: inputs → formula → output. Every time. If the operator checks the math and finds an estimate, trust in every other finding is lost.</div>
+</div>
+
+<!-- OBJECTION HANDLING -->
+<div class="panel" id="panel-obj">
+  <div class="bridge-rule">The Evidence-Bridge: acknowledge the objection, clarify its source (Logical/Emotional/Practical/Identity), and reframe it using the diagnostic record. The bridge goes back to the evidence — every time. Not to persuasion, not to enthusiasm, not to additional claims.</div>
+  <div id="objections"></div>
+  <div class="controls" style="margin-top:12px">
+    <button class="primary" onclick="revealAll()">Reveal all</button>
+    <button class="secondary" onclick="resetObjs()">Reset</button>
+  </div>
+</div>
+
+<script>
+function calcVQ(){
+  const base=(parseFloat(document.getElementById('vq_base').value)||0)/100;
+  const curr=(parseFloat(document.getElementById('vq_curr').value)||0)/100;
+  const s=parseFloat(document.getElementById('vq_students').value)||0;
+  const l=parseFloat(document.getElementById('vq_ltv').value)||0;
+  const delta=Math.max(0,base-curr);
+  const val=delta*s*l;
+  document.getElementById('vq-val').textContent='$'+Math.round(val).toLocaleString()+'/year';
+  document.getElementById('vq-formula').textContent=`(${(base*100).toFixed(0)}% − ${(curr*100).toFixed(0)}%) × ${s} students × $${l.toLocaleString()} = $${Math.round(val).toLocaleString()}`;
+}
+calcVQ();
+
+const OBJS = [
+  { cls:'o-cost', badge:'Cost Before Diagnosis', statement:'"How much does it cost?"', type:'Practical', bridge:'"The investment is secondary to the $[X] in leakage we\'ve just identified. Let\'s confirm we can stop that first — then the cost will be in clear context with the return."', not:'Any price quote before the Value Quantification formula has been run and the dollar figure has been stated and accepted.' },
+  { cls:'o-past', badge:'Past Experience', statement:'"We tried something like this before."', type:'Identity', bridge:'"The difference here is that we diagnose the specific failure first. Every implementation we run starts from the root cause — not from a feature rollout. What failed before almost certainly wasn\'t diagnosed at this level."', not:'Accepting the framing that this is the same as what failed before. Or defending GC without first establishing what actually failed.' },
+  { cls:'o-adopt', badge:'Adoption Concern', statement:'"My staff will never accept this."', type:'Practical / Identity', bridge:'"The schools in our network that struggled with adoption all had one thing in common: they rolled it out without first mapping the friction points. Phase 1 exists specifically for that. The implementation doesn\'t go live until the friction is removed."', not:'Treating adoption concern as a negotiating objection. The response is about implementation architecture — not about persuading the operator to trust their staff.' },
+  { cls:'o-price', badge:'Adversarial — Price Sensitive', statement:'"Just give me a ballpark."', type:'Practical deflection', bridge:'"I understand — and I\'ll give you the full picture once we\'ve completed the diagnostic. What I don\'t want to do is put a number in context before we know what it\'s solving for. Give me 10 more minutes."', not:'Any range or estimate. A range invites negotiation. The investment discussion begins after the dollar figure is accepted — not before.' },
+];
+const open = new Array(OBJS.length).fill(false);
+function renderObjs() {
+  document.getElementById('objections').innerHTML = OBJS.map((o, i) => `
+    <div class="obj-card ${o.cls}${open[i]?' open':''}" onclick="toggleObj(${i})">
+      <div class="obj-header"><span class="obj-badge">${o.badge}</span><span class="obj-statement">${o.statement}</span></div>
+      <div style="font-size:11px;color:#8E8E93">Type: ${o.type}</div>
+      <div class="obj-detail${open[i]?' show':''}">
+        <div class="obj-bridge-row">
+          <div class="obj-bridge-block"><div class="ob-label">Evidence-Bridge response</div><div class="ob-text">${o.bridge}</div></div>
+          <div class="ob-not"><div class="ob-label">What not to do</div><div class="ob-text">${o.not}</div></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function toggleObj(i){open[i]=!open[i];renderObjs();}
+function revealAll(){open.fill(true);renderObjs();}
+function resetObjs(){open.fill(false);renderObjs();}
+renderObjs();
+
+function switchView(v){
+  document.getElementById('panel-vq').classList.toggle('active',v==='vq');
+  document.getElementById('panel-obj').classList.toggle('active',v==='obj');
+  document.getElementById('tab-vq').className='tab'+(v==='vq'?' act-vq':'');
+  document.getElementById('tab-obj').className='tab'+(v==='obj'?' act-obj':'');
+}
+</script>
+</body>
+</html>

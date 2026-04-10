@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 15 — 5-Step Consultative Sales Flow</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 640px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.diag-rule { font-size: 13px; color: #0C447C; background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .diag-rule { background: #0a1f3a; color: #B5D4F4; } }
+.pips { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; }
+.pip { width: 8px; height: 8px; border-radius: 50%; background: #D1D1D6; flex-shrink: 0; }
+@media (prefers-color-scheme: dark) { .pip { background: #3a3a3a; } }
+.pip.on { background: #185FA5; transform: scale(1.3); }
+.pip-label { font-size: 12px; color: #8E8E93; margin-left: 4px; }
+.step-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 14px; padding: 22px 24px; margin-bottom: 14px; }
+@media (prefers-color-scheme: dark) { .step-card { background: #1e1e1e; border-color: #333; } }
+.step-badge { font-size: 11px; font-weight: 700; color: #185FA5; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 8px; }
+.step-timing { font-size: 11px; color: #8E8E93; float: right; }
+.step-name { font-size: 18px; font-weight: 500; color: #1D1D1F; margin-bottom: 6px; line-height: 1.4; }
+@media (prefers-color-scheme: dark) { .step-name { color: #e8e8e8; } }
+.step-objective { font-size: 13px; color: #6E6E73; line-height: 1.6; margin-bottom: 12px; }
+.step-example { background: #E6F1FB; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #0C447C; line-height: 1.55; font-style: italic; }
+@media (prefers-color-scheme: dark) { .step-example { background: #0a1f3a; color: #B5D4F4; } }
+.step-note { margin-top: 8px; background: #FAEEDA; border-radius: 8px; padding: 8px 12px; font-size: 12px; color: #633806; line-height: 1.5; }
+@media (prefers-color-scheme: dark) { .step-note { background: #2a1a00; color: #FAC775; } }
+.ks-note { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 0; line-height: 1.55; display: none; }
+.ks-note.show { display: block; }
+@media (prefers-color-scheme: dark) { .ks-note { background: #2a0a0a; color: #F09595; } }
+.controls { display: flex; gap: 8px; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 15, Section 2 · Sales Flow Stepper</div>
+<h1>5-Step Consultative Sales Flow</h1>
+<p class="sub">Hook → Diagnose → Reveal → Map → Commit. Steps 1–2 are purely diagnostic. No GC, no features, no product until Step 3.</p>
+<div class="diag-rule">Operators respond to authority differently than they respond to vendors. They answer questions honestly, reveal problems they would never reveal to a vendor, and accept conclusions derived from their own data.</div>
+
+<div class="pips" id="pips"></div>
+<div id="step-card"></div>
+<div class="ks-note" id="ks-note">Kill Switch: trainee opens the simulation by listing what GroovConnect can do before asking a single diagnostic question. Stop. "What question would you ask to open this conversation if you knew nothing about GC and were simply trying to understand whether this school has an operational intelligence problem?" That question is the Hook.</div>
+<div class="controls" style="margin-top:12px">
+  <button class="primary" id="next-btn" onclick="next()">Next step</button>
+  <button class="secondary" onclick="reset()">Reset</button>
+</div>
+
+<script>
+const STEPS = [
+  { badge:'Step 1 — Hook', timing:'60–120 sec', name:'Secure the conversation.', objective:'Open with a benchmark deviation or an insight hook that creates curiosity without making a claim. The operator should lean in — not defend.', example:'"I looked at your trial volume vs. the network average — there\'s a 14-point gap in conversion I\'d like to walk through with you."', note:'No mention of GC. No features. A diagnostic observation that the operator did not have — which immediately positions the analyst as someone with data the operator needs.', ks: true },
+  { badge:'Step 2 — Diagnose', timing:'10–15 min', name:'Surface the operational problem.', objective:'Run the Master Sequence. Ask KPI-anchored questions. Do not suggest causes. Do not mention GC. The operator must articulate the failure before you name it.', example:'"Walk me through your trial-to-enrollment flow. What happens in the 24 hours after a trial lesson?" Let them describe the absence.', note:'Steps 1 and 2 are purely diagnostic. The diagnosis is not complete until the operator has named the failure — from their own mouth, in response to a question, without prompting.' },
+  { badge:'Step 3 — Reveal', timing:'2–3 min', name:'Reframe the surface problem.', objective:'Deliver the 5-Step Communication Framework from Module 08: Observation → Insight → Impact → Recommendation → Action. Dollar figure required before this step.', example:'"Retention dropped from 85% to 71% — that\'s a 14-point gap producing approximately $44,000 in annual leakage. This is a Standardization System failure. We recommend the Instructor Intelligence layer. Starting this week."', note:'Dollar figure from Module 03 must be visible before this step begins. No revelation without the economic anchor.' },
+  { badge:'Step 4 — Map', timing:'10–15 min', name:'Connect failure to GC capability.', objective:'Use the realization-based demo. The operator discovers the solution through the logic of the diagnosis — not through a feature tour.', example:'"Given what we found, what would need to exist for this failure to be structurally impossible?" Wait for their answer. Then show GC doing exactly that — not more.', note:'The question drives the demo. The product is the answer to the operator\'s question. An operator who discovers the solution themselves will champion it internally.' },
+  { badge:'Step 5 — Commit', timing:'5–10 min', name:'Document the next step.', objective:'Full commitment sequence from Module 08: confirm decision → assign ownership → define timeline → set review point. No open-ended agreements.', example:'"We are moving forward with [named capability]. [Named role] is responsible by [specific date]. We review results on [specific date]."', note:'No "let me think about it" exits. Identify the objection type and apply the Evidence-Bridge. The commitment sequence produces a documented, time-bound operational action.' },
+];
+let cur = 0;
+function render() {
+  document.getElementById('pips').innerHTML = STEPS.map((_,i) => `<div class="pip${i<=cur?' on':''}"></div>`).join('') + `<span class="pip-label">Step ${cur+1} of ${STEPS.length}</span>`;
+  const s = STEPS[cur];
+  document.getElementById('step-card').innerHTML = `
+    <div class="step-card">
+      <div class="step-badge">${s.badge} <span class="step-timing">${s.timing}</span></div>
+      <div class="step-name">${s.name}</div>
+      <div class="step-objective">${s.objective}</div>
+      <div class="step-example">${s.example}</div>
+      ${s.note ? `<div class="step-note">${s.note}</div>` : ''}
+    </div>`;
+  const ks = document.getElementById('ks-note');
+  ks.classList.toggle('show', cur === 0);
+  const nb = document.getElementById('next-btn');
+  nb.textContent = cur === STEPS.length-1 ? 'Done' : 'Next step';
+  nb.disabled = cur === STEPS.length-1;
+}
+function next(){if(cur<STEPS.length-1){cur++;render();}}
+function reset(){cur=0;render();document.getElementById('next-btn').disabled=false;}
+render();
+</script>
+</body>
+</html>

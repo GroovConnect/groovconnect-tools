@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 04 — Practice Block</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.sim-tabs { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.act { background: #EEEDFE; border-color: #534AB7; color: #534AB7; font-weight: 600; }
+.tab.act-pressure { background: #FCEBEB; border-color: #A32D2D; color: #A32D2D; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+.timer-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+.timer-d { font-size: 36px; font-weight: 500; font-variant-numeric: tabular-nums; color: #1D1D1F; letter-spacing: -1px; transition: color .3s; }
+@media (prefers-color-scheme: dark) { .timer-d { color: #e8e8e8; } }
+.timer-d.urgent { color: #C0392B; }
+.card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { .card { background: #1e1e1e; border-color: #333; } }
+.card-label { font-size: 11px; font-weight: 700; color: #8E8E93; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 8px; }
+.card-text { font-size: 15px; font-weight: 500; color: #1D1D1F; line-height: 1.5; font-style: italic; margin-bottom: 0; }
+@media (prefers-color-scheme: dark) { .card-text { color: #e8e8e8; } }
+.gold-block { display: none; margin-top: 12px; }
+.gold-block.show { display: block; }
+.gold-label { font-size: 10px; font-weight: 700; color: #0F6E56; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 4px; }
+.gold-text { font-size: 13px; color: #085041; background: #E1F5EE; border-radius: 8px; padding: 8px 12px; line-height: 1.55; margin-bottom: 6px; }
+@media (prefers-color-scheme: dark) { .gold-text { background: #052e1e; color: #9FE1CB; } }
+.reveal-btn { font-family: inherit; font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: 8px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; margin-top: 10px; }
+@media (prefers-color-scheme: dark) { .reveal-btn { background: #2a2a2a; border-color: #444; color: #e8e8e8; } }
+.pips { display: flex; gap: 8px; margin-bottom: 14px; align-items: center; }
+.pip { width: 8px; height: 8px; border-radius: 50%; background: #D1D1D6; transition: background .2s; flex-shrink: 0; }
+@media (prefers-color-scheme: dark) { .pip { background: #3a3a3a; } }
+.pip.on { background: #534AB7; transform: scale(1.3); }
+.pip-label { font-size: 12px; color: #8E8E93; margin-left: 4px; }
+.ks-note { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .ks-note { background: #2a0a0a; color: #F09595; } }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 04, Section 7 · Practice Block</div>
+<h1>Practice Block — Simulations 1–4</h1>
+<p class="sub">All four must complete in one session. Debrief each immediately — do not batch feedback.</p>
+
+<div class="sim-tabs">
+  <button class="tab act" id="tab-s1" onclick="switchSim('s1')">Sim 1 — Bias Drill</button>
+  <button class="tab" id="tab-s2" onclick="switchSim('s2')">Sim 2 — Signal/Noise</button>
+  <button class="tab" id="tab-s3" onclick="switchSim('s3')">Sim 3 — Behavior-First</button>
+  <button class="tab" id="tab-s4" onclick="switchSim('s4')">Sim 4 — Decision Audit</button>
+</div>
+
+<!-- SIM 1: Bias Detection -->
+<div class="panel active" id="panel-s1">
+  <div class="timer-row">
+    <div class="timer-d" id="timer-s1">30</div>
+    <div style="font-size:12px;color:#8E8E93" id="prog-s1">Statement 1 of 5</div>
+  </div>
+  <div id="s1-card"></div>
+  <div class="controls">
+    <button class="primary" id="s1-btn" onclick="s1Action()">Start timer</button>
+    <button class="secondary" onclick="s1Next()">Next</button>
+    <button class="secondary" onclick="s1Reset()">Reset</button>
+  </div>
+  <div class="ks-note" style="margin-top:12px">Correct response requires both: the bias name AND the specific structural correction. "I would look at more data" is not a correction. Score 4 of 5 as a pass.</div>
+</div>
+
+<!-- SIM 2: Signal vs. Noise -->
+<div class="panel" id="panel-s2">
+  <div class="timer-row">
+    <div class="timer-d" id="timer-s2">1:30</div>
+    <div style="font-size:12px;color:#8E8E93">90-second window</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Read verbatim — operator statement</div>
+    <div class="card-text">"Look, I know there are some issues. My front desk person is great but gets overwhelmed. We had a big showcase last month — best one we've ever done, parents loved it. But we've lost maybe six or seven students since. My best teacher never turns in lesson notes but the kids who stay love her. I think the real problem is just the economy. Also our piano waiting list has 18 names on it."</div>
+    <div style="font-size:12px;color:#6E6E73;margin-top:8px">Trainee identifies: 3 KPI signals · 3 noise elements</div>
+    <button class="reveal-btn" id="s2-rev-btn" onclick="s2Reveal()">Reveal signals & noise</button>
+    <div class="gold-block" id="s2-gold">
+      <div class="gold-label">Signals (3 required)</div>
+      <div class="gold-text">6–7 student churn post-showcase — Retention KPI signal, quantified, trackable.</div>
+      <div class="gold-text">Instructor not submitting lesson notes — Standardization System, measurable on a spreadsheet.</div>
+      <div class="gold-text">Piano waitlist of 18 names — Utilization gap, capacity misallocation, directly affects revenue.</div>
+      <div class="gold-label" style="margin-top:8px">Noise (3 required)</div>
+      <div class="gold-text">"Great front desk person" — adjective, not a KPI, cannot drive a structural decision.</div>
+      <div class="gold-text">"The economy is the problem" — external attribution, not a controllable structural cause.</div>
+      <div class="gold-text">"Best showcase ever" — narrative with no KPI anchor, does not affect the diagnostic chain.</div>
+    </div>
+  </div>
+  <div class="controls">
+    <button class="primary" id="s2-btn" onclick="s2Action()">Start timer</button>
+    <button class="secondary" onclick="s2Reset()">Reset</button>
+  </div>
+</div>
+
+<!-- SIM 3: Behavior-First -->
+<div class="panel" id="panel-s3">
+  <div class="card">
+    <div class="card-label">Instructor delivers — operator challenge</div>
+    <div class="card-text">"My teachers are experienced professionals. I don't think 'lesson notes' is really the issue here."</div>
+    <div style="font-size:12px;color:#6E6E73;margin-top:8px">Trainee must deliver a Behavior-First response: structurally correct, emotionally neutral, no softening.</div>
+    <button class="reveal-btn" id="s3-rev-btn" onclick="s3Reveal()">Reveal gold standard response</button>
+    <div class="gold-block" id="s3-gold">
+      <div class="gold-label">Gold standard response</div>
+      <div class="gold-text">"The issue isn't the teachers' experience — it's the absence of a structured note submission gate. When the gate is missing, lesson documentation becomes discretionary regardless of how experienced the instructor is. The KPI signal is a 3-point retention drop in the 3–6 month window, which traces directly to this mechanism. Would you like to see the propagation chain?"</div>
+      <div class="gold-label" style="margin-top:8px">What this response does</div>
+      <div class="gold-text">Acknowledges the operator's frame without validating it. Returns immediately to the structural mechanism. Names the KPI. Offers the evidence chain. Does not soften the diagnosis.</div>
+    </div>
+  </div>
+  <div class="ks-note">Gate: trainee must produce three consecutive uncontaminated responses before advancing to Module 05. A single softening of the diagnosis disqualifies the attempt — regardless of performance on other criteria.</div>
+</div>
+
+<!-- SIM 4: Decision Audit -->
+<div class="panel" id="panel-s4">
+  <div class="pips" id="s4-pips"></div>
+  <div class="card">
+    <div class="card-label">Scenario — present to trainee</div>
+    <div class="card-text">"A school's trial conversion rate has dropped from 68% to 49% over 45 days. The owner believes the problem is the front desk staff's phone skills."</div>
+    <div style="font-size:12px;color:#6E6E73;margin-top:8px">Run the trainee through all five steps of the Decision Audit live. All five steps must be present and in order. No prompting.</div>
+  </div>
+  <div id="s4-step"></div>
+  <div class="controls">
+    <button class="primary" id="s4-next" onclick="s4Next()">Next step</button>
+    <button class="secondary" onclick="s4Reset()">Reset</button>
+  </div>
+</div>
+
+<script>
+// --- SIM 1 ---
+const S1 = [
+  { stmt: '"We just had our worst month ever. Everything is broken."', bias: 'Recency Bias', correction: 'Pull 7/30/90-day averages. One bad month is noise until confirmed by trend.' },
+  { stmt: '"The owner has 15 years of experience. If she says the matching process works, it works."', bias: 'Authority Bias', correction: 'Request the KPI data that proves the matching process produces retention outcomes. Tenure is not evidence.' },
+  { stmt: '"I know retention is probably the root cause, but the owner wants to talk about scheduling first."', bias: 'Approval Seeking', correction: 'The Master Sequence is non-negotiable. Operator preference does not reorder the diagnostic.' },
+  { stmt: '"Our retention is 78%. I\'ve seen schools at 60%, so we\'re fine."', bias: 'Confirmation Bias', correction: 'Network average is 85%. 78% is a 7-point deficit, not a success. Require the correct benchmark.' },
+  { stmt: '"We lost three students this week so let\'s immediately redesign the onboarding system."', bias: 'Action Bias', correction: 'Pull the 30-day trend before recommending action. Three students may be statistical noise.' },
+];
+let s1Cur = 0, s1Sec = 30, s1Run = false, s1Out = false, s1Int = null;
+function s1Render() {
+  const mb = document.getElementById('s1-btn');
+  if (s1Cur >= S1.length) { document.getElementById('s1-card').innerHTML = '<div style="text-align:center;padding:24px 0"><p style="font-size:15px;font-weight:500">All 5 complete.</p></div>'; mb.style.display='none'; return; }
+  mb.style.display=''; document.getElementById('prog-s1').textContent=`Statement ${s1Cur+1} of ${S1.length}`;
+  const d = S1[s1Cur];
+  document.getElementById('s1-card').innerHTML=`<div class="card"><div class="card-label">Operator statement</div><div class="card-text">${d.stmt}</div><button class="reveal-btn" onclick="s1Reveal()">Reveal answer</button><div class="gold-block" id="s1-gold"><div class="gold-label">Active bias</div><div class="gold-text">${d.bias}</div><div class="gold-label" style="margin-top:6px">Structural correction</div><div class="gold-text">${d.correction}</div></div></div>`;
+  s1ResetTimer();
+}
+function s1Reveal() { clearInterval(s1Int); s1Run=false; s1Out=true; document.getElementById('s1-gold').classList.add('show'); document.querySelector('#panel-s1 .reveal-btn').style.display='none'; document.getElementById('s1-btn').textContent='Reset timer'; document.getElementById('timer-s1').style.color='#0F6E56'; }
+function s1ResetTimer() { clearInterval(s1Int); s1Run=false; s1Out=false; s1Sec=30; const el=document.getElementById('timer-s1'); el.textContent='30'; el.className='timer-d'; el.style.color=''; document.getElementById('s1-btn').textContent='Start timer'; }
+function s1Action() {
+  if (!s1Run && !s1Out) { s1Run=true; document.getElementById('s1-btn').textContent='Running…'; s1Int=setInterval(()=>{ s1Sec--; const el=document.getElementById('timer-s1'); el.textContent=s1Sec; if(s1Sec<=8)el.className='timer-d urgent'; if(s1Sec<=0){clearInterval(s1Int);s1Run=false;s1Out=true;document.getElementById('s1-btn').textContent='Reset timer';s1Reveal();} },1000); }
+  else if(s1Out){s1ResetTimer();}
+}
+function s1Next(){clearInterval(s1Int);s1Cur++;s1Render();}
+function s1Reset(){clearInterval(s1Int);s1Cur=0;document.getElementById('s1-btn').style.display='';s1Render();}
+s1Render();
+
+// --- SIM 2 ---
+let s2Sec=90,s2Run=false,s2Out=false,s2Int=null;
+function fmt2(s){return Math.floor(s/60)+':'+(s%60<10?'0':'')+s%60;}
+function s2Action(){
+  if(!s2Run&&!s2Out){s2Run=true;document.getElementById('s2-btn').textContent='Running…';s2Int=setInterval(()=>{s2Sec--;const el=document.getElementById('timer-s2');el.textContent=fmt2(s2Sec);if(s2Sec<=15)el.className='timer-d urgent';if(s2Sec<=0){clearInterval(s2Int);s2Run=false;s2Out=true;document.getElementById('s2-btn').textContent='Reset';s2Reveal();}},1000);}
+  else if(s2Out){s2Reset();}
+}
+function s2Reveal(){clearInterval(s2Int);s2Run=false;s2Out=true;document.getElementById('s2-gold').classList.add('show');const rb=document.getElementById('s2-rev-btn');if(rb)rb.style.display='none';document.getElementById('s2-btn').textContent='Reset';}
+function s2Reset(){clearInterval(s2Int);s2Run=false;s2Out=false;s2Sec=90;document.getElementById('timer-s2').textContent=fmt2(s2Sec);document.getElementById('timer-s2').className='timer-d';document.getElementById('s2-btn').textContent='Start timer';document.getElementById('s2-gold').classList.remove('show');const rb=document.getElementById('s2-rev-btn');if(rb)rb.style.display='';}
+
+// --- SIM 3 ---
+function s3Reveal(){document.getElementById('s3-gold').classList.add('show');document.getElementById('s3-rev-btn').style.display='none';}
+
+// --- SIM 4 ---
+const S4_STEPS = [
+  { num:1, name:'Define', prompt:'Replace "front desk phone skills" with a precise problem statement.', gold:'Trainee must state: "Trial conversion rate dropped from 68% to 49% over 45 days — a 19-point gap. The question is whether the mechanism is a follow-up timing failure or a qualification failure." Vague → Precise.' },
+  { num:2, name:'Identify Constraints', prompt:'State time constraint, resource constraint, authority level, and risk tolerance.', gold:'Can the school modify the enrollment workflow? Who owns the front desk process? What is the acceptable timeline for a 5-point conversion recovery? All four must be named.' },
+  { num:3, name:'Generate Options', prompt:'Produce minimum three structural options — no behavioral solutions.', gold:'Option A: automated 24-hour follow-up trigger. Option B: structured follow-up script with mandatory completion logging. Option C: reassign trial follow-up ownership to a senior staff member with audit trail. All three before evaluation.' },
+  { num:4, name:'Evaluate', prompt:'Score each option by Impact × Confidence. Select the highest expected value option.', gold:'Force the trainee to rate each: Impact = how much does this move conversion if implemented correctly? Confidence = how likely is correct implementation and sustainment? Not "which does the owner prefer."' },
+  { num:5, name:'Commit', prompt:'State exactly when and how this decision will be reassessed.', gold:'"We review the 24-hour follow-up completion rate and trial conversion rate in 30 days. If conversion has not moved by at least 5 points, we escalate to a full Enrollment System audit."' },
+];
+let s4Cur=0;
+function s4Render(){
+  document.getElementById('s4-pips').innerHTML=S4_STEPS.map((_,i)=>`<div class="pip${i<=s4Cur?' on':''}"></div>`).join('')+`<span class="pip-label">Step ${s4Cur+1} of ${S4_STEPS.length}</span>`;
+  const s=S4_STEPS[s4Cur];
+  document.getElementById('s4-step').innerHTML=`<div class="card"><div class="card-label">Step ${s.num} — ${s.name}</div><div class="card-text" style="font-style:normal;font-size:14px;margin-bottom:12px">${s.prompt}</div><button class="reveal-btn" id="s4-rev-${s4Cur}" onclick="s4Reveal(${s4Cur})">Reveal gold standard</button><div class="gold-block" id="s4g-${s4Cur}"><div class="gold-text">${s.gold}</div></div></div>`;
+  const nb=document.getElementById('s4-next');nb.textContent=s4Cur===S4_STEPS.length-1?'Done':'Next step';nb.disabled=s4Cur===S4_STEPS.length-1;
+}
+function s4Reveal(i){document.getElementById(`s4g-${i}`).classList.add('show');document.getElementById(`s4-rev-${i}`).style.display='none';}
+function s4Next(){if(s4Cur<S4_STEPS.length-1){s4Cur++;s4Render();}}
+function s4Reset(){s4Cur=0;document.getElementById('s4-next').disabled=false;s4Render();}
+s4Render();
+
+function switchSim(id){
+  ['s1','s2','s3','s4'].forEach(s=>{
+    document.getElementById(`panel-${s}`).classList.toggle('active',s===id);
+    const cls=s==='s3'||s==='s4'?'act-pressure':'act';
+    document.getElementById(`tab-${s}`).className='tab'+(s===id?' '+cls:'');
+  });
+}
+</script>
+</body>
+</html>

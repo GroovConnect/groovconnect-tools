@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 01 — Certification Gate</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  background: #f5f5f7;
+  color: #1D1D1F;
+  padding: 32px 24px;
+  max-width: 660px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 22px; }
+.trainee-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.trainee-row label { font-size: 13px; color: #6E6E73; white-space: nowrap; }
+.trainee-row input {
+  font-family: inherit;
+  font-size: 14px;
+  padding: 8px 12px;
+  border: 0.5px solid #AEAEB2;
+  border-radius: 8px;
+  background: #fff;
+  color: #1D1D1F;
+  flex: 1;
+}
+@media (prefers-color-scheme: dark) {
+  .trainee-row input { background: #1e1e1e; border-color: #444; color: #e8e8e8; }
+}
+.req-card {
+  background: #fff;
+  border: 0.5px solid #D1D1D6;
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 8px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  cursor: pointer;
+  transition: background .12s;
+  user-select: none;
+}
+@media (prefers-color-scheme: dark) { .req-card { background: #1e1e1e; border-color: #333; } }
+.req-card:hover { background: #fafafa; }
+@media (prefers-color-scheme: dark) { .req-card:hover { background: #252525; } }
+.req-card.pass { border-left: 3px solid #0F6E56; background: #f0fdf8; }
+@media (prefers-color-scheme: dark) { .req-card.pass { background: #0a1f15; } }
+.req-card.fail { border-left: 3px solid #A32D2D; background: #fef2f2; }
+@media (prefers-color-scheme: dark) { .req-card.fail { background: #1f0a0a; } }
+.checkbox {
+  width: 22px; height: 22px;
+  border: 1.5px solid #D1D1D6;
+  border-radius: 6px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  transition: background .15s, border-color .15s;
+}
+.checkbox.checked { background: #0F6E56; border-color: #0F6E56; }
+.checkbox.checked::after { content: ''; display: block; width: 5px; height: 9px; border: 2px solid #fff; border-top: none; border-left: none; transform: rotate(45deg) translate(-1px,-1px); }
+.req-body { flex: 1; }
+.req-name { font-size: 14px; font-weight: 500; color: #1D1D1F; margin-bottom: 3px; }
+@media (prefers-color-scheme: dark) { .req-name { color: #e8e8e8; } }
+.req-std { font-size: 12px; color: #6E6E73; line-height: 1.5; }
+.fail-mode {
+  font-size: 12px;
+  color: #A32D2D;
+  margin-top: 4px;
+  display: none;
+}
+.fail-mode.visible { display: block; }
+.result-bar {
+  margin: 16px 0;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+  background: #F1EFE8;
+  color: #6E6E73;
+  transition: background .3s, color .3s;
+}
+.result-bar.pass { background: #E1F5EE; color: #085041; }
+.result-bar.fail-r { background: #FCEBEB; color: #791F1F; }
+.gate-note {
+  font-size: 13px;
+  color: #6E6E73;
+  background: #F1EFE8;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+@media (prefers-color-scheme: dark) { .gate-note { background: #222; color: #9a9a9a; } }
+.gate-note strong { font-weight: 600; color: #1D1D1F; }
+@media (prefers-color-scheme: dark) { .gate-note strong { color: #e8e8e8; } }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+button.secondary {
+  font-family: inherit; font-size: 14px; font-weight: 500;
+  padding: 9px 22px; border-radius: 9px;
+  border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer;
+}
+@media (prefers-color-scheme: dark) { button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+.show-fail-btn {
+  font-family: inherit; font-size: 11px; padding: 3px 10px;
+  border-radius: 6px; border: 0.5px solid #F09595;
+  background: transparent; color: #A32D2D; cursor: pointer;
+  margin-top: 5px;
+}
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 01, Section 7 · Certification Gate</div>
+<h1>Module 01 — certification criteria</h1>
+<p class="sub">Tap each requirement to mark Pass. All five must pass before Module 02 is unlocked.</p>
+
+<div class="trainee-row">
+  <label>Trainee</label>
+  <input type="text" id="trainee-name" placeholder="Enter trainee name">
+</div>
+
+<div class="gate-note">
+  <strong>Gate check — both conditions required before unlocking Module 02:</strong><br>
+  (1) Three-Layer Taxonomy stated without prompting. &nbsp;·&nbsp; (2) Complete propagation chain on a new scenario with no pauses between steps.
+</div>
+
+<div id="req-list"></div>
+<div class="result-bar" id="result-bar">0 / 5 passed</div>
+
+<div class="controls">
+  <button class="secondary" onclick="resetAll()">Reset</button>
+  <button class="secondary" onclick="window.print()">Print</button>
+</div>
+
+<script>
+const REQS = [
+  {
+    name: '7-Step Master Sequence',
+    std: 'Executed cold in under 12 minutes, no notes. All seven steps present and in sequence.',
+    fail: 'Trainee jumps Steps 1→7 without completing economics. Or completes steps but in wrong order.'
+  },
+  {
+    name: 'Three-Layer Taxonomy',
+    std: 'States all three layers (Clarity, System, Incentive) and correctly applies each — no prompting, no reference material.',
+    fail: 'Names layers correctly but misapplies them, or reaches Incentive before clearing System.'
+  },
+  {
+    name: 'Adjective Filter',
+    std: 'Translates five consecutive narrative statements into structural gaps in under 10 seconds each.',
+    fail: 'Produces a behavioral correction instead of a structural gap. Or hesitates beyond 15 seconds.'
+  },
+  {
+    name: 'Structural Permanence Test',
+    std: 'States the permanence test and correctly classifies three proposed solutions as behavioral or structural.',
+    fail: 'Accepts "train the staff" or "hold a meeting" as valid structural solutions.'
+  },
+  {
+    name: 'Breath Test',
+    std: 'Delivers a complete propagation chain in one unbroken sentence — Failure → Behavior → Experience → KPI — no filler words, no pauses.',
+    fail: 'Any pause between steps. Pauses indicate a logic gap in the chain, not a speed problem.'
+  },
+];
+
+const state = new Array(REQS.length).fill(false);
+const showFail = new Array(REQS.length).fill(false);
+
+function render() {
+  const container = document.getElementById('req-list');
+  container.innerHTML = REQS.map((r, i) => `
+    <div class="req-card${state[i] ? ' pass' : ''}" onclick="toggle(${i})" id="card-${i}">
+      <div class="checkbox${state[i] ? ' checked' : ''}" id="cb-${i}"></div>
+      <div class="req-body">
+        <div class="req-name">${r.name}</div>
+        <div class="req-std">${r.std}</div>
+        <button class="show-fail-btn" onclick="toggleFail(event,${i})">${showFail[i] ? 'Hide' : 'Show'} failure mode</button>
+        <div class="fail-mode${showFail[i] ? ' visible' : ''}" id="fm-${i}">${r.fail}</div>
+      </div>
+    </div>`).join('');
+  updateResult();
+}
+
+function toggle(i) {
+  state[i] = !state[i];
+  render();
+}
+
+function toggleFail(e, i) {
+  e.stopPropagation();
+  showFail[i] = !showFail[i];
+  render();
+}
+
+function updateResult() {
+  const passed = state.filter(Boolean).length;
+  const bar = document.getElementById('result-bar');
+  bar.textContent = `${passed} / ${REQS.length} passed`;
+  bar.className = 'result-bar' + (passed === REQS.length ? ' pass' : passed > 0 ? '' : '');
+  if (passed === REQS.length) {
+    bar.textContent = `✓ All 5 passed — Module 02 unlocked`;
+  }
+}
+
+function resetAll() {
+  state.fill(false);
+  showFail.fill(false);
+  document.getElementById('trainee-name').value = '';
+  render();
+}
+
+render();
+</script>
+</body>
+</html>

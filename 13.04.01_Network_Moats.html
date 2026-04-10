@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 13 — Network Effects & Competitive Moats</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #fff; color: #1D1D1F; padding: 40px 28px; max-width: 700px; margin: 0 auto; }
+@media (prefers-color-scheme: dark) { body { background: #1a1a1a; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 5px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 3px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.moat-rule { font-size: 13px; color: #0C447C; background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 20px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .moat-rule { background: #0a1f3a; color: #B5D4F4; } }
+.moat-card { border-radius: 12px; padding: 16px 20px; margin-bottom: 8px; }
+.moat-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
+.moat-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px; white-space: nowrap; flex-shrink: 0; margin-top: 1px; }
+.moat-name { font-size: 15px; font-weight: 600; flex: 1; }
+.moat-desc { font-size: 13px; line-height: 1.55; margin-bottom: 8px; }
+.moat-why { font-size: 12px; font-style: italic; padding: 8px 12px; border-radius: 8px; line-height: 1.55; }
+.m1{background:#E6F1FB}.m1 .moat-badge{background:#185FA5;color:#fff}.m1 .moat-name{color:#0C447C}.m1 .moat-desc{color:#185FA5}.m1 .moat-why{background:#B5D4F4;color:#042C53}
+.m2{background:#EEEDFE}.m2 .moat-badge{background:#534AB7;color:#fff}.m2 .moat-name{color:#26215C}.m2 .moat-desc{color:#534AB7}.m2 .moat-why{background:#CECBF6;color:#26215C}
+.m3{background:#FAEEDA}.m3 .moat-badge{background:#BA7517;color:#fff}.m3 .moat-name{color:#633806}.m3 .moat-desc{color:#854F0B}.m3 .moat-why{background:#FAC775;color:#412402}
+.m4{background:#E1F5EE}.m4 .moat-badge{background:#0F6E56;color:#fff}.m4 .moat-name{color:#085041}.m4 .moat-desc{color:#0F6E56}.m4 .moat-why{background:#9FE1CB;color:#04342C}
+@media (prefers-color-scheme: dark) {
+  .m1{background:#0a1f3a}.m1 .moat-desc{color:#85B7EB}.m1 .moat-why{background:#0C447C;color:#B5D4F4}
+  .m2{background:#1a1730}.m2 .moat-desc{color:#AFA9EC}.m2 .moat-why{background:#26215C;color:#CECBF6}
+  .m3{background:#2a1a00}.m3 .moat-desc{color:#EF9F27}.m3 .moat-why{background:#412402;color:#FAC775}
+  .m4{background:#052e1e}.m4 .moat-desc{color:#5DCAA5}.m4 .moat-why{background:#085041;color:#9FE1CB}
+}
+.transition-card { border-radius: 12px; margin-top: 20px; overflow: hidden; }
+.transition-header { background: #1D1D1F; color: #fff; padding: 10px 18px; font-size: 13px; font-weight: 600; }
+@media (prefers-color-scheme: dark) { .transition-header { background: #333; } }
+.transition-row { display: grid; grid-template-columns: 1fr 1fr; }
+.tc-before { background: #FCEBEB; padding: 12px 16px; }
+.tc-after { background: #E1F5EE; padding: 12px 16px; }
+.tc-label { font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 6px; }
+.tc-before .tc-label { color: #A32D2D; }
+.tc-after .tc-label { color: #0F6E56; }
+.tc-item { font-size: 12px; color: #791F1F; line-height: 1.55; margin-bottom: 4px; }
+.tc-after .tc-item { color: #085041; }
+@media (prefers-color-scheme: dark) { .tc-before{background:#2a0a0a}.tc-item{color:#F09595} .tc-after{background:#052e1e}.tc-after .tc-item{color:#9FE1CB} }
+.caption { margin-top: 20px; font-size: 12px; color: #8E8E93; border-top: 0.5px solid #D1D1D6; padding-top: 12px; }
+@media (prefers-color-scheme: dark) { .caption { border-top-color: #2a2a2a; } }
+@media print { body { padding: 20px; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 13, Sections 4–5 · Reference Card</div>
+<h1>Network Effects & Competitive Moats</h1>
+<p class="sub">Four structural moats produced by accumulated network data — not software features.</p>
+<div class="moat-rule">These moats are structural — not feature-based. A competitor who builds identical features cannot replicate them because the moats are produced by accumulated data, not software capability. Each new school enrolled makes every existing school's system more accurate.</div>
+
+<div class="moat-card m1">
+  <div class="moat-header"><span class="moat-badge">Data Moat</span><div class="moat-name">Unique anonymized behavioral dataset</div></div>
+  <div class="moat-desc">DISC compatibility outcomes, retention correlations, and engagement patterns accumulated across the entire network.</div>
+  <div class="moat-why">Cannot be replicated by a new entrant regardless of feature parity. The dataset takes years to accumulate and improves only through real deployments.</div>
+</div>
+
+<div class="moat-card m2">
+  <div class="moat-header"><span class="moat-badge">Intelligence Moat</span><div class="moat-name">Compounding insights from scale</div></div>
+  <div class="moat-desc">Predictions improve as data volume grows. A competitor with fewer schools produces less accurate recommendations — their matching algorithm has less signal.</div>
+  <div class="moat-why">The gap widens with each school GC adds. Intelligence compounds; replication requires equivalent deployment history, not equivalent code.</div>
+</div>
+
+<div class="moat-card m3">
+  <div class="moat-header"><span class="moat-badge">Switching Cost</span><div class="moat-name">GAOS becomes embedded operational infrastructure</div></div>
+  <div class="moat-desc">Leaving means losing the MSOI history, Match Score database, and institutional benchmark position. Not contractual — operational switching cost.</div>
+  <div class="moat-why">The value of the data is specific to the school's history within the network. Switching resets the accumulated intelligence to zero.</div>
+</div>
+
+<div class="moat-card m4">
+  <div class="moat-header"><span class="moat-badge">Performance Moat</span><div class="moat-name">Demonstrably superior outcomes vs. manual tools</div></div>
+  <div class="moat-desc">Measurably better retention, conversion, and LTV outcomes vs. schools using manual or single-point tools.</div>
+  <div class="moat-why">The moat is maintained by continuous improvement in the intelligence engines. Performance advantage grows as pattern recognition accuracy improves.</div>
+</div>
+
+<div class="transition-card">
+  <div class="transition-header">Before Section IV → After Section IV</div>
+  <div class="transition-row">
+    <div class="tc-before">
+      <div class="tc-label">Before</div>
+      <div class="tc-item">Diagnoses one school at a time</div>
+      <div class="tc-item">Economic figures are estimates</div>
+      <div class="tc-item">Recommendations are analyst-generated</div>
+      <div class="tc-item">Engagement value declines after implementation</div>
+    </div>
+    <div class="tc-after">
+      <div class="tc-label">After</div>
+      <div class="tc-item">Every diagnosis improves network-level pattern recognition</div>
+      <div class="tc-item">Economic figures derived from real benchmark data</div>
+      <div class="tc-item">Recommendations increasingly algorithm-assisted and network-validated</div>
+      <div class="tc-item">Engagement value compounds as GAOS accumulates school history</div>
+    </div>
+  </div>
+</div>
+
+<div class="caption">GroovConnect OAS™ · Module 13 · Section IV certification complete when the Urgency Anchor gate is passed. Unlocks Section V: Category & Growth (Modules 14–15).</div>
+</body>
+</html>

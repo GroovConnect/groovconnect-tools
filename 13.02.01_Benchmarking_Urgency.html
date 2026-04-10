@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 13 — Benchmarking & Urgency Anchor</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 680px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.view-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 13px; font-weight: 500; padding: 7px 18px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.act-bench { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.tab.act-gov { background: #FAEEDA; border-color: #BA7517; color: #854F0B; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+/* Benchmark calculator */
+.anchor-rule { font-size: 13px; color: #0C447C; background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .anchor-rule { background: #0a1f3a; color: #B5D4F4; } }
+.bench-cat { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 12px; padding: 14px 18px; margin-bottom: 8px; }
+@media (prefers-color-scheme: dark) { .bench-cat { background: #1e1e1e; border-color: #333; } }
+.cat-head { font-size: 13px; font-weight: 600; color: #1D1D1F; margin-bottom: 6px; }
+@media (prefers-color-scheme: dark) { .cat-head { color: #e8e8e8; } }
+.cat-formula { font-size: 11px; color: #6E6E73; font-family: "SFMono-Regular", Menlo, monospace; margin-bottom: 10px; }
+.inp-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.inp-row label { font-size: 12px; color: #1D1D1F; min-width: 200px; }
+@media (prefers-color-scheme: dark) { .inp-row label { color: #e8e8e8; } }
+input[type=number] { font-family: inherit; font-size: 13px; padding: 6px 10px; border: 0.5px solid #AEAEB2; border-radius: 7px; background: #fff; color: #1D1D1F; width: 80px; }
+@media (prefers-color-scheme: dark) { input[type=number] { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+.cat-result { background: #E6F1FB; border-radius: 8px; padding: 8px 12px; font-size: 14px; color: #0C447C; font-weight: 600; font-family: "SFMono-Regular", Menlo, monospace; margin-top: 8px; }
+@media (prefers-color-scheme: dark) { .cat-result { background: #0a1f3a; color: #85B7EB; } }
+/* Data governance */
+.gov-rule { font-size: 13px; color: #633806; background: #FAEEDA; border-left: 3px solid #BA7517; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .gov-rule { background: #2a1a00; color: #FAC775; } }
+.concern-card { border-radius: 12px; padding: 14px 18px; margin-bottom: 6px; cursor: pointer; transition: opacity .12s; }
+.concern-card:hover { opacity: .93; }
+.cc-type { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px; margin-bottom: 6px; display: inline-block; }
+.cc-example { font-size: 13px; font-style: italic; line-height: 1.4; }
+.cc-response { font-size: 13px; line-height: 1.6; padding: 8px 12px; border-radius: 8px; margin-top: 8px; display: none; }
+.cc-response.show { display: block; }
+.gc-compliance { background: #FCEBEB; } .gc-compliance .cc-type { background: #A32D2D; color: #fff; } .gc-compliance .cc-example { color: #791F1F; } .gc-compliance .cc-response { background: #F7C1C1; color: #501313; }
+.gc-competitive { background: #EEEDFE; } .gc-competitive .cc-type { background: #534AB7; color: #fff; } .gc-competitive .cc-example { color: #26215C; } .gc-competitive .cc-response { background: #CECBF6; color: #26215C; }
+.gc-avoidance { background: #FAEEDA; } .gc-avoidance .cc-type { background: #BA7517; color: #fff; } .gc-avoidance .cc-example { color: #633806; } .gc-avoidance .cc-response { background: #FAC775; color: #412402; }
+@media (prefers-color-scheme: dark) {
+  .gc-compliance{background:#2a0a0a}.gc-compliance .cc-example{color:#F09595}.gc-compliance .cc-response{background:#3a1010;color:#F7C1C1}
+  .gc-competitive{background:#1a1730}.gc-competitive .cc-example{color:#CECBF6}.gc-competitive .cc-response{background:#26215C;color:#CECBF6}
+  .gc-avoidance{background:#2a1a00}.gc-avoidance .cc-example{color:#FAC775}.gc-avoidance .cc-response{background:#412402;color:#FAC775}
+}
+.controls { display: flex; gap: 8px; margin-top: 4px; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 13, Sections 2–3 · Benchmarking & Governance</div>
+<h1>Benchmarking & Urgency Anchor — calculators</h1>
+<p class="sub">Urgency anchor = benchmark deviation translated into a specific monthly dollar figure. Not opinion — measurement.</p>
+
+<div class="view-tabs">
+  <button class="tab act-bench" id="tab-bench" onclick="switchView('bench')">Urgency Anchor</button>
+  <button class="tab" id="tab-gov" onclick="switchView('gov')">Data Governance</button>
+</div>
+
+<!-- BENCHMARK CALCULATOR -->
+<div class="panel active" id="panel-bench">
+  <div class="anchor-rule">"Your retention is 15 points below the network average for schools your size, which represents approximately $8,000 in monthly preventable churn." One can be dismissed. The other cannot.</div>
+
+  <div class="bench-cat">
+    <div class="cat-head">Retention Urgency Anchor</div>
+    <div class="cat-formula">Delta (pts) × Student Count × LTV ÷ 12 = Monthly leakage vs. network</div>
+    <div class="inp-row"><label>School retention %</label><input type="number" id="r_school" value="70" oninput="calcRetention()"></div>
+    <div class="inp-row"><label>Network avg retention %</label><input type="number" id="r_network" value="85" oninput="calcRetention()"></div>
+    <div class="inp-row"><label>Student count</label><input type="number" id="r_students" value="180" oninput="calcRetention()"></div>
+    <div class="inp-row"><label>LTV per student ($)</label><input type="number" id="r_ltv" value="1100" oninput="calcRetention()"></div>
+    <div class="cat-result" id="r_result">—</div>
+  </div>
+
+  <div class="bench-cat">
+    <div class="cat-head">Conversion Urgency Anchor</div>
+    <div class="cat-formula">Delta (pts) × Monthly Trial Count × LTV = Monthly lost revenue vs. network</div>
+    <div class="inp-row"><label>School conversion %</label><input type="number" id="c_school" value="54" oninput="calcConversion()"></div>
+    <div class="inp-row"><label>Network avg conversion %</label><input type="number" id="c_network" value="72" oninput="calcConversion()"></div>
+    <div class="inp-row"><label>Monthly trial count</label><input type="number" id="c_trials" value="35" oninput="calcConversion()"></div>
+    <div class="inp-row"><label>LTV per student ($)</label><input type="number" id="c_ltv" value="1100" oninput="calcConversion()"></div>
+    <div class="cat-result" id="c_result">—</div>
+  </div>
+</div>
+
+<!-- DATA GOVERNANCE -->
+<div class="panel" id="panel-gov">
+  <div class="gov-rule">Classify the operator's data concern correctly before responding. A legitimate FERPA concern and an avoidance behavior require different responses.</div>
+  <div id="concerns"></div>
+  <div class="controls" style="margin-top:12px">
+    <button class="primary" onclick="revealAllConcerns()">Reveal all responses</button>
+    <button class="secondary" onclick="resetConcerns()">Reset</button>
+  </div>
+</div>
+
+<script>
+function fmt(n){return '$'+Math.round(n).toLocaleString();}
+function calcRetention(){
+  const school=parseFloat(document.getElementById('r_school').value)||0;
+  const net=parseFloat(document.getElementById('r_network').value)||0;
+  const students=parseFloat(document.getElementById('r_students').value)||0;
+  const ltv=parseFloat(document.getElementById('r_ltv').value)||0;
+  const delta=Math.max(0,net-school)/100;
+  const monthly=delta*students*ltv/12;
+  document.getElementById('r_result').textContent=`Monthly leakage vs. network: ${fmt(monthly)}/month (${fmt(monthly*12)}/year)`;
+}
+function calcConversion(){
+  const school=parseFloat(document.getElementById('c_school').value)||0;
+  const net=parseFloat(document.getElementById('c_network').value)||0;
+  const trials=parseFloat(document.getElementById('c_trials').value)||0;
+  const ltv=parseFloat(document.getElementById('c_ltv').value)||0;
+  const delta=Math.max(0,net-school)/100;
+  const monthly=delta*trials*ltv;
+  document.getElementById('c_result').textContent=`Monthly conversion leakage: ${fmt(monthly)}/month (${fmt(monthly*12)}/year)`;
+}
+calcRetention(); calcConversion();
+
+const CONCERNS = [
+  { cls:'gc-compliance', type:'Compliance Requirement (FERPA/GDPR)', example:'"We can\'t share student data — we have FERPA obligations."', response:'Acknowledge. Confirm anonymization: "No identifying student data is ever included in benchmark comparisons — only anonymized behavioral metrics." Direct to the Data Processing Agreement. Do not override or minimize.' },
+  { cls:'gc-competitive', type:'Competitive Sensitivity', example:'"I don\'t want our numbers visible to other schools in the area."', response:'"School-level identity is never exposed in benchmark comparisons. You see your position relative to the network, not relative to any named competitor." Offer to review the DPA with their legal counsel if needed.' },
+  { cls:'gc-avoidance', type:'General Avoidance (no specific reason)', example:'"I\'m just not comfortable sharing our data."', response:'Diagnose as Identity Resistance (Module 08). Apply Acknowledge → Clarify → Reframe → Resolve. Reframe: "The benchmark is what tells you whether your 78% retention is strong or weak. Without it, you are navigating without a map."' },
+];
+const open = new Array(CONCERNS.length).fill(false);
+function renderConcerns(){
+  document.getElementById('concerns').innerHTML=CONCERNS.map((c,i)=>`
+    <div class="concern-card ${c.cls}${open[i]?' open':''}" onclick="toggleC(${i})">
+      <span class="cc-type">${c.type}</span>
+      <div class="cc-example">${c.example}</div>
+      <div class="cc-response${open[i]?' show':''}">${c.response}</div>
+    </div>`).join('');
+}
+function toggleC(i){open[i]=!open[i];renderConcerns();}
+function revealAllConcerns(){open.fill(true);renderConcerns();}
+function resetConcerns(){open.fill(false);renderConcerns();}
+renderConcerns();
+
+function switchView(v){
+  document.getElementById('panel-bench').classList.toggle('active',v==='bench');
+  document.getElementById('panel-gov').classList.toggle('active',v==='gov');
+  document.getElementById('tab-bench').className='tab'+(v==='bench'?' act-bench':'');
+  document.getElementById('tab-gov').className='tab'+(v==='gov'?' act-gov':'');
+}
+</script>
+</body>
+</html>

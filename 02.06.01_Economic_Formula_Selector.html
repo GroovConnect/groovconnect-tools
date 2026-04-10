@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 02 — Economic Formula Selector & Logic Gate</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.section-head { font-size: 13px; font-weight: 600; color: #1D1D1F; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 0.5px solid #D1D1D6; }
+@media (prefers-color-scheme: dark) { .section-head { color: #e8e8e8; border-bottom-color: #2a2a2a; } }
+.formula-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 12px; padding: 16px 18px; margin-bottom: 8px; cursor: pointer; transition: background .12s; }
+@media (prefers-color-scheme: dark) { .formula-card { background: #1e1e1e; border-color: #333; } }
+.formula-card:hover { background: #fafafa; }
+@media (prefers-color-scheme: dark) { .formula-card:hover { background: #252525; } }
+.formula-card.open { border-left: 3px solid #185FA5; background: #fff; }
+.formula-top { display: flex; align-items: center; gap: 12px; }
+.model-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px; background: #E6F1FB; color: #185FA5; white-space: nowrap; }
+.model-name { font-size: 14px; font-weight: 600; color: #1D1D1F; flex: 1; }
+@media (prefers-color-scheme: dark) { .model-name { color: #e8e8e8; } }
+.when-text { font-size: 12px; color: #6E6E73; margin-top: 4px; }
+.formula-detail { margin-top: 12px; display: none; }
+.formula-detail.show { display: block; }
+.formula-line { font-size: 13px; font-weight: 600; color: #0C447C; background: #E6F1FB; border-radius: 8px; padding: 8px 12px; font-family: "SFMono-Regular", "Menlo", monospace; margin-bottom: 8px; line-height: 1.5; }
+@media (prefers-color-scheme: dark) { .formula-line { background: #0a1f3a; color: #85B7EB; } }
+.example { font-size: 12px; color: #6E6E73; line-height: 1.6; }
+.example strong { color: #1D1D1F; font-weight: 600; }
+@media (prefers-color-scheme: dark) { .example strong { color: #e8e8e8; } }
+
+/* Logic Gate */
+.gate-section { margin-top: 24px; }
+.gate-row { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 10px; padding: 14px 18px; margin-bottom: 6px; }
+@media (prefers-color-scheme: dark) { .gate-row { background: #1e1e1e; border-color: #333; } }
+.gate-q { font-size: 14px; font-weight: 600; color: #1D1D1F; margin-bottom: 4px; }
+@media (prefers-color-scheme: dark) { .gate-q { color: #e8e8e8; } }
+.gate-ans { font-size: 13px; color: #A32D2D; line-height: 1.5; }
+
+.invalid-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+.invalid-table th { font-size: 11px; font-weight: 700; color: #8E8E93; letter-spacing: .5px; text-transform: uppercase; padding: 6px 10px; text-align: left; border-bottom: 0.5px solid #D1D1D6; }
+.invalid-table td { font-size: 12px; padding: 8px 10px; border-bottom: 0.5px solid #F1EFE8; vertical-align: top; line-height: 1.5; }
+@media (prefers-color-scheme: dark) { .invalid-table th { border-bottom-color: #2a2a2a; color: #666; } .invalid-table td { border-bottom-color: #2a2a2a; } }
+.invalid-table tr:last-child td { border-bottom: none; }
+.fail-text { color: #A32D2D; font-weight: 500; }
+.why-text { color: #6E6E73; }
+.alt-text { color: #0F6E56; }
+
+.ks-note { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .ks-note { background: #2a0a0a; color: #F09595; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 02, Section 6 · Reference Tool</div>
+<h1>Economic Impact — formula selector & Logic Gate</h1>
+<p class="sub">Tap a model to see the formula and worked example. Then apply the Logic Gate before any solution is named.</p>
+
+<div class="section-head">Select the correct formula</div>
+
+<div class="formula-card" id="fc-0" onclick="toggleFormula(0)">
+  <div class="formula-top">
+    <span class="model-badge">LTV Loss</span>
+    <span class="model-name">Retention failure</span>
+  </div>
+  <div class="when-text">Use when: students are leaving. KPI = retention rate %.</div>
+  <div class="formula-detail" id="fd-0">
+    <div class="formula-line">Students lost × Average LTV × Gross margin %</div>
+    <div class="example"><strong>Example:</strong> Retention drops from 83% to 71% at 180 students, $195/mo, 52% GM, 10-mo avg tenure:<br>(83%−71%) × 180 × $195 × 52% × 10 = <strong>$21,902/year</strong></div>
+  </div>
+</div>
+
+<div class="formula-card" id="fc-1" onclick="toggleFormula(1)">
+  <div class="formula-top">
+    <span class="model-badge">Conversion Loss</span>
+    <span class="model-name">Trial conversion failure</span>
+  </div>
+  <div class="when-text">Use when: trials aren't converting. KPI = trial conversion rate %.</div>
+  <div class="formula-detail" id="fd-1">
+    <div class="formula-line">Trial volume × Rate drop × LTV × 12</div>
+    <div class="example"><strong>Example:</strong> 35 trials/mo, conversion drops from 71% to 49%, LTV $920:<br>35 × (71%−49%) × $920 × 12 = <strong>$85,008/year</strong></div>
+  </div>
+</div>
+
+<div class="formula-card" id="fc-2" onclick="toggleFormula(2)">
+  <div class="formula-top">
+    <span class="model-badge">Utilization Loss</span>
+    <span class="model-name">Scheduling / capacity failure</span>
+  </div>
+  <div class="when-text">Use when: slots are empty or misallocated. KPI = utilization rate %.</div>
+  <div class="formula-detail" id="fd-2">
+    <div class="formula-line">(Target utilization − Actual) × Capacity × Lesson rate × 52</div>
+    <div class="example"><strong>Example:</strong> Target 85%, actual 61%, 200 weekly slots, $45/lesson:<br>(85%−61%) × 200 × $45 × 52 = <strong>$112,320/year</strong></div>
+  </div>
+</div>
+
+<div class="gate-section">
+  <div class="section-head" style="margin-top:8px">The Logic Gate — before any solution is named</div>
+  <div class="gate-row">
+    <div class="gate-q">Question 1: If the person responsible for this solution leaves tomorrow, does the problem return?</div>
+    <div class="gate-ans">If yes — eliminate the solution. It is behavioral, not structural.</div>
+  </div>
+  <div class="gate-row">
+    <div class="gate-q">Question 2: Does this solution address the failure at the root cause level, or does it treat a downstream behavior?</div>
+    <div class="gate-ans">If downstream — eliminate. Not refine. Not soften. Eliminate.</div>
+  </div>
+
+  <table class="invalid-table">
+    <thead><tr><th>Invalid solution</th><th>Why it fails</th><th>Structural alternative</th></tr></thead>
+    <tbody>
+      <tr><td class="fail-text">"Train the staff"</td><td class="why-text">Knowledge lives in the person. When they leave, it leaves.</td><td class="alt-text">SOP with mandatory checklist and audit point.</td></tr>
+      <tr><td class="fail-text">"Remind them more often"</td><td class="why-text">Relies on manager memory. Breaks under volume.</td><td class="alt-text">Automated trigger or gated submission requirement.</td></tr>
+      <tr><td class="fail-text">"Have a team meeting"</td><td class="why-text">One-time event. Behavior reverts within 30 days.</td><td class="alt-text">Recurring structured review with recorded output.</td></tr>
+      <tr><td class="fail-text">"Hire better people"</td><td class="why-text">Treats a system failure as a talent problem.</td><td class="alt-text">Design the system a capable person would operate in.</td></tr>
+      <tr><td class="fail-text">"Motivate the team"</td><td class="why-text">Addresses Incentive before clearing Clarity and System.</td><td class="alt-text">Complete the full diagnostic first.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="ks-note">Kill Switch: trainee names any solution before the propagation chain is complete and the economic impact figure is stated. Stop. Say: "Reset. Step 1." No explanation needed — the rule was stated at the start of the session.</div>
+
+<script>
+const open = [false, false, false];
+function toggleFormula(i) {
+  open[i] = !open[i];
+  document.getElementById(`fd-${i}`).classList.toggle('show', open[i]);
+  document.getElementById(`fc-${i}`).classList.toggle('open', open[i]);
+}
+</script>
+</body>
+</html>

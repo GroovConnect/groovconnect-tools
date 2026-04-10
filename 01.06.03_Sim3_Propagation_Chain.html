@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 01 — Sim 3: Propagation Chain</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  background: #f5f5f7;
+  color: #1D1D1F;
+  padding: 32px 24px;
+  max-width: 660px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 22px; }
+.pip-row { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; }
+.pip { width: 8px; height: 8px; border-radius: 50%; background: #D1D1D6; flex-shrink: 0; transition: background .2s; }
+@media (prefers-color-scheme: dark) { .pip { background: #3a3a3a; } }
+.pip.on { background: #185FA5; transform: scale(1.3); }
+.pip-label { font-size: 12px; color: #8E8E93; margin-left: 4px; }
+.failure-card {
+  background: #fff;
+  border: 0.5px solid #D1D1D6;
+  border-top: 3px solid #A32D2D;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+}
+@media (prefers-color-scheme: dark) { .failure-card { background: #1e1e1e; border-color: #333; border-top-color: #A32D2D; } }
+.failure-label { font-size: 11px; font-weight: 600; color: #A32D2D; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 8px; }
+.failure-text { font-size: 16px; font-weight: 500; color: #1D1D1F; line-height: 1.5; }
+@media (prefers-color-scheme: dark) { .failure-text { color: #e8e8e8; } }
+.chain-rule {
+  font-size: 13px;
+  color: #6E6E73;
+  background: #F1EFE8;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+@media (prefers-color-scheme: dark) { .chain-rule { background: #222; color: #9a9a9a; } }
+.chain-links { margin-bottom: 14px; }
+.link-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.link-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.link-num.f { background: #FCEBEB; color: #A32D2D; }
+.link-num.b { background: #FAEEDA; color: #854F0B; }
+.link-num.e { background: #E6F1FB; color: #185FA5; }
+.link-num.k { background: #E1F5EE; color: #0F6E56; }
+.link-body { flex: 1; }
+.link-phase { font-size: 11px; font-weight: 600; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 3px; }
+.link-phase.f { color: #A32D2D; }
+.link-phase.b { color: #854F0B; }
+.link-phase.e { color: #185FA5; }
+.link-phase.k { color: #0F6E56; }
+.link-text { font-size: 13px; color: #3A3A3C; line-height: 1.55; display: none; }
+@media (prefers-color-scheme: dark) { .link-text { color: #c8c8c8; } }
+.link-text.visible { display: block; }
+.link-placeholder {
+  font-size: 13px;
+  color: #AEAEB2;
+  font-style: italic;
+  cursor: pointer;
+  padding: 4px 0;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+.link-placeholder:hover { color: #8E8E93; }
+.error-card {
+  background: #FAEEDA;
+  border-left: 3px solid #BA7517;
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #633806;
+  line-height: 1.55;
+  margin-bottom: 14px;
+  display: none;
+}
+.error-card.visible { display: block; }
+.error-card strong { font-weight: 600; display: block; margin-bottom: 4px; }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; }
+button.primary {
+  font-family: inherit; font-size: 14px; font-weight: 500;
+  padding: 9px 22px; border-radius: 9px; border: none;
+  background: #1D1D1F; color: #fff; cursor: pointer;
+}
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } }
+button.secondary {
+  font-family: inherit; font-size: 14px; font-weight: 500;
+  padding: 9px 22px; border-radius: 9px;
+  border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer;
+}
+@media (prefers-color-scheme: dark) { button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 01, Section 6 · Simulation 3</div>
+<h1>Sim 3 — Propagation chain construction</h1>
+<p class="sub">Instructor presents the failure node. Trainee builds the full 4-link chain aloud — no notes, no pausing.</p>
+
+<div class="pip-row" id="pips"></div>
+
+<div id="main-area"></div>
+
+<div class="controls">
+  <button class="primary" id="reveal-btn" onclick="revealNext()">Reveal next link</button>
+  <button class="secondary" onclick="revealAll()">Reveal all</button>
+  <button class="secondary" onclick="nextScenario()">Next scenario</button>
+  <button class="secondary" onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+const SCENARIOS = [
+  {
+    failure_label: 'No automated 24-hour trial follow-up trigger in the enrollment workflow.',
+    links: [
+      { phase: 'Failure', cls: 'f', text: 'Enrollment workflow has no task auto-generation after trial completion.' },
+      { phase: 'Behavior change', cls: 'b', text: 'Front desk calls trial family 36–48 hours after lesson — beyond the optimal engagement window.' },
+      { phase: 'Experience degradation', cls: 'e', text: 'Trial family has researched competing schools and lost initial excitement by the time of contact.' },
+      { phase: 'KPI impact', cls: 'k', text: 'Trial conversion drops from 70% to 52% — $58,320 annual leakage at $900 LTV and 30 trials/month.' },
+    ],
+    error: 'Common error: trainee jumps from Behavior Change directly to KPI, skipping Experience Degradation. The operator needs to understand why the parent\'s decision changed — the internal experience — not merely that a metric moved.'
+  },
+  {
+    failure_label: 'No lesson note submission gate — notes are optional, not enforced.',
+    links: [
+      { phase: 'Failure', cls: 'f', text: 'Standardization System has no mandatory submission mechanism — notes are optional.' },
+      { phase: 'Behavior change', cls: 'b', text: 'Instructors skip notes under time pressure — compliance is discretionary.' },
+      { phase: 'Experience degradation', cls: 'e', text: 'Parents receive no post-lesson update on their child\'s progress.' },
+      { phase: 'KPI impact', cls: 'k', text: 'Parent perceives school as disengaged; perceived value drops; churn rises in the 3–6 month window.' },
+    ],
+    error: 'Common error: trainee states "instructor behavior changes" without specifying what changes. Required precision: notes are skipped, parents receive no update. Vague behavior steps produce vague economic stakes — an operator who cannot picture the mechanism will not believe the dollar figure.'
+  }
+];
+
+let cur = 0;
+let revealed = 0;
+
+function render() {
+  if (cur >= SCENARIOS.length) {
+    document.getElementById('main-area').innerHTML =
+      '<div style="text-align:center;padding:32px 0"><p style="font-size:16px;font-weight:500">Both scenarios complete.</p><p style="font-size:13px;color:#6E6E73;margin-top:8px">Score each chain before moving to the Certification Gate.</p></div>';
+    document.getElementById('reveal-btn').style.display = 'none';
+    return;
+  }
+
+  revealed = 0;
+  document.getElementById('reveal-btn').style.display = '';
+  const s = SCENARIOS[cur];
+
+  // pips
+  document.getElementById('pips').innerHTML =
+    SCENARIOS.map((_, i) => `<div class="pip${i === cur ? ' on' : ''}"></div>`).join('') +
+    `<span class="pip-label">Scenario ${cur + 1} of ${SCENARIOS.length}</span>`;
+
+  document.getElementById('main-area').innerHTML = `
+    <div class="failure-card">
+      <div class="failure-label">Failure node — present to trainee</div>
+      <div class="failure-text">${s.failure_label}</div>
+    </div>
+    <div class="chain-rule">Trainee builds aloud: Failure → Behavior Change → Experience Degradation → KPI Impact. One unbroken sequence, no pausing, no notes.</div>
+    <div class="chain-links" id="links">
+      ${s.links.map((l, i) => `
+        <div class="link-row">
+          <div class="link-num ${l.cls}">${i + 1}</div>
+          <div class="link-body">
+            <div class="link-phase ${l.cls}">${l.phase}</div>
+            <div class="link-text" id="link-${i}">${l.text}</div>
+            <div class="link-placeholder" id="ph-${i}" onclick="revealLink(${i})">tap to reveal</div>
+          </div>
+        </div>`).join('')}
+    </div>
+    <div class="error-card" id="error-card">
+      <strong>Watch for — common error</strong>${s.error}
+    </div>`;
+}
+
+function revealLink(i) {
+  const s = SCENARIOS[cur];
+  document.getElementById(`link-${i}`).classList.add('visible');
+  document.getElementById(`ph-${i}`).style.display = 'none';
+  revealed = Math.max(revealed, i + 1);
+  if (revealed >= s.links.length) {
+    document.getElementById('error-card').classList.add('visible');
+  }
+}
+
+function revealNext() {
+  const s = SCENARIOS[cur];
+  if (revealed < s.links.length) {
+    revealLink(revealed);
+  }
+}
+
+function revealAll() {
+  const s = SCENARIOS[cur];
+  s.links.forEach((_, i) => revealLink(i));
+}
+
+function nextScenario() {
+  cur++;
+  render();
+}
+
+function resetAll() {
+  cur = 0;
+  render();
+  document.getElementById('reveal-btn').style.display = '';
+}
+
+render();
+</script>
+</body>
+</html>

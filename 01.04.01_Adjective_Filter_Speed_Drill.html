@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 01 — Adjective Filter Speed Drill</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  background: #f5f5f7;
+  color: #1D1D1F;
+  padding: 32px 24px;
+  max-width: 640px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 22px; }
+.timer-ring {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.timer-display {
+  font-size: 42px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: #1D1D1F;
+  letter-spacing: -1px;
+  transition: color .3s;
+}
+@media (prefers-color-scheme: dark) { .timer-display { color: #e8e8e8; } }
+.timer-display.urgent { color: #C0392B; }
+.timer-display.passed { color: #0F6E56; }
+.counter { font-size: 13px; color: #8E8E93; text-align: right; }
+.card {
+  background: #fff;
+  border: 0.5px solid #D1D1D6;
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 14px;
+  min-height: 130px;
+}
+@media (prefers-color-scheme: dark) { .card { background: #1e1e1e; border-color: #333; } }
+.narrative-label { font-size: 11px; font-weight: 600; color: #D85A30; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 10px; }
+.narrative { font-size: 19px; font-weight: 500; font-style: italic; color: #1D1D1F; line-height: 1.45; margin-bottom: 16px; }
+@media (prefers-color-scheme: dark) { .narrative { color: #e8e8e8; } }
+.reveal-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.reveal-btn, .start-btn {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 0.5px solid #AEAEB2;
+  background: #fff;
+  color: #1D1D1F;
+  cursor: pointer;
+  transition: background .12s;
+}
+@media (prefers-color-scheme: dark) { .reveal-btn, .start-btn { background: #2a2a2a; border-color: #444; color: #e8e8e8; } }
+.reveal-btn:hover, .start-btn:hover { background: #f2f2f7; }
+.system-block {
+  margin-top: 14px;
+  padding: 12px 16px;
+  background: #E1F5EE;
+  border-left: 3px solid #0F6E56;
+  border-radius: 0 8px 8px 0;
+  display: none;
+}
+@media (prefers-color-scheme: dark) { .system-block { background: #052e1e; } }
+.system-block.visible { display: block; }
+.system-label-s { font-size: 11px; font-weight: 600; color: #0F6E56; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 6px; }
+.system-text-s { font-size: 13px; color: #085041; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .system-text-s { color: #9FE1CB; } }
+.warn-block {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #FAEEDA;
+  border-left: 3px solid #BA7517;
+  border-radius: 0 8px 8px 0;
+  font-size: 12px;
+  color: #633806;
+  display: none;
+}
+@media (prefers-color-scheme: dark) { .warn-block { background: #2a1a00; color: #FAC775; } }
+.warn-block.visible { display: block; }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; }
+button.primary {
+  font-family: inherit; font-size: 14px; font-weight: 500;
+  padding: 9px 22px; border-radius: 9px; border: none;
+  background: #1D1D1F; color: #fff; cursor: pointer;
+}
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } }
+button.secondary {
+  font-family: inherit; font-size: 14px; font-weight: 500;
+  padding: 9px 22px; border-radius: 9px;
+  border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer;
+}
+@media (prefers-color-scheme: dark) { button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 01, Section 4 · Speed Drill</div>
+<h1>Adjective Filter — 10-second speed drill</h1>
+<p class="sub">Call out the statement. Start the timer. Translation must be complete before 0.</p>
+
+<div class="timer-ring">
+  <div class="timer-display" id="timer">10</div>
+  <div class="counter" id="counter">Statement 1 of 10</div>
+</div>
+
+<div id="card-area"></div>
+
+<div class="controls" style="margin-top: 4px;">
+  <button class="primary" id="main-btn" onclick="mainAction()">Start timer</button>
+  <button class="secondary" onclick="nextStatement()">Next statement</button>
+  <button class="secondary" onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+const ITEMS = [
+  { narrative: '"Students aren\'t motivated"', system: 'Engagement System failure — no visible progress milestone tracking. Students cannot see advancement; practice has no perceived purpose.' },
+  { narrative: '"Teachers are inconsistent"', system: 'Standardization System failure — no lesson delivery framework or note submission gate. Quality depends on individual discretion.' },
+  { narrative: '"Parents are difficult"', system: 'Communication System failure — no structured parent update protocol or defined communication cadence.' },
+  { narrative: '"The staff is disorganized"', system: 'Organization System failure — no defined SOP, no ownership structure, no task-completion audit mechanism.' },
+  { narrative: '"Admin is overwhelmed"', system: 'Capacity or Process System failure — manual tasks executed without automation trigger; process volume exceeds available bandwidth.' },
+  { narrative: '"Parents are demanding"', system: 'Expectation System failure — no structured onboarding or progress visibility framework. Parents fill the information vacuum with anxiety.' },
+  { narrative: '"My best teacher is unreliable"', system: 'Accountability System failure — no attendance or delivery audit mechanism. Reliability cannot be measured, so it cannot be managed.' },
+  { narrative: '"Students are bored"', system: 'Curriculum Progression failure — no milestone-based advancement structure. Students reach basic proficiency and stall with no visible path forward.' },
+  { narrative: '"Parents don\'t understand the value"', system: 'Communication System failure — no structured value demonstration cadence. Value is assumed, not systematically communicated.' },
+  { narrative: '"Staff morale is low"', system: 'Incentive System failure — no performance recognition structure. Effort and outcome are structurally decoupled.' },
+];
+
+let cur = 0;
+let timerInterval = null;
+let seconds = 10;
+let running = false;
+let timedOut = false;
+
+function fmt(s) { return String(s); }
+
+function render() {
+  if (cur >= ITEMS.length) {
+    document.getElementById('card-area').innerHTML =
+      '<div style="text-align:center;padding:32px 0"><p style="font-size:16px;font-weight:500">All 10 complete.</p><p style="font-size:13px;color:#6E6E73;margin-top:8px">Improvise new statements based on what you heard in the room.</p></div>';
+    document.getElementById('main-btn').style.display = 'none';
+    document.getElementById('counter').textContent = 'Done';
+    return;
+  }
+
+  document.getElementById('main-btn').style.display = '';
+  const item = ITEMS[cur];
+  document.getElementById('counter').textContent = `Statement ${cur + 1} of ${ITEMS.length}`;
+
+  document.getElementById('card-area').innerHTML = `
+    <div class="card">
+      <div class="narrative-label">Narrative — reject</div>
+      <div class="narrative">${item.narrative}</div>
+      <div class="reveal-row">
+        <button class="reveal-btn" onclick="revealAnswer()">Reveal translation</button>
+      </div>
+      <div class="system-block" id="sys-block">
+        <div class="system-label-s">Structural translation — required</div>
+        <div class="system-text-s">${item.system}</div>
+      </div>
+      <div class="warn-block" id="warn-block">
+        Time expired — if the translation was not complete, the reflex is not yet automatic. Repeat this statement.
+      </div>
+    </div>`;
+
+  resetTimer();
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  running = false;
+  timedOut = false;
+  seconds = 10;
+  const el = document.getElementById('timer');
+  el.textContent = fmt(seconds);
+  el.className = 'timer-display';
+  document.getElementById('main-btn').textContent = 'Start timer';
+}
+
+function mainAction() {
+  if (!running && !timedOut) {
+    startTimer();
+  } else if (timedOut) {
+    resetTimer();
+  }
+}
+
+function startTimer() {
+  running = true;
+  document.getElementById('main-btn').textContent = 'Running…';
+  timerInterval = setInterval(() => {
+    seconds--;
+    const el = document.getElementById('timer');
+    el.textContent = fmt(seconds);
+    if (seconds <= 3) el.className = 'timer-display urgent';
+    if (seconds <= 0) {
+      clearInterval(timerInterval);
+      running = false;
+      timedOut = true;
+      el.textContent = '0';
+      el.className = 'timer-display urgent';
+      document.getElementById('main-btn').textContent = 'Reset timer';
+      const wb = document.getElementById('warn-block');
+      if (wb) wb.classList.add('visible');
+    }
+  }, 1000);
+}
+
+function revealAnswer() {
+  clearInterval(timerInterval);
+  running = false;
+  const el = document.getElementById('timer');
+  el.className = 'timer-display passed';
+  document.getElementById('main-btn').textContent = 'Reset timer';
+  timedOut = true;
+  const sb = document.getElementById('sys-block');
+  if (sb) sb.classList.add('visible');
+}
+
+function nextStatement() {
+  clearInterval(timerInterval);
+  cur++;
+  render();
+}
+
+function resetAll() {
+  clearInterval(timerInterval);
+  cur = 0;
+  render();
+  document.getElementById('main-btn').style.display = '';
+}
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 06 — Gold Standard Calibration Chain</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #fff; color: #1D1D1F; padding: 40px 28px; max-width: 700px; margin: 0 auto; }
+@media (prefers-color-scheme: dark) { body { background: #1a1a1a; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 5px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 3px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.density-rule { font-size: 13px; color: #534AB7; background: #EEEDFE; border-left: 3px solid #534AB7; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 20px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .density-rule { background: #1a1730; color: #CECBF6; } }
+.chain { display: flex; flex-direction: column; gap: 0; }
+.chain-node { border-radius: 8px; padding: 14px 18px; margin-bottom: 4px; }
+.node-layer { font-size: 10px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 6px; }
+.node-content { font-size: 14px; font-weight: 500; line-height: 1.5; }
+.arrow-label { font-size: 11px; color: #6E6E73; text-align: center; padding: 4px 0; font-style: italic; }
+@media (prefers-color-scheme: dark) { .arrow-label { color: #9a9a9a; } }
+
+.n-root { background: #C0392B; }
+.n-root .node-layer { color: #F7C1C1; }
+.n-root .node-content { color: #fff; }
+
+.n-system { background: #555555; }
+.n-system .node-layer { color: #D3D1C7; }
+.n-system .node-content { color: #fff; }
+
+.n-behavior { background: #F2F3F4; border: 0.5px solid #D1D1D6; }
+.n-behavior .node-layer { color: #888780; }
+.n-behavior .node-content { color: #1D1D1F; }
+@media (prefers-color-scheme: dark) { .n-behavior { background: #2a2a2a; border-color: #444; } .n-behavior .node-content { color: #e8e8e8; } }
+
+.n-kpi { background: #1B2A4A; }
+.n-kpi .node-layer { color: #85B7EB; }
+.n-kpi .node-content { color: #fff; }
+
+.color-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 20px; }
+.legend-row { border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; }
+.legend-swatch { width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0; }
+.legend-text { font-size: 12px; line-height: 1.4; }
+.lg-root { background: #FCEBEB; } .lg-root .legend-text { color: #791F1F; }
+.lg-system { background: #F1EFE8; } .lg-system .legend-text { color: #444441; }
+.lg-behavior { background: #F1EFE8; } .lg-behavior .legend-text { color: #444441; }
+.lg-kpi { background: #E6F1FB; } .lg-kpi .legend-text { color: #0C447C; }
+.lg-secondary { background: #FAEEDA; } .lg-secondary .legend-text { color: #633806; }
+@media (prefers-color-scheme: dark) { .lg-root { background: #2a0a0a; } .lg-root .legend-text { color: #F09595; } .lg-system { background: #222; } .lg-system .legend-text { color: #D3D1C7; } .lg-behavior { background: #222; } .lg-behavior .legend-text { color: #D3D1C7; } .lg-kpi { background: #0a1f3a; } .lg-kpi .legend-text { color: #85B7EB; } .lg-secondary { background: #2a1a00; } .lg-secondary .legend-text { color: #FAC775; } }
+.caption { margin-top: 20px; font-size: 12px; color: #8E8E93; border-top: 0.5px solid #D1D1D6; padding-top: 12px; line-height: 1.6; }
+@media (prefers-color-scheme: dark) { .caption { border-top-color: #2a2a2a; } }
+@media print { body { padding: 20px; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 06, Section 0 · Calibration Reference</div>
+<h1>Gold Standard Chain — The Invisible Churn</h1>
+<p class="sub">Every trainee calibrates their chain density against this reference before submitting. If the trainee's chain is visually sparser, the diagnosis is incomplete.</p>
+<div class="density-rule">Hold the trainee's map next to this chain. If it is visually sparser — fewer nodes, shorter labels, thinner logic — stop before scoring. Ask: "What happened to the parent between step 4 and the KPI?" The missing behavior steps are always in the parent experience zone.</div>
+
+<div class="chain">
+  <div class="chain-node n-root">
+    <div class="node-layer">Root Cause — Red #C0392B</div>
+    <div class="node-content">No DISC-based student/instructor compatibility matching system. Instructors assigned based on availability only — no compatibility screen.</div>
+  </div>
+  <div class="arrow-label">removes the structural basis for rapport → </div>
+  <div class="chain-node n-system">
+    <div class="node-layer">System Layer — Dark Gray #555555</div>
+    <div class="node-content">Assigns instructors based on availability only — compatibility is not a scheduling criterion. No structured matching protocol exists.</div>
+  </div>
+  <div class="arrow-label">produces mismatched instructor-student pairs → </div>
+  <div class="chain-node n-behavior">
+    <div class="node-layer">Behavior Step 1 — Light Gray #F2F3F4</div>
+    <div class="node-content">Student and instructor communication styles misalign. Lesson rapport fails to develop over the first 4–6 sessions.</div>
+  </div>
+  <div class="arrow-label">removes the internal motivation to practice → </div>
+  <div class="chain-node n-behavior">
+    <div class="node-layer">Behavior Step 2 — Light Gray #F2F3F4</div>
+    <div class="node-content">Student disengages from practice between lessons. Progress stalls — visible to the student but not to the instructor.</div>
+  </div>
+  <div class="arrow-label">triggers parent value reassessment → </div>
+  <div class="chain-node n-behavior">
+    <div class="node-layer">Behavior Step 3 — Light Gray #F2F3F4</div>
+    <div class="node-content">Parent perceives lessons as expensive without measurable progress. Value perception drops below the enrollment decision threshold.</div>
+  </div>
+  <div class="arrow-label">produces silent cancellation with no prior complaint → </div>
+  <div class="chain-node n-kpi">
+    <div class="node-layer">KPI Outcome — Navy #1B2A4A</div>
+    <div class="node-content">Retention rate drops 14% → $33,600 annual leakage at 200 students, $1,200 LTV. The Invisible Churn — no complaint precedes the cancellation.</div>
+  </div>
+</div>
+
+<div style="margin-top:20px;font-size:13px;font-weight:600;color:#1D1D1F;margin-bottom:10px">Color & shape standard</div>
+<div class="color-legend">
+  <div class="legend-row lg-root"><div class="legend-swatch" style="background:#C0392B"></div><div class="legend-text">Root Cause — Rectangle · Red #C0392B · White bold text</div></div>
+  <div class="legend-row lg-system"><div class="legend-swatch" style="background:#555555"></div><div class="legend-text">System/Process — Rectangle · Dark Gray #555555 · White text</div></div>
+  <div class="legend-row lg-behavior"><div class="legend-swatch" style="background:#F2F3F4;border:1px solid #D1D1D6"></div><div class="legend-text">Behavior Step — Rectangle · Light Gray #F2F3F4 · Black text</div></div>
+  <div class="legend-row lg-kpi"><div class="legend-swatch" style="background:#1B2A4A"></div><div class="legend-text">KPI Outcome — Rectangle · Navy #1B2A4A · White bold text</div></div>
+  <div class="legend-row lg-secondary"><div class="legend-swatch" style="background:#F0A500"></div><div class="legend-text">Secondary Failure — Diamond · Amber #F0A500 · Black text · Use sparingly</div></div>
+</div>
+
+<div class="caption">GroovConnect OAS™ · Module 06 · Minimum 6 nodes for certification. Arrow labels must be 3–8 words describing the mechanism of transfer. Every chain terminates at a named, quantified KPI with a dollar figure.</div>
+</body>
+</html>

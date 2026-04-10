@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 02 — Certification Gate</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.gate-note { font-size: 13px; color: #1D1D1F; background: #FAEEDA; border-left: 3px solid #BA7517; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 20px; line-height: 1.6; }
+@media (prefers-color-scheme: dark) { .gate-note { background: #2a1a00; color: #FAC775; } }
+.trainee-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.trainee-row label { font-size: 13px; color: #6E6E73; white-space: nowrap; }
+.trainee-row input { font-family: inherit; font-size: 14px; padding: 8px 12px; border: 0.5px solid #AEAEB2; border-radius: 8px; background: #fff; color: #1D1D1F; flex: 1; }
+@media (prefers-color-scheme: dark) { .trainee-row input { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+.req-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 12px; padding: 15px 18px; margin-bottom: 6px; display: flex; gap: 14px; align-items: flex-start; cursor: pointer; transition: background .12s; user-select: none; }
+@media (prefers-color-scheme: dark) { .req-card { background: #1e1e1e; border-color: #333; } }
+.req-card:hover { background: #fafafa; }
+@media (prefers-color-scheme: dark) { .req-card:hover { background: #252525; } }
+.req-card.pass { border-left: 3px solid #0F6E56; background: #f0fdf8; }
+@media (prefers-color-scheme: dark) { .req-card.pass { background: #0a1f15; } }
+.checkbox { width: 22px; height: 22px; border: 1.5px solid #D1D1D6; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+.checkbox.checked { background: #0F6E56; border-color: #0F6E56; }
+.checkbox.checked::after { content: ''; display: block; width: 5px; height: 9px; border: 2px solid #fff; border-top: none; border-left: none; transform: rotate(45deg) translate(-1px,-1px); }
+.req-body { flex: 1; }
+.req-name { font-size: 14px; font-weight: 500; color: #1D1D1F; margin-bottom: 3px; }
+@media (prefers-color-scheme: dark) { .req-name { color: #e8e8e8; } }
+.req-std { font-size: 12px; color: #6E6E73; line-height: 1.5; }
+.fail-btn { font-family: inherit; font-size: 11px; padding: 3px 10px; border-radius: 6px; border: 0.5px solid #F09595; background: transparent; color: #A32D2D; cursor: pointer; margin-top: 5px; }
+.fail-mode { font-size: 12px; color: #A32D2D; margin-top: 5px; display: none; line-height: 1.5; }
+.fail-mode.show { display: block; }
+.result-bar { margin: 14px 0; padding: 14px 18px; border-radius: 12px; font-size: 15px; font-weight: 500; text-align: center; background: #F1EFE8; color: #6E6E73; }
+.result-bar.pass { background: #E1F5EE; color: #085041; }
+@media (prefers-color-scheme: dark) { .result-bar { background: #222; color: #9a9a9a; } .result-bar.pass { background: #052e1e; color: #9FE1CB; } }
+.controls { display: flex; gap: 8px; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 02, Section 9 · Certification Gate</div>
+<h1>Module 02 — certification criteria</h1>
+<p class="sub">Tap each requirement to mark Pass. All five must pass before Module 03 is unlocked.</p>
+<div class="gate-note">Gate check — all three conditions in the same attempt: (1) Full Master Sequence in under 12 minutes · (2) No Kill Switch events · (3) Breath Test with no corrections. If any condition fails, the entire attempt must be repeated.</div>
+
+<div class="trainee-row">
+  <label>Trainee</label>
+  <input type="text" id="trainee-name" placeholder="Enter trainee name">
+</div>
+
+<div id="req-list"></div>
+<div class="result-bar" id="result-bar">0 / 5 passed</div>
+<div class="controls">
+  <button class="secondary" onclick="resetAll()">Reset</button>
+  <button class="secondary" onclick="window.print()">Print</button>
+</div>
+
+<script>
+const REQS = [
+  { name: '12-minute full sequence', std: 'Executes all 7 steps from cold start on a new scenario in under 12 minutes, no notes, no prompts. Every step produces its required output before the next begins.', fail: 'Steps completed in wrong order. Steps 3–5 skipped. Solution named before economic impact is calculated.' },
+  { name: 'Complete Output Standard', std: 'Diagnostic output satisfies all 7 components without prompting. KPI quantified, failure specific, propagation complete with dollar figure, assumptions stated, formula shown.', fail: 'Any component missing or vague. "Retention is a problem" is not a KPI. "Communication failure" is not a failure localization. No partial credit.' },
+  { name: 'Logic Gate — no behavioral solutions', std: 'Zero behavioral solutions presented without a structural alternative. Every recommendation passes the permanence test before it is stated.', fail: 'Any behavioral solution offered as a final recommendation. "Train the staff" without a structural follow-through fails immediately.' },
+  { name: 'Propagation integrity', std: 'Every chain contains all four links with a human actor at each. Dollar figure present and derived from a stated formula with stated assumptions.', fail: 'Missing Experience Degradation step. Vague behavior changes. Dollar figure without a formula. Anonymous causation between links.' },
+  { name: 'Breath Test', std: 'Delivers the complete diagnostic chain — Failure → Behavior → Experience → KPI Impact — in one unbroken sentence, no filler words, no pauses. Target: under 30 seconds.', fail: 'Any pause between steps. Any filler word. Pauses indicate a logic gap in the chain, not a speed problem.' },
+];
+
+const state = new Array(REQS.length).fill(false);
+const showFail = new Array(REQS.length).fill(false);
+
+function render() {
+  document.getElementById('req-list').innerHTML = REQS.map((r, i) => `
+    <div class="req-card${state[i] ? ' pass' : ''}" onclick="toggle(${i})">
+      <div class="checkbox${state[i] ? ' checked' : ''}"></div>
+      <div class="req-body">
+        <div class="req-name">${r.name}</div>
+        <div class="req-std">${r.std}</div>
+        <button class="fail-btn" onclick="toggleFail(event,${i})">${showFail[i] ? 'Hide' : 'Show'} failure mode</button>
+        <div class="fail-mode${showFail[i] ? ' show' : ''}">${r.fail}</div>
+      </div>
+    </div>`).join('');
+  const passed = state.filter(Boolean).length;
+  const bar = document.getElementById('result-bar');
+  bar.className = 'result-bar' + (passed === REQS.length ? ' pass' : '');
+  bar.textContent = passed === REQS.length ? '✓ All 5 passed — Module 03 unlocked' : `${passed} / ${REQS.length} passed`;
+}
+
+function toggle(i) { state[i] = !state[i]; render(); }
+function toggleFail(e, i) { e.stopPropagation(); showFail[i] = !showFail[i]; render(); }
+function resetAll() { state.fill(false); showFail.fill(false); document.getElementById('trainee-name').value = ''; render(); }
+render();
+</script>
+</body>
+</html>

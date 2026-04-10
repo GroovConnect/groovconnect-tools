@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 01 — Structural Permanence Classifier</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  background: #f5f5f7;
+  color: #1D1D1F;
+  padding: 32px 24px;
+  max-width: 660px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.rule {
+  font-size: 13px;
+  color: #1D1D1F;
+  background: #E6F1FB;
+  border-left: 3px solid #185FA5;
+  padding: 10px 14px;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 22px;
+  line-height: 1.55;
+}
+@media (prefers-color-scheme: dark) { .rule { background: #0a1f3a; color: #B5D4F4; } }
+.card {
+  background: #fff;
+  border: 0.5px solid #D1D1D6;
+  border-radius: 14px;
+  padding: 20px 22px;
+  margin-bottom: 12px;
+}
+@media (prefers-color-scheme: dark) { .card { background: #1e1e1e; border-color: #333; } }
+.proposed {
+  font-size: 16px;
+  font-weight: 500;
+  font-style: italic;
+  color: #1D1D1F;
+  margin-bottom: 14px;
+  line-height: 1.45;
+}
+@media (prefers-color-scheme: dark) { .proposed { color: #e8e8e8; } }
+.classify-row { display: flex; gap: 8px; margin-bottom: 0; flex-wrap: wrap; }
+.btn-behavioral, .btn-structural {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 0.5px solid;
+  transition: opacity .15s;
+}
+.btn-behavioral { background: #FCEBEB; border-color: #A32D2D; color: #791F1F; }
+.btn-structural  { background: #E1F5EE; border-color: #0F6E56; color: #085041; }
+.btn-behavioral:hover { opacity: .8; }
+.btn-structural:hover  { opacity: .8; }
+.feedback {
+  margin-top: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.55;
+  display: none;
+}
+.feedback.visible { display: block; }
+.feedback.correct-behavioral { background: #FCEBEB; border-left: 3px solid #A32D2D; color: #791F1F; }
+.feedback.correct-structural { background: #E1F5EE; border-left: 3px solid #0F6E56; color: #085041; }
+.feedback.wrong { background: #FAEEDA; border-left: 3px solid #BA7517; color: #633806; }
+.feedback-head { font-weight: 600; margin-bottom: 4px; }
+.score-bar { font-size: 13px; color: #6E6E73; margin-bottom: 16px; }
+.score-bar span { font-weight: 600; color: #185FA5; }
+.controls { display: flex; gap: 8px; margin-top: 12px; }
+button.primary {
+  font-family: inherit; font-size: 14px; font-weight: 500;
+  padding: 9px 22px; border-radius: 9px; border: none;
+  background: #1D1D1F; color: #fff; cursor: pointer;
+}
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } }
+button.secondary {
+  font-family: inherit; font-size: 14px; font-weight: 500;
+  padding: 9px 22px; border-radius: 9px;
+  border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer;
+}
+@media (prefers-color-scheme: dark) { button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 01, Section 5 · Drill Tool</div>
+<h1>Structural permanence — solution classifier</h1>
+<p class="sub">Classify each proposed solution. Behavioral or structural?</p>
+<div class="rule">The test: if the person responsible for this solution leaves tomorrow, does the problem return? If yes — it is behavioral. It fails.</div>
+
+<div class="score-bar" id="score-bar"><span>0</span> of 6 classified</div>
+<div id="items"></div>
+<div class="controls">
+  <button class="secondary" onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+const SOLUTIONS = [
+  {
+    proposed: '"Hold a team meeting about follow-up"',
+    correct: 'behavioral',
+    why: 'Behavioral — one-time event, no enforcement mechanism. The meeting ends; behavior reverts within 30 days.',
+    alt: 'Design: automated follow-up trigger, assigned owner, weekly completion rate tracked.'
+  },
+  {
+    proposed: '"Remind staff more often"',
+    correct: 'behavioral',
+    why: 'Behavioral — relies on manager memory and sustained energy. Breaks immediately under volume or staff change.',
+    alt: 'Replace reminders with gated submission requirements. Compliance becomes structural.'
+  },
+  {
+    proposed: '"Train the staff"',
+    correct: 'behavioral',
+    why: 'Behavioral — training installs knowledge in individuals. When they leave, the knowledge leaves too.',
+    alt: 'Install an SOP with a mandatory checklist and audit point. The process lives in the system, not the person.'
+  },
+  {
+    proposed: '"Install a lesson note submission gate"',
+    correct: 'structural',
+    why: 'Structural — the system enforces the behavior regardless of who is in the role. Removal of one employee does not break the mechanism.',
+    alt: null
+  },
+  {
+    proposed: '"Motivate the team with a bonus"',
+    correct: 'behavioral',
+    why: 'Behavioral — depends on sustained financial commitment and individual motivation. Remove the bonus; behavior reverts.',
+    alt: 'Build a performance tracking dashboard with automatic alerts when output falls below threshold.'
+  },
+  {
+    proposed: '"Automate the 24-hour trial follow-up trigger"',
+    correct: 'structural',
+    why: 'Structural — operates independently of individual will. The task is generated by the system on a fixed schedule regardless of who is staffed.',
+    alt: null
+  },
+];
+
+const answered = new Array(SOLUTIONS.length).fill(null);
+
+function classify(i, choice) {
+  if (answered[i] !== null) return;
+  answered[i] = choice;
+  const s = SOLUTIONS[i];
+  const correct = choice === s.correct;
+  const fb = document.getElementById(`fb-${i}`);
+  fb.classList.add('visible');
+  if (correct && s.correct === 'behavioral') {
+    fb.className = 'feedback visible correct-behavioral';
+    fb.innerHTML = `<div class="feedback-head">Correct — behavioral</div>${s.why}${s.alt ? '<br><br><strong>Structural alternative:</strong> ' + s.alt : ''}`;
+  } else if (correct && s.correct === 'structural') {
+    fb.className = 'feedback visible correct-structural';
+    fb.innerHTML = `<div class="feedback-head">Correct — structural</div>${s.why}`;
+  } else {
+    fb.className = 'feedback visible wrong';
+    const correctLabel = s.correct === 'behavioral' ? 'behavioral' : 'structural';
+    fb.innerHTML = `<div class="feedback-head">Incorrect — this is ${correctLabel}</div>${s.why}${s.alt ? '<br><br><strong>Structural alternative:</strong> ' + s.alt : ''}`;
+  }
+  const score = answered.filter(a => a !== null).length;
+  document.getElementById('score-bar').innerHTML = `<span>${score}</span> of ${SOLUTIONS.length} classified`;
+}
+
+function render() {
+  const container = document.getElementById('items');
+  container.innerHTML = SOLUTIONS.map((s, i) => `
+    <div class="card">
+      <div class="proposed">${s.proposed}</div>
+      <div class="classify-row">
+        <button class="btn-behavioral" onclick="classify(${i},'behavioral')">Behavioral</button>
+        <button class="btn-structural"  onclick="classify(${i},'structural')">Structural</button>
+      </div>
+      <div class="feedback" id="fb-${i}"></div>
+    </div>
+  `).join('');
+}
+
+function resetAll() {
+  answered.fill(null);
+  render();
+  document.getElementById('score-bar').innerHTML = '<span>0</span> of 6 classified';
+}
+
+render();
+</script>
+</body>
+</html>

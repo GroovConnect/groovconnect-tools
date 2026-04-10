@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 06 — Practice Block</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.sim-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 13px; font-weight: 500; padding: 7px 18px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.act { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.tab.act-chain { background: #E1F5EE; border-color: #0F6E56; color: #0F6E56; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+.scenario-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { .scenario-card { background: #1e1e1e; border-color: #333; } }
+.sc-label { font-size: 11px; font-weight: 700; color: #8E8E93; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 8px; }
+.sc-text { font-size: 15px; font-weight: 500; color: #1D1D1F; line-height: 1.5; margin-bottom: 6px; }
+@media (prefers-color-scheme: dark) { .sc-text { color: #e8e8e8; } }
+.classify-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+.classify-table th { font-size: 11px; font-weight: 700; color: #8E8E93; letter-spacing: .5px; text-transform: uppercase; padding: 8px 12px; text-align: left; border-bottom: 0.5px solid #D1D1D6; }
+.classify-table td { font-size: 13px; padding: 10px 12px; border-bottom: 0.5px solid #F1EFE8; vertical-align: top; line-height: 1.5; }
+@media (prefers-color-scheme: dark) { .classify-table th { border-bottom-color: #2a2a2a; color: #666; } .classify-table td { border-bottom-color: #2a2a2a; color: #c8c8c8; } }
+.classify-table tr:last-child td { border-bottom: none; }
+.badge-symptom { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 99px; background: #FCEBEB; color: #A32D2D; white-space: nowrap; }
+.badge-root { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 99px; background: #E1F5EE; color: #085041; white-space: nowrap; }
+.badge-kpi { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 99px; background: #E6F1FB; color: #185FA5; white-space: nowrap; }
+.gold-block { display: none; margin-top: 12px; }
+.gold-block.show { display: block; }
+.gold-section { margin-bottom: 8px; }
+.gold-label { font-size: 10px; font-weight: 700; color: #0F6E56; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 4px; }
+.gold-text { font-size: 13px; color: #085041; background: #E1F5EE; border-radius: 8px; padding: 8px 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .gold-text { background: #052e1e; color: #9FE1CB; } }
+.chain-step { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 10px; padding: 12px 16px; margin-bottom: 6px; }
+@media (prefers-color-scheme: dark) { .chain-step { background: #1e1e1e; border-color: #333; } }
+.chain-step.root { border-left: 4px solid #C0392B; }
+.chain-step.system { border-left: 4px solid #555555; }
+.chain-step.behavior { border-left: 4px solid #888780; }
+.chain-step.kpi { border-left: 4px solid #1B2A4A; }
+.cs-layer { font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 4px; }
+.chain-step.root .cs-layer { color: #C0392B; }
+.chain-step.system .cs-layer { color: #555555; }
+.chain-step.behavior .cs-layer { color: #888780; }
+.chain-step.kpi .cs-layer { color: #1B2A4A; }
+@media (prefers-color-scheme: dark) { .chain-step.kpi .cs-layer { color: #85B7EB; } }
+.cs-text { font-size: 13px; color: #1D1D1F; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .cs-text { color: #e8e8e8; } }
+.cs-arrow { font-size: 11px; color: #6E6E73; text-align: center; padding: 3px 0; font-style: italic; }
+.reveal-btn { font-family: inherit; font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: 8px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; margin-top: 10px; }
+@media (prefers-color-scheme: dark) { .reveal-btn { background: #2a2a2a; border-color: #444; color: #e8e8e8; } }
+.timer-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+.timer-d { font-size: 36px; font-weight: 500; font-variant-numeric: tabular-nums; color: #1D1D1F; letter-spacing: -1px; transition: color .3s; }
+@media (prefers-color-scheme: dark) { .timer-d { color: #e8e8e8; } }
+.timer-d.urgent { color: #C0392B; }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 06, Section 8 · Practice Block</div>
+<h1>Practice Block — Simulations 1 & 2</h1>
+<p class="sub">Sim 1: classify 5 inputs. Sim 2: build the Engagement Wall chain in Lucidchart (10-min timer).</p>
+
+<div class="sim-tabs">
+  <button class="tab act" id="tab-s1" onclick="switchSim('s1')">Sim 1 — Classify</button>
+  <button class="tab" id="tab-s2" onclick="switchSim('s2')">Sim 2 — Chain build</button>
+</div>
+
+<!-- SIM 1 -->
+<div class="panel active" id="panel-s1">
+  <div class="scenario-card">
+    <div class="sc-label">Sim 1 · Symptom vs. Root Cause · 5 of 5 to pass</div>
+    <table class="classify-table">
+      <thead><tr><th>Input</th><th>Classification</th></tr></thead>
+      <tbody>
+        <tr><td>Low retention rate</td><td><span class="badge-symptom">Symptom — Surface</span></td></tr>
+        <tr><td>No lesson note submission policy</td><td><span class="badge-root">Root Cause — Design Failure</span></td></tr>
+        <tr><td>Teacher left mid-semester</td><td><span class="badge-symptom">Symptom — Surface</span></td></tr>
+        <tr><td>Parent portal login rate of 4%</td><td><span class="badge-kpi">KPI Signal</span></td></tr>
+        <tr><td>Admin working 12-hour days</td><td><span class="badge-symptom">Symptom — Process Layer</span></td></tr>
+      </tbody>
+    </table>
+    <button class="reveal-btn" id="rb-s1" onclick="revealS1()">Reveal root causes</button>
+    <div class="gold-block" id="gold-s1">
+      <div class="gold-section"><div class="gold-label">Low retention → root cause</div><div class="gold-text">Matching, Engagement, Standardization, or Scheduling System failure. "Low retention" is the KPI signal — not the diagnosis. Trace through the Diagnostic Stack.</div></div>
+      <div class="gold-section"><div class="gold-label">No lesson note policy → root cause</div><div class="gold-text">This IS the root cause: Standardization System — no enforcement gate. The absence of the gate is the structural failure itself.</div></div>
+      <div class="gold-section"><div class="gold-label">Teacher left → root cause</div><div class="gold-text">Incentive or Matching Failure. What structural absence made this departure damaging? No curriculum documentation, no student handover protocol, no school-student bond beyond the individual instructor.</div></div>
+      <div class="gold-section"><div class="gold-label">Portal login 4% → root cause</div><div class="gold-text">Onboarding System failure: parents were never shown how to use the portal or why it matters. The KPI is the entry point — follow it to the structural cause.</div></div>
+      <div class="gold-section"><div class="gold-label">Admin 12-hour days → root cause</div><div class="gold-text">Efficiency System failure: identify which manual processes can be automated. The overload is the symptom. The missing automation trigger is the controllable structural cause.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SIM 2 -->
+<div class="panel" id="panel-s2">
+  <div class="timer-row">
+    <div class="timer-d" id="timer">10:00</div>
+    <div style="font-size:12px;color:#8E8E93">10-minute limit</div>
+  </div>
+  <div class="scenario-card">
+    <div class="sc-label">Sim 2 · Build in Lucidchart · Submitted as export</div>
+    <div class="sc-text">The Engagement Wall: A school has consistent churn between months 6 and 9. Before that window, retention is strong. The school has no milestone tracking system and no visible progress roadmap for students or parents.</div>
+    <div style="font-size:12px;color:#6E6E73;margin-top:6px;margin-bottom:12px">Build in Lucidchart. Satisfy all 5 syntax rules. Use correct colors. Label every arrow. Terminate at a KPI with a dollar figure. Minimum 6 nodes. Submit as export.</div>
+    <button class="reveal-btn" id="rb-s2" onclick="revealS2()">Reveal gold standard chain</button>
+  </div>
+  <div id="gold-chain" style="display:none;margin-top:0">
+    <div class="chain-step root"><div class="cs-layer">Root Cause</div><div class="cs-text">No milestone tracking system — students reach basic proficiency with no visibility of what comes next. Practice has no perceived purpose.</div></div>
+    <div class="cs-arrow">removes the internal motivation to practice →</div>
+    <div class="chain-step system"><div class="cs-layer">System Layer</div><div class="cs-text">No structured progress roadmap exists for students or parents. Advancement is invisible inside each lesson but not externally demonstrated.</div></div>
+    <div class="cs-arrow">eliminates perceived progress signal →</div>
+    <div class="chain-step behavior"><div class="cs-layer">Behavior Step 1</div><div class="cs-text">Practice motivation declines and lesson attendance becomes inconsistent between months 4 and 7.</div></div>
+    <div class="cs-arrow">reduces visible investment return →</div>
+    <div class="chain-step behavior"><div class="cs-layer">Behavior Step 2</div><div class="cs-text">Parent perceives ongoing tuition cost with no visible investment payoff. Value perception drops below the enrollment decision threshold.</div></div>
+    <div class="cs-arrow">triggers silent cancellation in the month 6–9 window →</div>
+    <div class="chain-step kpi"><div class="cs-layer">KPI Outcome</div><div class="cs-text">Retention drops — LTV reduced by 3–4 months per churned student. Annual leakage: $300–$400 per churned student × affected student count.</div></div>
+  </div>
+  <div class="controls" style="margin-top:12px">
+    <button class="primary" id="timer-btn" onclick="startTimer()">Start timer</button>
+    <button class="secondary" onclick="resetTimer2()">Reset timer</button>
+  </div>
+</div>
+
+<script>
+function revealS1() { document.getElementById('gold-s1').classList.add('show'); document.getElementById('rb-s1').style.display = 'none'; }
+function revealS2() { document.getElementById('gold-chain').style.display = 'block'; document.getElementById('rb-s2').style.display = 'none'; }
+
+let sec2 = 600, run2 = false, int2 = null;
+function fmt(s) { return Math.floor(s/60) + ':' + (s%60 < 10 ? '0' : '') + s%60; }
+function startTimer() {
+  if (!run2) {
+    run2 = true; document.getElementById('timer-btn').textContent = 'Running…';
+    int2 = setInterval(() => {
+      sec2--;
+      const el = document.getElementById('timer');
+      el.textContent = fmt(sec2);
+      if (sec2 <= 120) el.className = 'timer-d urgent';
+      if (sec2 <= 0) { clearInterval(int2); run2 = false; document.getElementById('timer-btn').textContent = 'Time up'; }
+    }, 1000);
+  }
+}
+function resetTimer2() { clearInterval(int2); run2 = false; sec2 = 600; document.getElementById('timer').textContent = fmt(sec2); document.getElementById('timer').className = 'timer-d'; document.getElementById('timer-btn').textContent = 'Start timer'; }
+
+function switchSim(id) {
+  ['s1','s2'].forEach(s => {
+    document.getElementById(`panel-${s}`).classList.toggle('active', s === id);
+    const cls = s === 's2' ? 'act-chain' : 'act';
+    document.getElementById(`tab-${s}`).className = 'tab' + (s === id ? ' ' + cls : '');
+  });
+}
+</script>
+</body>
+</html>

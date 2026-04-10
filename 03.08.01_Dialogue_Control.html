@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 03 — Dialogue Control</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.tool-tabs { display: flex; gap: 6px; margin-bottom: 20px; }
+.tab { font-family: inherit; font-size: 13px; font-weight: 500; padding: 7px 16px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.active-anchor { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.tab.active-loop { background: #FAEEDA; border-color: #BA7517; color: #854F0B; font-weight: 600; }
+.tab.active-detach { background: #E1F5EE; border-color: #0F6E56; color: #085041; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* Anchor Statement */
+.anchor-format { background: #E6F1FB; border-radius: 10px; padding: 14px 18px; margin-bottom: 14px; font-size: 14px; color: #0C447C; line-height: 1.65; }
+@media (prefers-color-scheme: dark) { .anchor-format { background: #0a1f3a; color: #85B7EB; } }
+.anchor-rule { font-size: 12px; color: #185FA5; background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; padding: 10px 14px; line-height: 1.55; margin-bottom: 14px; }
+@media (prefers-color-scheme: dark) { .anchor-rule { background: #0a1f3a; color: #B5D4F4; } }
+
+/* Anti-minimization loop */
+.pips { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; }
+.pip { width: 8px; height: 8px; border-radius: 50%; background: #D1D1D6; transition: background .2s; flex-shrink: 0; }
+@media (prefers-color-scheme: dark) { .pip { background: #3a3a3a; } }
+.pip.on { background: #BA7517; transform: scale(1.3); }
+.pip-label { font-size: 12px; color: #8E8E93; margin-left: 4px; }
+.loop-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 14px; padding: 20px 22px; min-height: 160px; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { .loop-card { background: #1e1e1e; border-color: #333; } }
+.step-badge { font-size: 11px; font-weight: 700; color: #854F0B; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 8px; }
+.step-title { font-size: 17px; font-weight: 500; color: #1D1D1F; margin-bottom: 10px; line-height: 1.4; }
+@media (prefers-color-scheme: dark) { .step-title { color: #e8e8e8; } }
+.step-script { font-size: 13px; color: #633806; background: #FAEEDA; border-radius: 8px; padding: 10px 14px; line-height: 1.6; font-style: italic; }
+@media (prefers-color-scheme: dark) { .step-script { background: #2a1a00; color: #FAC775; } }
+.loop-terminate { font-size: 12px; color: #0F6E56; background: #E1F5EE; border-left: 3px solid #0F6E56; border-radius: 0 8px 8px 0; padding: 10px 14px; line-height: 1.55; margin-top: 0; }
+@media (prefers-color-scheme: dark) { .loop-terminate { background: #052e1e; color: #9FE1CB; } }
+
+/* Detachment Test */
+.detach-row { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 12px; padding: 16px 18px; margin-bottom: 8px; cursor: pointer; transition: background .12s; }
+@media (prefers-color-scheme: dark) { .detach-row { background: #1e1e1e; border-color: #333; } }
+.detach-row:hover { background: #fafafa; }
+.detach-row.revealed { border-left: 3px solid #0F6E56; }
+.detach-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.detach-amount { font-size: 20px; font-weight: 600; color: #1D1D1F; }
+@media (prefers-color-scheme: dark) { .detach-amount { color: #e8e8e8; } }
+.detach-label { font-size: 11px; font-weight: 700; color: #0F6E56; background: #E1F5EE; border-radius: 99px; padding: 2px 8px; }
+.detach-derivation { font-size: 12px; color: #6E6E73; margin-bottom: 6px; }
+.detach-standard { font-size: 12px; color: #085041; background: #E1F5EE; border-radius: 8px; padding: 8px 12px; line-height: 1.5; display: none; }
+@media (prefers-color-scheme: dark) { .detach-standard { background: #052e1e; color: #9FE1CB; } }
+.detach-standard.show { display: block; }
+.detach-tap { font-size: 11px; color: #AEAEB2; }
+.ks-note { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 14px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .ks-note { background: #2a0a0a; color: #F09595; } }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 03, Section 8 · Dialogue Control</div>
+<h1>Dialogue Control — anchor, loop, detachment</h1>
+<p class="sub">Three tools for defending a calculated figure in a live operator conversation.</p>
+
+<div class="tool-tabs">
+  <button class="tab active-anchor" id="tab-anchor" onclick="switchTool('anchor')">Anchor Statement</button>
+  <button class="tab" id="tab-loop" onclick="switchTool('loop')">Anti-Minimization Loop</button>
+  <button class="tab" id="tab-detach" onclick="switchTool('detach')">Detachment Test</button>
+</div>
+
+<!-- ANCHOR STATEMENT -->
+<div class="panel active" id="panel-anchor">
+  <div class="anchor-format">"Conservatively, this system failure is producing approximately $[X] in annual impact across your current student base. That figure is based on [state the specific inputs]."</div>
+  <div class="anchor-rule">After the anchor statement — do not speak until the operator responds. The silence that follows is the moment when the operator's attention is fully on the number. Filling that silence prematurely reduces the number's weight.</div>
+  <div class="ks-note">Kill Switch: trainee delivers the economic figure and immediately follows with a qualifying statement — "but of course this is a rough estimate," "this might be a bit high," or any preemptive softening. Stop the drill. "The calculation is complete. The figure is derived. If the operator believes an input is wrong, they will correct it. Your job is to deliver the result, not to pre-apologize for it."</div>
+</div>
+
+<!-- ANTI-MINIMIZATION LOOP -->
+<div class="panel" id="panel-loop">
+  <div class="pips" id="loop-pips"></div>
+  <div class="loop-card" id="loop-card"></div>
+  <div class="loop-terminate" id="loop-terminate" style="display:none">Loop terminates when: operator has accepted the figure OR identified a specific incorrect input. If they cannot name a wrong input — the number stands.</div>
+  <div class="controls">
+    <button class="primary" id="loop-next" onclick="loopNext()">Next step</button>
+    <button class="secondary" onclick="loopReset()">Reset</button>
+  </div>
+</div>
+
+<!-- DETACHMENT TEST -->
+<div class="panel" id="panel-detach">
+  <div id="detach-rows"></div>
+  <div class="ks-note">A trainee who delivers $2,600 crisply and $110,000 apologetically is not field-ready. The math does not change character based on magnitude. The delivery should not either.</div>
+  <div class="controls">
+    <button class="secondary" onclick="revealAllDetach()">Reveal all</button>
+    <button class="secondary" onclick="resetDetach()">Reset</button>
+  </div>
+</div>
+
+<script>
+// Tool switcher
+function switchTool(t) {
+  ['anchor','loop','detach'].forEach(id => {
+    document.getElementById(`panel-${id}`).classList.toggle('active', id === t);
+    const cls = id === 'anchor' ? 'active-anchor' : id === 'loop' ? 'active-loop' : 'active-detach';
+    document.getElementById(`tab-${id}`).className = 'tab' + (id === t ? ' ' + cls : '');
+  });
+}
+
+// Anti-minimization loop
+const LOOP_STEPS = [
+  { badge: 'Step 1 — Re-anchor', title: 'Restate the specific formula inputs', script: '"I used your stated trial volume of [X], your LTV of [Y], and the conversion rate from your own data — [Z]% to [Z]%. Let me show you exactly where each number came from."' },
+  { badge: 'Step 2 — KPI Restate', title: 'Confirm the KPI movement from its stated baseline', script: '"The conversion rate moved from [baseline] to [current]. Those are your numbers — from your own data. The movement is what produced the figure."' },
+  { badge: 'Step 3 — Re-quantify', title: 'Invite the operator to provide corrected inputs', script: '"If any of those numbers are wrong, give me the correct figure and I will recalculate it right now, in front of you."' },
+  { badge: 'Step 4 — Confirm', title: 'Transfer the burden of correction to the operator', script: '"Does this calculation look correct based on your actual figures?" — If they cannot name a specific wrong input, the number stands.' },
+];
+let loopStep = 0;
+
+function renderLoop() {
+  document.getElementById('loop-pips').innerHTML =
+    LOOP_STEPS.map((_, i) => `<div class="pip${i <= loopStep ? ' on' : ''}"></div>`).join('') +
+    `<span class="pip-label">Step ${loopStep + 1} of ${LOOP_STEPS.length}</span>`;
+  const s = LOOP_STEPS[loopStep];
+  document.getElementById('loop-card').innerHTML = `
+    <div class="step-badge">${s.badge}</div>
+    <div class="step-title">${s.title}</div>
+    <div class="step-script">${s.script}</div>`;
+  const term = document.getElementById('loop-terminate');
+  term.style.display = loopStep >= LOOP_STEPS.length - 1 ? 'block' : 'none';
+  document.getElementById('loop-next').textContent = loopStep >= LOOP_STEPS.length - 1 ? 'Done' : 'Next step';
+  document.getElementById('loop-next').disabled = loopStep >= LOOP_STEPS.length - 1;
+}
+
+function loopNext() { if (loopStep < LOOP_STEPS.length - 1) { loopStep++; renderLoop(); } }
+function loopReset() { loopStep = 0; renderLoop(); document.getElementById('loop-next').disabled = false; }
+
+// Detachment test
+const DETACH = [
+  { amount: '$2,600 / year', label: 'small', derivation: 'Admin labor at 2 extra hours/week × $25/hr × 52 = $2,600/year', standard: 'Clinical, precise, no apology for the math. Deliver at the same pace as any other figure.' },
+  { amount: '$44,000 / year', label: 'medium', derivation: '3-point retention drop × 150 students × $900 LTV = ~$40,500/year. Rounded to $44,000 with stated assumptions.', standard: 'Same tone. Same pace. Same clinical delivery. No softening, no hedging, no "I know this seems high."' },
+  { amount: '$110,000+ / year', label: 'large', derivation: 'Churn loss + utilization gap combined across three fracture systems. Combined scenario total: $216,524.', standard: 'The number is larger. The delivery is identical. The analyst does not qualify, minimize, or apologize. Pause after stating it. Say nothing.' },
+];
+const detachRevealed = [false, false, false];
+
+function renderDetach() {
+  document.getElementById('detach-rows').innerHTML = DETACH.map((d, i) => `
+    <div class="detach-row${detachRevealed[i] ? ' revealed' : ''}" onclick="toggleDetach(${i})">
+      <div class="detach-top">
+        <span class="detach-amount">${d.amount}</span>
+        ${detachRevealed[i] ? `<span class="detach-label">${d.label}</span>` : '<span class="detach-tap">tap to reveal standard</span>'}
+      </div>
+      <div class="detach-derivation">${d.derivation}</div>
+      <div class="detach-standard${detachRevealed[i] ? ' show' : ''}">${d.standard}</div>
+    </div>`).join('');
+}
+
+function toggleDetach(i) { detachRevealed[i] = !detachRevealed[i]; renderDetach(); }
+function revealAllDetach() { detachRevealed.fill(true); renderDetach(); }
+function resetDetach() { detachRevealed.fill(false); renderDetach(); }
+
+renderLoop();
+renderDetach();
+</script>
+</body>
+</html>

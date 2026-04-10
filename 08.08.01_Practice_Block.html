@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 08 — Practice Block</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.sim-tabs { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 12px; font-weight: 500; padding: 6px 12px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.act { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.tab.act-pressure { background: #FCEBEB; border-color: #A32D2D; color: #A32D2D; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+.timer-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+.timer-d { font-size: 42px; font-weight: 500; font-variant-numeric: tabular-nums; color: #1D1D1F; letter-spacing: -1px; transition: color .3s; }
+@media (prefers-color-scheme: dark) { .timer-d { color: #e8e8e8; } }
+.timer-d.urgent { color: #C0392B; }
+.card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { .card { background: #1e1e1e; border-color: #333; } }
+.card-label { font-size: 11px; font-weight: 700; color: #8E8E93; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 8px; }
+.card-text { font-size: 15px; font-weight: 500; color: #1D1D1F; line-height: 1.5; font-style: italic; }
+@media (prefers-color-scheme: dark) { .card-text { color: #e8e8e8; } }
+.gold-block { display: none; margin-top: 12px; }
+.gold-block.show { display: block; }
+.gold-label { font-size: 10px; font-weight: 700; color: #0F6E56; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 4px; }
+.gold-text { font-size: 13px; color: #085041; background: #E1F5EE; border-radius: 8px; padding: 8px 12px; line-height: 1.55; margin-bottom: 6px; }
+@media (prefers-color-scheme: dark) { .gold-text { background: #052e1e; color: #9FE1CB; } }
+.reveal-btn { font-family: inherit; font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: 8px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; margin-top: 10px; }
+@media (prefers-color-scheme: dark) { .reveal-btn { background: #2a2a2a; border-color: #444; color: #e8e8e8; } }
+.pips { display: flex; gap: 8px; margin-bottom: 14px; align-items: center; }
+.pip { width: 8px; height: 8px; border-radius: 50%; background: #D1D1D6; flex-shrink: 0; }
+@media (prefers-color-scheme: dark) { .pip { background: #3a3a3a; } }
+.pip.on { background: #A32D2D; transform: scale(1.3); }
+.pip-label { font-size: 12px; color: #8E8E93; margin-left: 4px; }
+.resist-pips .pip.on { background: #534AB7; }
+.ks-note { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .ks-note { background: #2a0a0a; color: #F09595; } }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 08, Section 8 · Practice Block</div>
+<h1>Practice Block — Simulations 1–5</h1>
+<p class="sub">Run Sims 1–4 before Sim 5. Resistance handling under pressure fails without the framework foundation.</p>
+
+<div class="sim-tabs">
+  <button class="tab act" id="tab-s1" onclick="switchSim('s1')">Sim 1 — Insight</button>
+  <button class="tab" id="tab-s2" onclick="switchSim('s2')">Sim 2 — Resistance</button>
+  <button class="tab" id="tab-s3" onclick="switchSim('s3')">Sim 3 — Decision</button>
+  <button class="tab" id="tab-s4" onclick="switchSim('s4')">Sim 4 — Alignment</button>
+  <button class="tab act-pressure" id="tab-s5" onclick="switchSim('s5')">Sim 5 — High Pressure</button>
+</div>
+
+<!-- SIM 1: 30-second insight -->
+<div class="panel active" id="panel-s1">
+  <div class="timer-row">
+    <div class="timer-d" id="timer-s1">30</div>
+    <div style="font-size:12px;color:#8E8E93">seconds · fewer than 2 filler words</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Data set — deliver the full 5-step chain verbally</div>
+    <div class="card-text" id="s1-scenario">200 students · $185 tuition · 51% GM · Retention: 84% → 69% over 75 days · No DISC matching · 6–9 month churn window visible</div>
+  </div>
+  <button class="reveal-btn" id="s1-rev" onclick="s1Reveal()">Reveal gold standard</button>
+  <div class="gold-block" id="gold-s1">
+    <div class="gold-label">Five-step chain</div>
+    <div class="gold-text">1 — Retention dropped from 84% to 69% over 75 days — 15 points.</div>
+    <div class="gold-text">2 — Driven by a Matching System failure — no DISC-based compatibility screening exists.</div>
+    <div class="gold-text">3 — Producing approximately $28,500 in annual leakage at 200 students, $950 LTV.</div>
+    <div class="gold-text">4 — We recommend the Matching Engine with ACA/DISC integration.</div>
+    <div class="gold-text">5 — ACA setup this week; first matched cohort live within 14 days.</div>
+  </div>
+  <div class="controls" style="margin-top:12px">
+    <button class="primary" id="s1-btn" onclick="s1Start()">Start timer</button>
+    <button class="secondary" onclick="s1Reset()">Reset</button>
+  </div>
+</div>
+
+<!-- SIM 2: Resistance handling -->
+<div class="panel" id="panel-s2">
+  <div class="pips resist-pips" id="s2-pips"></div>
+  <div id="s2-card"></div>
+  <div class="controls">
+    <button class="primary" id="s2-next" onclick="s2Next()">Next type</button>
+    <button class="secondary" onclick="s2Reset()">Reset</button>
+  </div>
+  <div class="ks-note" style="margin-top:12px">Any defensive response, any concession on the diagnosis, or wrong type identification = Kill Switch. Stop, name the error, restart from that type.</div>
+</div>
+
+<!-- SIM 3: Decision leadership -->
+<div class="panel" id="panel-s3">
+  <div class="card">
+    <div class="card-label">Instructor delivers — operator statement</div>
+    <div class="card-text">"This all sounds right. Let me think about it and get back to you."</div>
+    <div style="font-size:12px;color:#6E6E73;margin-top:8px">Trainee must guide to a specific commitment. Commitment sequence: confirm decision → assign ownership → define timeline → set review point.</div>
+    <button class="reveal-btn" id="s3-rev" onclick="s3Reveal()">Reveal gold standard</button>
+    <div class="gold-block" id="gold-s3">
+      <div class="gold-label">Response sequence</div>
+      <div class="gold-text">"I hear you — let me make this easier. You've already confirmed the retention gap and the root cause. The only remaining decision is the start date." (Reframe: the decision is already made; only the timing is open.)</div>
+      <div class="gold-text">"We are moving forward with the Matching Engine. Who at the school is responsible for the onboarding workflow?" (Step 2: assign ownership before the operator can retreat.)</div>
+      <div class="gold-text">"By [specific date], the first 20 ACA profiles are loaded. We review match completion rate on [specific date + 30 days]." (Steps 3 and 4: dates, not ranges.)</div>
+      <div class="gold-label" style="margin-top:8px">Kill Switch</div>
+      <div class="gold-text">"Let's try and see" = deferral with social permission. Trainee must extract all four commitment elements or identify the resistance type and address it. No open-ended follow-ups.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SIM 4: Alignment -->
+<div class="panel" id="panel-s4">
+  <div class="card">
+    <div class="card-label">Two-operator scenario</div>
+    <div class="card-text">Owner: "The problem is our instructors don't communicate well with parents." Operations Manager: "No — it's the scheduling. We keep losing students during rescheduling windows."</div>
+    <div style="font-size:12px;color:#6E6E73;margin-top:8px">Trainee facilitates alignment. Does not take sides. Anchors both parties to the same KPI data. Uses the five-step framework to move from disagreement to a shared next action.</div>
+    <button class="reveal-btn" id="s4-rev" onclick="s4Reveal()">Reveal gold standard</button>
+    <div class="gold-block" id="gold-s4">
+      <div class="gold-label">Alignment sequence</div>
+      <div class="gold-text">"Both of you are identifying real problems. Let's find out which one the KPI is responding to." → State the KPI movement. Both parties agree on the data before either solution is evaluated.</div>
+      <div class="gold-text">"The KPI shows [retention/conversion/utilization] moved [X] points over [timeframe]. Let's trace back from there — which system does that movement belong to?" → Run the Diagnostic Stack. The data determines sequencing, not the loudest voice.</div>
+      <div class="gold-text">"Once we confirm which failure is producing the primary KPI signal, we sequence from there. Both systems may need work — but one leads." → A specific next action with a named owner and date, derived from the KPI, not the disagreement.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SIM 5: High pressure -->
+<div class="panel" id="panel-s5">
+  <div class="ks-note">Failure mode: Action Bias — recommending before the diagnosis is complete when the operator signals urgency. If trainee fails Sim 5, return to Module 04 Section 4 (Signal vs. Noise) and re-run the urgency drill before re-administering.</div>
+  <div class="card">
+    <div class="card-label">Instructor delivers — operator crisis statement</div>
+    <div class="card-text">"We just lost four families this week. I need you to tell me right now what's broken and how to fix it. I don't have time for a process."</div>
+    <div style="font-size:12px;color:#6E6E73;margin-top:8px">Trainee maintains the five-step structure. Does not recommend before Steps 1 and 2 are complete.</div>
+    <button class="reveal-btn" id="s5-rev" onclick="s5Reveal()">Reveal gold standard</button>
+    <div class="gold-block" id="gold-s5">
+      <div class="gold-label">Required response</div>
+      <div class="gold-text">"I understand the urgency. Before we act, I need two minutes to confirm which system is producing this. Acting on the wrong cause costs more time than two minutes."</div>
+      <div class="gold-text">Then — Step 1 (Observation): "Four families in one week. What's the retention rate trend over the last 30 days?" Step 2 (Insight): identify the system. Only then — Step 4 (Recommendation).</div>
+      <div class="gold-label" style="margin-top:8px">What trainee must not do</div>
+      <div class="gold-text">Recommend before the root cause is confirmed. Mistake the operator's urgency for a data signal. Skip the Observation and Insight steps to appear responsive.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// SIM 1 timer
+let s1Sec=30, s1Run=false, s1Out=false, s1Int=null;
+function s1Start() {
+  const btn=document.getElementById('s1-btn');
+  if(!s1Run&&!s1Out){s1Run=true;btn.textContent='Running…';s1Int=setInterval(()=>{s1Sec--;const el=document.getElementById('timer-s1');el.textContent=s1Sec;if(s1Sec<=8)el.className='timer-d urgent';if(s1Sec<=0){clearInterval(s1Int);s1Run=false;s1Out=true;btn.textContent='Reset';}},1000);}
+  else if(s1Out){s1Reset();}
+}
+function s1Reveal(){document.getElementById('gold-s1').classList.add('show');document.getElementById('s1-rev').style.display='none';}
+function s1Reset(){clearInterval(s1Int);s1Run=false;s1Out=false;s1Sec=30;const el=document.getElementById('timer-s1');el.textContent='30';el.className='timer-d';document.getElementById('s1-btn').textContent='Start timer';}
+
+// SIM 2 resistance types
+const S2 = [
+  {type:'Logical',statement:'"I\'m not convinced this retention figure is right. Our numbers look different."',gold:'Acknowledge → "Fair challenge." Clarify: state data source and date range. Invite operator to provide their number. Recalculate live. Do not defend the figure — move the burden of correction to the operator.'},
+  {type:'Emotional',statement:'"We\'ve been running this school for 8 years. This can\'t be right."',gold:'Acknowledge the history without validating the conclusion. Reframe: "The school you built is strong — the data reflects what it\'s grown into." Return to the KPI immediately after acknowledgment.'},
+  {type:'Practical',statement:'"We just don\'t have capacity right now to add anything new."',gold:'Clarify actual bandwidth. Quantify the labor reduction from the solution in hours/week. "The implementation creates capacity by eliminating the manual admin work currently consuming it."'},
+  {type:'Identity',statement:'"My instructors are professionals. They don\'t need a system to tell them how to teach."',gold:'Reframe: "This isn\'t about their teaching — it\'s about making their results visible to parents. Instructors who show measurable progress have more job security, not less."'},
+];
+let s2Cur=0, s2Rev=false;
+function s2Render(){
+  document.getElementById('s2-pips').innerHTML=S2.map((_,i)=>`<div class="pip${i<=s2Cur?' on':''}"></div>`).join('')+`<span class="pip-label">${s2Cur+1} of ${S2.length}</span>`;
+  const d=S2[s2Cur];
+  document.getElementById('s2-card').innerHTML=`<div class="card"><div class="card-label">${d.type} resistance · identify and respond in A→C→R→R sequence</div><div class="card-text">${d.statement}</div>${s2Rev?'':`<button class="reveal-btn" onclick="s2Reveal()">Reveal response</button>`}<div class="gold-block${s2Rev?' show':''}"><div class="gold-label">Gold standard response</div><div class="gold-text">${d.gold}</div></div></div>`;
+  document.getElementById('s2-next').textContent=s2Cur===S2.length-1?'Done':'Next type';
+  document.getElementById('s2-next').disabled=s2Cur===S2.length-1;
+}
+function s2Reveal(){s2Rev=true;s2Render();}
+function s2Next(){if(s2Cur<S2.length-1){s2Cur++;s2Rev=false;s2Render();}}
+function s2Reset(){s2Cur=0;s2Rev=false;s2Render();document.getElementById('s2-next').disabled=false;}
+s2Render();
+
+function s3Reveal(){document.getElementById('gold-s3').classList.add('show');document.getElementById('s3-rev').style.display='none';}
+function s4Reveal(){document.getElementById('gold-s4').classList.add('show');document.getElementById('s4-rev').style.display='none';}
+function s5Reveal(){document.getElementById('gold-s5').classList.add('show');document.getElementById('s5-rev').style.display='none';}
+
+function switchSim(id){
+  ['s1','s2','s3','s4','s5'].forEach(s=>{
+    document.getElementById(`panel-${s}`).classList.toggle('active',s===id);
+    const cls=s==='s5'?'act-pressure':'act';
+    document.getElementById(`tab-${s}`).className='tab'+(s===id?' '+cls:'');
+  });
+}
+</script>
+</body>
+</html>

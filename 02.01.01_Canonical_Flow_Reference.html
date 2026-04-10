@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 02 — Canonical Flow Reference</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #fff; color: #1D1D1F; padding: 40px 28px; max-width: 700px; margin: 0 auto; }
+@media (prefers-color-scheme: dark) { body { background: #1a1a1a; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 5px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 3px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 24px; }
+.rule-bar { font-size: 13px; color: #085041; background: #E1F5EE; border-left: 3px solid #0F6E56; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 20px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .rule-bar { background: #052e1e; color: #9FE1CB; } }
+.step-row { display: grid; grid-template-columns: 52px 1fr; gap: 0; margin-bottom: 4px; align-items: stretch; }
+.step-num-cell { display: flex; align-items: center; justify-content: center; border-radius: 8px 0 0 8px; padding: 12px 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.4px; flex-shrink: 0; }
+.step-body { border-radius: 0 8px 8px 0; padding: 12px 16px; }
+.step-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.step-output { font-size: 12px; line-height: 1.55; }
+.s1 .step-num-cell { background: #E6F1FB; color: #185FA5; }
+.s1 .step-body { background: #E6F1FB; }
+.s1 .step-name { color: #0C447C; }
+.s1 .step-output { color: #185FA5; }
+.s2 .step-num-cell { background: #B5D4F4; color: #0C447C; }
+.s2 .step-body { background: #B5D4F4; }
+.s2 .step-name { color: #0C447C; }
+.s2 .step-output { color: #185FA5; }
+.s3 .step-num-cell { background: #85B7EB; color: #042C53; }
+.s3 .step-body { background: #85B7EB; }
+.s3 .step-name { color: #042C53; }
+.s3 .step-output { color: #0C447C; }
+.s4 .step-num-cell { background: #FAEEDA; color: #854F0B; }
+.s4 .step-body { background: #FAEEDA; }
+.s4 .step-name { color: #633806; }
+.s4 .step-output { color: #854F0B; }
+.s5 .step-num-cell { background: #FAC775; color: #412402; }
+.s5 .step-body { background: #FAC775; }
+.s5 .step-name { color: #412402; }
+.s5 .step-output { color: #633806; }
+.s6 .step-num-cell { background: #E1F5EE; color: #085041; }
+.s6 .step-body { background: #E1F5EE; }
+.s6 .step-name { color: #085041; }
+.s6 .step-output { color: #0F6E56; }
+.s7 .step-num-cell { background: #1D9E75; color: #fff; }
+.s7 .step-body { background: #1D9E75; }
+.s7 .step-name { color: #fff; }
+.s7 .step-output { color: #E1F5EE; }
+.connector { width: 2px; height: 10px; background: #D1D1D6; margin: 0 0 0 26px; }
+.gate-rule { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .gate-rule { background: #2a0a0a; color: #F09595; } }
+.caption { margin-top: 20px; font-size: 12px; color: #8E8E93; line-height: 1.6; border-top: 0.5px solid #D1D1D6; padding-top: 14px; }
+@media (prefers-color-scheme: dark) { .caption { border-top-color: #2a2a2a; } }
+@media print { body { padding: 20px; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 02, Section 1 · Reference Card</div>
+<h1>The Canonical Flow — 7-step output chain</h1>
+<p class="sub">Each step produces a specific output. That output is the gate to the next step.</p>
+<div class="rule-bar">Every shortcut produces an output that is indefensible under operator scrutiny. No step may be skipped. No step may be reordered.</div>
+
+<div class="step-row s1"><div class="step-num-cell">S1</div><div class="step-body"><div class="step-name">KPI Signal</div><div class="step-output">A specific, measurable indicator with a named baseline and current value. Not a feeling or a narrative.</div></div></div>
+<div class="connector"></div>
+<div class="step-row s2"><div class="step-num-cell">S2</div><div class="step-body"><div class="step-name">System Identification</div><div class="step-output">The primary operational system the KPI belongs to. One primary. Secondary systems noted but not diagnosed first.</div></div></div>
+<div class="connector"></div>
+<div class="step-row s3"><div class="step-num-cell">S3</div><div class="step-body"><div class="step-name">Failure Localization</div><div class="step-output">The exact structural mechanism that is absent or broken. Specific enough that an engineer could build it from the description alone.</div></div></div>
+<div class="connector"></div>
+<div class="step-row s4"><div class="step-num-cell">S4</div><div class="step-body"><div class="step-name">Propagation Mapping</div><div class="step-output">Failure → Behavior Change → Experience Degradation → KPI Impact. A human actor present at every link. No skipped steps.</div></div></div>
+<div class="connector"></div>
+<div class="step-row s5"><div class="step-num-cell">S5</div><div class="step-body"><div class="step-name">Economic Impact</div><div class="step-output">Dollar cost derived from the propagation chain using LTV, Conversion Loss, or Utilization Loss. All assumptions stated explicitly.</div></div></div>
+<div class="connector"></div>
+<div class="step-row s6"><div class="step-num-cell">S6</div><div class="step-body"><div class="step-name">Priority Score</div><div class="step-output">Magnitude × Frequency × Propagation Depth (each 1–5). Math shown. Score determines sequencing when multiple failures are present.</div></div></div>
+<div class="connector"></div>
+<div class="step-row s7"><div class="step-num-cell">S7</div><div class="step-body"><div class="step-name">Capability Mapping</div><div class="step-output">The specific GroovConnect capability that resolves the failure at its root. Derived from Step 3 — never selected from a feature menu.</div></div></div>
+
+<div class="gate-rule">Rule: no mention of GroovConnect, no mention of any solution, until the economic impact figure has been calculated and stated aloud. If a trainee names a capability before the math is done — reset to Step 1.</div>
+<div class="caption">GroovConnect OAS™ · Module 02 · Keep this visible throughout every simulation.</div>
+</body>
+</html>

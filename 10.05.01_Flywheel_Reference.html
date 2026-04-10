@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 10 — The GroovConnect Flywheel</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 680px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.compound-rule { font-size: 13px; color: #0C447C; background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .compound-rule { background: #0a1f3a; color: #B5D4F4; } }
+.timer-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+.timer-d { font-size: 36px; font-weight: 500; font-variant-numeric: tabular-nums; color: #1D1D1F; transition: color .3s; }
+@media (prefers-color-scheme: dark) { .timer-d { color: #e8e8e8; } }
+.timer-d.urgent { color: #C0392B; }
+.node-row { display: grid; grid-template-columns: 32px 1fr; gap: 0; margin-bottom: 4px; cursor: pointer; transition: opacity .12s; }
+.node-row:hover { opacity: .93; }
+.node-num { display: flex; align-items: flex-start; justify-content: center; padding-top: 13px; font-size: 11px; font-weight: 700; color: #fff; border-radius: 8px 0 0 8px; flex-shrink: 0; }
+.node-body { border-radius: 0 8px 8px 0; padding: 12px 16px; }
+.node-name { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+.node-mech { font-size: 12px; line-height: 1.5; }
+.node-output { font-size: 12px; font-style: italic; margin-top: 6px; padding: 6px 10px; border-radius: 6px; display: none; line-height: 1.5; }
+.node-output.show { display: block; }
+.arrow-connector { text-align: center; font-size: 11px; color: #6E6E73; padding: 2px 0; }
+.n1 .node-num{background:#185FA5}.n1 .node-body{background:#E6F1FB}.n1 .node-name{color:#0C447C}.n1 .node-mech{color:#185FA5}.n1 .node-output{background:#B5D4F4;color:#042C53}
+.n2 .node-num{background:#378ADD}.n2 .node-body{background:#ddeef9}.n2 .node-name{color:#0C447C}.n2 .node-mech{color:#185FA5}.n2 .node-output{background:#B5D4F4;color:#042C53}
+.n3 .node-num{background:#534AB7}.n3 .node-body{background:#EEEDFE}.n3 .node-name{color:#26215C}.n3 .node-mech{color:#534AB7}.n3 .node-output{background:#CECBF6;color:#26215C}
+.n4 .node-num{background:#0F6E56}.n4 .node-body{background:#E1F5EE}.n4 .node-name{color:#085041}.n4 .node-mech{color:#0F6E56}.n4 .node-output{background:#9FE1CB;color:#04342C}
+.n5 .node-num{background:#BA7517}.n5 .node-body{background:#FAEEDA}.n5 .node-name{color:#633806}.n5 .node-mech{color:#854F0B}.n5 .node-output{background:#FAC775;color:#412402}
+.n6 .node-num{background:#A32D2D}.n6 .node-body{background:#FCEBEB}.n6 .node-name{color:#791F1F}.n6 .node-mech{color:#A32D2D}.n6 .node-output{background:#F7C1C1;color:#501313}
+@media (prefers-color-scheme: dark) {
+  .n1 .node-body{background:#0a1f3a}.n1 .node-mech{color:#85B7EB}.n1 .node-output{background:#0C447C;color:#B5D4F4}
+  .n2 .node-body{background:#0a1525}.n2 .node-mech{color:#85B7EB}.n2 .node-output{background:#0C447C;color:#B5D4F4}
+  .n3 .node-body{background:#1a1730}.n3 .node-mech{color:#AFA9EC}.n3 .node-output{background:#26215C;color:#CECBF6}
+  .n4 .node-body{background:#052e1e}.n4 .node-mech{color:#5DCAA5}.n4 .node-output{background:#085041;color:#9FE1CB}
+  .n5 .node-body{background:#2a1a00}.n5 .node-mech{color:#EF9F27}.n5 .node-output{background:#412402;color:#FAC775}
+  .n6 .node-body{background:#2a0a0a}.n6 .node-mech{color:#F09595}.n6 .node-output{background:#3a1010;color:#F7C1C1}
+}
+.loop-closed { font-size: 12px; color: #0F6E56; background: #E1F5EE; border-left: 3px solid #0F6E56; border-radius: 0 8px 8px 0; padding: 8px 14px; margin-top: 8px; line-height: 1.5; }
+@media (prefers-color-scheme: dark) { .loop-closed { background: #052e1e; color: #9FE1CB; } }
+.drill-note { font-size: 12px; color: #633806; background: #FAEEDA; border-left: 3px solid #BA7517; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .drill-note { background: #2a1a00; color: #FAC775; } }
+.controls { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 10, Section 5 · Flywheel Reference & Drill</div>
+<h1>The GroovConnect Flywheel — 6 nodes</h1>
+<p class="sub">Tap each node to reveal its data feedback output. Then run the 90-second partner drill.</p>
+<div class="compound-rule">The Flywheel produces compounding gains from the same initial structural investment. Unlike a linear model — where each gain requires a proportional new intervention — improvement accelerates as each node feeds the next with higher-quality inputs.</div>
+
+<div id="flywheel"></div>
+<div class="loop-closed" id="loop-note" style="display:none">Loop closed. Node 6 → Better predictions → Node 1. Each cycle raises the baseline for the next. Great operators run systems. Elite operators build systems that run themselves — and improve over time.</div>
+
+<div class="timer-row" style="margin-top:16px">
+  <div class="timer-d" id="fw-timer">1:30</div>
+  <div style="font-size:12px;color:#8E8E93">90-second partner drill</div>
+</div>
+<div class="drill-note">Partner drill: each trainee has 90 seconds to explain the full loop using the school's specific data — not abstract labels. Partner must say "yes, I follow that" for the explanation to pass. The 90-second constraint forces selection of the 3–4 nodes that carry the core logic. That selection is the real test.</div>
+
+<div class="controls">
+  <button class="primary" id="drill-btn" onclick="startDrill()">Start 90s timer</button>
+  <button class="secondary" onclick="revealAll()">Reveal all outputs</button>
+  <button class="secondary" onclick="resetFW()">Reset</button>
+</div>
+
+<script>
+const NODES = [
+  { cls:'n1', name:'1 — Better Matching', mech:'DISC-based compatibility matching produces better student/instructor pairs from enrollment.', output:'DISC compatibility score per pair increases over time as the algorithm learns from retention outcomes.' },
+  { cls:'n2', name:'2 — Better Experience', mech:'Higher compatibility produces stronger rapport, better lesson quality, and more consistent visible progress.', output:'Student satisfaction signals feed back into the Matching Engine as outcome data.' },
+  { cls:'n3', name:'3 — Higher Engagement', mech:'Students who experience visible progress engage more deeply — attendance improves, practice improves.', output:'Engagement signals (attendance rate, note review rate) feed the Risk Alert Engine.' },
+  { cls:'n4', name:'4 — Higher Retention', mech:'Engaged students stay longer. LTV increases. Churn at the 6–9 month wall decreases.', output:'Retention outcomes feed back to refine the compatibility model — which pairs produce long tenure.' },
+  { cls:'n5', name:'5 — More Data', mech:'More students × more lessons = richer dataset. More data points per instructor pair.', output:'Data volume accelerates the pattern recognition accuracy of every intelligence engine.' },
+  { cls:'n6', name:'6 — Better Matching (Loop)', mech:'The Matching Engine has more behavioral data to improve its compatibility predictions.', output:'Loop restarts at higher quality. Each cycle raises the baseline for the next.' },
+];
+
+const nodeOpen = new Array(NODES.length).fill(false);
+function renderFW() {
+  const c = document.getElementById('flywheel');
+  c.innerHTML = NODES.map((n, i) => `
+    ${i > 0 ? '<div class="arrow-connector">↓</div>' : ''}
+    <div class="node-row ${n.cls}" onclick="toggleNode(${i})">
+      <div class="node-num">${i+1}</div>
+      <div class="node-body">
+        <div class="node-name">${n.name}</div>
+        <div class="node-mech">${n.mech}</div>
+        <div class="node-output${nodeOpen[i]?' show':''}">Data output: ${n.output}</div>
+      </div>
+    </div>`).join('');
+  const allOpen = nodeOpen.every(Boolean);
+  document.getElementById('loop-note').style.display = allOpen ? 'block' : 'none';
+}
+function toggleNode(i) { nodeOpen[i]=!nodeOpen[i]; renderFW(); }
+function revealAll() { nodeOpen.fill(true); renderFW(); }
+function resetFW() { nodeOpen.fill(false); renderFW(); clearInterval(drillInt); drillSec=90; document.getElementById('fw-timer').textContent='1:30'; document.getElementById('fw-timer').className='timer-d'; document.getElementById('drill-btn').textContent='Start 90s timer'; }
+
+let drillSec=90, drillRun=false, drillInt=null;
+function fmt(s){return Math.floor(s/60)+':'+(s%60<10?'0':'')+s%60;}
+function startDrill() {
+  if (!drillRun) { drillRun=true; document.getElementById('drill-btn').textContent='Running…';
+    drillInt=setInterval(()=>{drillSec--;const el=document.getElementById('fw-timer');el.textContent=fmt(drillSec);if(drillSec<=20)el.className='timer-d urgent';if(drillSec<=0){clearInterval(drillInt);drillRun=false;document.getElementById('drill-btn').textContent='Reset';}},1000);
+  } else { clearInterval(drillInt); drillRun=false; drillSec=90; document.getElementById('fw-timer').textContent='1:30'; document.getElementById('fw-timer').className='timer-d'; document.getElementById('drill-btn').textContent='Start 90s timer'; }
+}
+renderFW();
+</script>
+</body>
+</html>

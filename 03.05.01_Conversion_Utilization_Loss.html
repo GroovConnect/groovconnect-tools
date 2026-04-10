@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 03 — Conversion & Utilization Loss</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 640px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.model-tabs { display: flex; gap: 6px; margin-bottom: 20px; }
+.tab { font-family: inherit; font-size: 13px; font-weight: 500; padding: 7px 18px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.active-conv { background: #FAEEDA; border-color: #BA7517; color: #854F0B; font-weight: 600; }
+.tab.active-util { background: #FAECE7; border-color: #993C1D; color: #712B13; font-weight: 600; }
+.formula-bar { border-radius: 10px; padding: 12px 16px; text-align: center; margin-bottom: 16px; }
+.formula-bar.conv { background: #FAEEDA; }
+.formula-bar.util { background: #FAECE7; }
+.formula-text { font-size: 14px; font-weight: 600; font-family: "SFMono-Regular", Menlo, monospace; }
+.conv .formula-text { color: #633806; }
+.util .formula-text { color: #712B13; }
+@media (prefers-color-scheme: dark) { .formula-bar.conv { background: #2a1a00; } .formula-bar.util { background: #2a1208; } .conv .formula-text { color: #FAC775; } .util .formula-text { color: #F5C4B3; } }
+.calc-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.calc-row { display: flex; align-items: center; gap: 12px; }
+.calc-row label { font-size: 13px; color: #1D1D1F; min-width: 180px; }
+@media (prefers-color-scheme: dark) { .calc-row label { color: #e8e8e8; } }
+input[type=number] { font-family: inherit; font-size: 14px; padding: 7px 10px; border: 0.5px solid #AEAEB2; border-radius: 8px; background: #fff; color: #1D1D1F; width: 100px; }
+@media (prefers-color-scheme: dark) { input[type=number] { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+.result-card { border-radius: 12px; padding: 16px 18px; margin-bottom: 14px; }
+.result-card.conv { background: #FAEEDA; }
+.result-card.util { background: #FAECE7; }
+@media (prefers-color-scheme: dark) { .result-card.conv { background: #2a1a00; } .result-card.util { background: #2a1208; } }
+.result-label { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+.conv .result-label { color: #854F0B; }
+.util .result-label { color: #712B13; }
+.result-value { font-size: 28px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.conv .result-value { color: #633806; }
+.util .result-value { color: #4A1B0C; }
+@media (prefers-color-scheme: dark) { .conv .result-value { color: #FAC775; } .util .result-value { color: #F5C4B3; } }
+.result-breakdown { font-size: 11px; margin-top: 6px; font-family: "SFMono-Regular", Menlo, monospace; line-height: 1.7; }
+.conv .result-breakdown { color: #854F0B; }
+.util .result-breakdown { color: #712B13; }
+@media (prefers-color-scheme: dark) { .conv .result-breakdown { color: #EF9F27; } .util .result-breakdown { color: #F0997B; } }
+.error-note { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .error-note { background: #2a0a0a; color: #F09595; } }
+.silence-note { font-size: 12px; color: #085041; background: #E1F5EE; border-left: 3px solid #0F6E56; border-radius: 0 8px 8px 0; padding: 10px 14px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .silence-note { background: #052e1e; color: #9FE1CB; } }
+.model-panel { display: none; }
+.model-panel.active { display: block; }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 03, Section 5 · Calculators</div>
+<h1>Conversion & Utilization Loss — calculators</h1>
+<p class="sub">Select the model. State all inputs before calculating. No hidden math.</p>
+
+<div class="model-tabs">
+  <button class="tab active-conv" id="tab-conv" onclick="switchModel('conv')">Conversion Loss</button>
+  <button class="tab" id="tab-util" onclick="switchModel('util')">Utilization Loss</button>
+</div>
+
+<!-- CONVERSION LOSS -->
+<div class="model-panel active" id="panel-conv">
+  <div class="formula-bar conv">
+    <div class="formula-text">(Baseline Conv% − Actual Conv%) × Monthly Trials × LTV × 12</div>
+  </div>
+  <div class="calc-rows">
+    <div class="calc-row"><label>Baseline conversion rate (%)</label><input type="number" id="c_baseline" value="70" min="0" max="100" oninput="calcConv()"></div>
+    <div class="calc-row"><label>Actual conversion rate (%)</label><input type="number" id="c_actual" value="52" min="0" max="100" oninput="calcConv()"></div>
+    <div class="calc-row"><label>Monthly trial volume</label><input type="number" id="c_trials" value="30" min="1" oninput="calcConv()"></div>
+    <div class="calc-row"><label>LTV per student ($)</label><input type="number" id="c_ltv" value="900" min="0" oninput="calcConv()"></div>
+  </div>
+  <div class="result-card conv" id="conv-result">
+    <div class="result-label">Annual conversion loss</div>
+    <div class="result-value" id="conv-value">—</div>
+    <div class="result-breakdown" id="conv-breakdown"></div>
+  </div>
+  <div class="error-note">Most common error: multiplying the conversion gap (%) × LTV and stopping. The formula requires gap × monthly trials = lost students first; then lost students × LTV = monthly loss; then × 12 = annual loss.</div>
+</div>
+
+<!-- UTILIZATION LOSS -->
+<div class="model-panel" id="panel-util">
+  <div class="formula-bar util">
+    <div class="formula-text">(Scheduled − Delivered Lessons) × Lesson Value × 52</div>
+  </div>
+  <div class="calc-rows">
+    <div class="calc-row"><label>Weekly lessons scheduled</label><input type="number" id="u_sched" value="200" min="1" oninput="calcUtil()"></div>
+    <div class="calc-row"><label>Weekly lessons delivered</label><input type="number" id="u_deliv" value="162" min="0" oninput="calcUtil()"></div>
+    <div class="calc-row"><label>Average lesson value ($)</label><input type="number" id="u_val" value="45" min="0" oninput="calcUtil()"></div>
+  </div>
+  <div class="result-card util" id="util-result">
+    <div class="result-label">Annual utilization loss</div>
+    <div class="result-value" id="util-value">—</div>
+    <div class="result-breakdown" id="util-breakdown"></div>
+  </div>
+  <div class="silence-note">After delivering the anchor figure — stop. Do not qualify. Do not follow with context. Count to five. The first person to speak after the anchor typically loses the leverage. If operator says nothing after five seconds, restate: "That is approximately $X in annual revenue the school is generating capacity for but not collecting." Then stop again.</div>
+</div>
+
+<script>
+function round(n) {
+  if (n < 10000) return Math.round(n / 500) * 500;
+  if (n < 100000) return Math.round(n / 1000) * 1000;
+  return Math.round(n / 5000) * 5000;
+}
+function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+
+function switchModel(m) {
+  document.getElementById('panel-conv').classList.toggle('active', m === 'conv');
+  document.getElementById('panel-util').classList.toggle('active', m === 'util');
+  document.getElementById('tab-conv').className = 'tab' + (m === 'conv' ? ' active-conv' : '');
+  document.getElementById('tab-util').className = 'tab' + (m === 'util' ? ' active-util' : '');
+}
+
+function calcConv() {
+  const base = parseFloat(document.getElementById('c_baseline').value) / 100 || 0;
+  const act = parseFloat(document.getElementById('c_actual').value) / 100 || 0;
+  const trials = parseFloat(document.getElementById('c_trials').value) || 0;
+  const ltv = parseFloat(document.getElementById('c_ltv').value) || 0;
+  const gap = base - act;
+  const lostPerMonth = trials * gap;
+  const monthlyLoss = lostPerMonth * ltv;
+  const annual = monthlyLoss * 12;
+  const rounded = round(annual);
+  document.getElementById('conv-value').textContent = fmt(rounded) + '/year';
+  document.getElementById('conv-breakdown').innerHTML =
+    `Conversion gap: ${(base*100).toFixed(0)}% − ${(act*100).toFixed(0)}% = ${(gap*100).toFixed(0)} pts\n` +
+    `Lost conversions/month: ${trials} × ${(gap*100).toFixed(0)}% = ${lostPerMonth.toFixed(1)} students\n` +
+    `Monthly revenue loss: ${lostPerMonth.toFixed(1)} × ${fmt(ltv)} = ${fmt(monthlyLoss)}\n` +
+    `Annual: ${fmt(monthlyLoss)} × 12 = ${fmt(annual)} → rounded: ${fmt(rounded)}`;
+}
+
+function calcUtil() {
+  const sched = parseFloat(document.getElementById('u_sched').value) || 0;
+  const deliv = parseFloat(document.getElementById('u_deliv').value) || 0;
+  const val = parseFloat(document.getElementById('u_val').value) || 0;
+  const undelivered = sched - deliv;
+  const weeklyLoss = undelivered * val;
+  const annual = weeklyLoss * 52;
+  const rounded = round(annual);
+  document.getElementById('util-value').textContent = fmt(rounded) + '/year';
+  document.getElementById('util-breakdown').innerHTML =
+    `Undelivered/week: ${sched} − ${deliv} = ${undelivered} lessons\n` +
+    `Weekly revenue loss: ${undelivered} × ${fmt(val)} = ${fmt(weeklyLoss)}\n` +
+    `Annual: ${fmt(weeklyLoss)} × 52 = ${fmt(annual)} → rounded: ${fmt(rounded)}`;
+}
+
+calcConv();
+calcUtil();
+</script>
+</body>
+</html>

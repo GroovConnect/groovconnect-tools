@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 01 — System vs. Story Drill</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  background: #f5f5f7;
+  color: #1D1D1F;
+  padding: 32px 24px;
+  max-width: 640px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 22px; }
+.card {
+  background: #fff;
+  border: 0.5px solid #D1D1D6;
+  border-radius: 14px;
+  padding: 22px 24px;
+  margin-bottom: 16px;
+}
+@media (prefers-color-scheme: dark) { .card { background: #1e1e1e; border-color: #333; } }
+.story-label { font-size: 11px; font-weight: 600; color: #D85A30; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 8px; }
+.story-text { font-size: 17px; font-weight: 500; color: #1D1D1F; margin-bottom: 14px; line-height: 1.4; font-style: italic; }
+@media (prefers-color-scheme: dark) { .story-text { color: #e8e8e8; } }
+.reveal-btn {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 0.5px solid #AEAEB2;
+  background: #fff;
+  color: #1D1D1F;
+  cursor: pointer;
+  transition: background .12s;
+}
+@media (prefers-color-scheme: dark) { .reveal-btn { background: #2a2a2a; border-color: #444; color: #e8e8e8; } }
+.reveal-btn:hover { background: #f2f2f7; }
+.system-block {
+  margin-top: 14px;
+  padding: 12px 16px;
+  background: #E1F5EE;
+  border-left: 3px solid #0F6E56;
+  border-radius: 0 8px 8px 0;
+  display: none;
+}
+@media (prefers-color-scheme: dark) { .system-block { background: #052e1e; } }
+.system-block.visible { display: block; }
+.system-label { font-size: 11px; font-weight: 600; color: #0F6E56; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 6px; }
+.system-text { font-size: 14px; color: #085041; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .system-text { color: #9FE1CB; } }
+.controls { display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+button.primary {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 9px 22px;
+  border-radius: 9px;
+  border: none;
+  background: #1D1D1F;
+  color: #fff;
+  cursor: pointer;
+}
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } }
+button.secondary {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 9px 22px;
+  border-radius: 9px;
+  border: 0.5px solid #AEAEB2;
+  background: #fff;
+  color: #1D1D1F;
+  cursor: pointer;
+}
+@media (prefers-color-scheme: dark) { button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+.progress { font-size: 12px; color: #8E8E93; margin-bottom: 16px; }
+.all-done { text-align: center; padding: 32px 0; }
+.all-done p { font-size: 16px; font-weight: 500; color: #1D1D1F; margin-bottom: 8px; }
+@media (prefers-color-scheme: dark) { .all-done p { color: #e8e8e8; } }
+.all-done span { font-size: 13px; color: #6E6E73; }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 01, Section 3 · Drill Tool</div>
+<h1>System vs. story — translation drill</h1>
+<p class="sub">Read the story statement aloud. Room calls out the system word. Then reveal.</p>
+
+<div class="progress" id="progress">Statement 1 of 6</div>
+<div id="card-area"></div>
+<div class="controls">
+  <button class="primary" id="next-btn" onclick="next()">Next statement</button>
+  <button class="secondary" onclick="reset()">Start over</button>
+</div>
+
+<script>
+const PAIRS = [
+  { story: '"The teachers are inconsistent"', system: 'No lesson note submission gate — notes are optional, not enforced. Standardization System failure.' },
+  { story: '"Parents are difficult"', system: 'No structured parent update protocol — communication has no defined cadence. Communication System failure.' },
+  { story: '"Admin is overwhelmed"', system: 'Manual tasks without automation trigger — process capacity is exceeded. Capacity/Process System failure.' },
+  { story: '"Students aren\'t motivated"', system: 'No visible progress milestone tracking — Engagement System failure. Students cannot see advancement; practice has no perceived purpose.' },
+  { story: '"My best teacher is unreliable"', system: 'No attendance or delivery audit mechanism — reliability is unmeasured, so it cannot be managed. Accountability System failure.' },
+  { story: '"The front desk is slow"', system: 'No defined response time standard or automation trigger — Efficiency System failure. Process volume exceeds available bandwidth.' },
+];
+
+let cur = 0;
+let revealed = false;
+
+function render() {
+  const p = PAIRS[cur];
+  document.getElementById('progress').textContent = `Statement ${cur + 1} of ${PAIRS.length}`;
+
+  const nextBtn = document.getElementById('next-btn');
+  if (cur >= PAIRS.length) {
+    document.getElementById('card-area').innerHTML =
+      '<div class="all-done"><p>All six complete.</p><span>Run again with improvised statements based on what you heard in the room.</span></div>';
+    nextBtn.style.display = 'none';
+    return;
+  }
+
+  nextBtn.style.display = '';
+  nextBtn.textContent = cur === PAIRS.length - 1 ? 'Done' : 'Next statement';
+
+  document.getElementById('card-area').innerHTML = `
+    <div class="card">
+      <div class="story-label">Story — reject</div>
+      <div class="story-text">${p.story}</div>
+      <button class="reveal-btn" onclick="reveal(this)">Reveal system translation</button>
+      <div class="system-block" id="sys-block">
+        <div class="system-label">System reality — required</div>
+        <div class="system-text">${p.system}</div>
+      </div>
+    </div>`;
+
+  revealed = false;
+}
+
+function reveal(btn) {
+  document.getElementById('sys-block').classList.add('visible');
+  btn.style.display = 'none';
+  revealed = true;
+}
+
+function next() {
+  cur++;
+  render();
+}
+
+function reset() {
+  cur = 0;
+  render();
+}
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 07 — Practice Block</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.sim-tabs { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 12px; font-weight: 500; padding: 6px 12px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.act { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+.scenario-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { .scenario-card { background: #1e1e1e; border-color: #333; } }
+.sc-label { font-size: 11px; font-weight: 700; color: #8E8E93; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 8px; }
+.sc-text { font-size: 15px; font-weight: 500; color: #1D1D1F; line-height: 1.5; margin-bottom: 6px; }
+@media (prefers-color-scheme: dark) { .sc-text { color: #e8e8e8; } }
+.gold-block { display: none; margin-top: 12px; }
+.gold-block.show { display: block; }
+.gold-section { margin-bottom: 8px; }
+.gold-label { font-size: 10px; font-weight: 700; color: #0F6E56; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 4px; }
+.gold-text { font-size: 13px; color: #085041; background: #E1F5EE; border-radius: 8px; padding: 8px 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .gold-text { background: #052e1e; color: #9FE1CB; } }
+.reveal-btn { font-family: inherit; font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: 8px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; margin-top: 10px; }
+@media (prefers-color-scheme: dark) { .reveal-btn { background: #2a2a2a; border-color: #444; color: #e8e8e8; } }
+.resistance-card { border-radius: 10px; padding: 14px 18px; margin-bottom: 6px; cursor: pointer; transition: opacity .12s; }
+.resistance-card:hover { opacity: .93; }
+.resistance-card.open { outline: 1px solid rgba(0,0,0,.12); }
+.res-header { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.res-type-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+.res-statement { font-size: 13px; line-height: 1.45; }
+.res-detail { margin-top: 10px; display: none; }
+.res-detail.show { display: block; }
+.res-response { border-radius: 8px; padding: 10px 14px; font-size: 13px; line-height: 1.55; }
+.r-logical { background: #EEEDFE; } .r-logical .res-type-badge { background: #534AB7; color: #fff; } .r-logical .res-statement { color: #26215C; } .r-logical .res-response { background: #CECBF6; color: #26215C; }
+.r-emotional { background: #FAECE7; } .r-emotional .res-type-badge { background: #993C1D; color: #fff; } .r-emotional .res-statement { color: #712B13; } .r-emotional .res-response { background: #F5C4B3; color: #4A1B0C; }
+.r-practical { background: #FAEEDA; } .r-practical .res-type-badge { background: #BA7517; color: #fff; } .r-practical .res-statement { color: #633806; } .r-practical .res-response { background: #FAC775; color: #412402; }
+.r-identity { background: #F1EFE8; } .r-identity .res-type-badge { background: #5F5E5A; color: #fff; } .r-identity .res-statement { color: #2C2C2A; } .r-identity .res-response { background: #D3D1C7; color: #2C2C2A; }
+@media (prefers-color-scheme: dark) {
+  .r-logical { background: #1a1730; } .r-logical .res-statement { color: #CECBF6; } .r-logical .res-response { background: #26215C; color: #CECBF6; }
+  .r-emotional { background: #2a1208; } .r-emotional .res-statement { color: #F5C4B3; } .r-emotional .res-response { background: #4A1B0C; color: #F5C4B3; }
+  .r-practical { background: #2a1a00; } .r-practical .res-statement { color: #FAC775; } .r-practical .res-response { background: #412402; color: #FAC775; }
+  .r-identity { background: #222; } .r-identity .res-statement { color: #D3D1C7; } .r-identity .res-response { background: #333; color: #D3D1C7; }
+}
+.ks-note { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .ks-note { background: #2a0a0a; color: #F09595; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 07, Section 8 · Practice Block</div>
+<h1>Practice Block — Simulations 1–5</h1>
+<p class="sub">All five must complete before the certification gate. Do not advance to Sim 5 until Sims 1–4 are passed.</p>
+
+<div class="sim-tabs">
+  <button class="tab act" id="tab-s1" onclick="switchSim('s1')">Sim 1 — Mapping</button>
+  <button class="tab" id="tab-s2" onclick="switchSim('s2')">Sim 2 — Priority</button>
+  <button class="tab" id="tab-s3" onclick="switchSim('s3')">Sim 3 — Value Calc</button>
+  <button class="tab" id="tab-s4" onclick="switchSim('s4')">Sim 4 — Blueprint</button>
+  <button class="tab" id="tab-s5" onclick="switchSim('s5')">Sim 5 — Resistance</button>
+</div>
+
+<!-- SIM 1 -->
+<div class="panel active" id="panel-s1">
+  <div class="ks-note">Kill Switch applies to every mapping: capability named before root cause = Sales Mode. Stop. Restart from root cause.</div>
+  <div class="scenario-card">
+    <div class="sc-label">Sim 1 · Mapping Drill · 5 failure-to-capability mappings</div>
+    <div class="sc-text">Map each failure: root cause (structural) → Logic Gate (no, because…) → GC capability → measurable outcome. Any "yes" on the Logic Gate = return to root cause.</div>
+    <button class="reveal-btn" id="rb-s1" onclick="reveal('s1')">Reveal gold standard mappings</button>
+    <div class="gold-block" id="gold-s1">
+      <div class="gold-section"><div class="gold-label">No trial follow-up system</div><div class="gold-text">Root: no automated task trigger after trial completion. Logic Gate: No — cannot maintain ≥95% at volume or produce time-stamped data manually. Cap: Enrollment System — Automated Follow-Up Trigger. Outcome: follow-up ≥95% within 24 hrs; conversion improvement tracked.</div></div>
+      <div class="gold-section"><div class="gold-label">No DISC-based instructor matching</div><div class="gold-text">Root: instructors assigned by availability only — no compatibility screen. Logic Gate: No — DISC matching cannot scale, maintain feedback loops, or detect declining match quality without automation. Cap: Matching Engine (ACA/DISC). Outcome: DISC match score increase; 6–9 month churn reduction.</div></div>
+      <div class="gold-section"><div class="gold-label">No at-risk student detection</div><div class="gold-text">Root: no behavioral signal monitoring across the student base. Logic Gate: No — human monitoring of engagement signals across 200 students simultaneously is not feasible. Cap: Engagement Tracking — Risk Alert Engine. Outcome: at-risk students flagged 30+ days pre-cancellation.</div></div>
+      <div class="gold-section"><div class="gold-label">KPIs invisible to leadership</div><div class="gold-text">Root: no unified measurement layer — each KPI tracked separately or not at all. Logic Gate: No — aggregated MSOI benchmarking and threshold alerting cannot be produced manually at scale. Cap: Operational Dashboard. Outcome: weekly MSOI score; threshold breach alerts.</div></div>
+      <div class="gold-section"><div class="gold-label">No parent progress visibility</div><div class="gold-text">Root: no structured mechanism for communicating student progress to parents between lessons. Logic Gate: No — consistent, automated progress delivery to 200 parents cannot be maintained manually. Cap: Parent Portal — Progress Visibility Layer. Outcome: portal login ≥60%; conversion improvement tracked.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SIM 2 -->
+<div class="panel" id="panel-s2">
+  <div class="scenario-card">
+    <div class="sc-label">Sim 2 · Prioritization · Rank and justify top 3</div>
+    <div class="sc-text">Score 10 operational problems using Impact × Frequency × Severity × Ease. Identify the top 3 and justify the sequencing. If two problems map to the same GC capability, that capability leads.</div>
+    <button class="reveal-btn" id="rb-s2" onclick="reveal('s2')">Reveal scoring standard</button>
+    <div class="gold-block" id="gold-s2">
+      <div class="gold-section"><div class="gold-label">Scoring requirement</div><div class="gold-text">Every score must be presented as: Impact × Frequency × Severity × Ease = total. A score stated without visible factor ratings has no analytical standing. The operator can — and will — challenge a priority claim with no derivation.</div></div>
+      <div class="gold-section"><div class="gold-label">Capability overlap rule</div><div class="gold-text">If "no trial follow-up trigger" (score: 300) and "no parent progress visibility" (score: 250) both map to the Enrollment System, sequence them together — even if a third problem has a score of 275 but maps to a different capability.</div></div>
+      <div class="gold-section"><div class="gold-label">Sequencing justification</div><div class="gold-text">Trainee must state: (1) the score, (2) the factor ratings, (3) which capability it maps to, and (4) whether any lower-scored problem shares that capability and therefore moves up in sequence.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SIM 3 -->
+<div class="panel" id="panel-s3">
+  <div class="scenario-card">
+    <div class="sc-label">Sim 3 · Value Calculation · 3 scenarios, no spreadsheet</div>
+    <div class="sc-text">State all assumptions before the figure. Show formula derivation. Result within ±$2,000 of correct. Use the calculators from Module 03 if needed.</div>
+    <button class="reveal-btn" id="rb-s3" onclick="reveal('s3')">Reveal scoring standard</button>
+    <div class="gold-block" id="gold-s3">
+      <div class="gold-section"><div class="gold-label">Formula selection test</div><div class="gold-text">Did the student enroll? → LTV formula. Did they trial but not enroll? → Conversion Loss. Are lessons being scheduled but not delivered? → Utilization Loss.</div></div>
+      <div class="gold-section"><div class="gold-label">Assumption requirement</div><div class="gold-text">Student count or trial volume · Monthly tuition or ARPU · Gross margin % · Baseline rate — all stated before the economic figure is presented. A figure without stated assumptions cannot be defended under operator challenge.</div></div>
+      <div class="gold-section"><div class="gold-label">Zero credit rule</div><div class="gold-text">A correct answer with hidden math derivation receives zero credit in certification. The formula derivation must be visible — not implied.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SIM 4 -->
+<div class="panel" id="panel-s4">
+  <div class="scenario-card">
+    <div class="sc-label">Sim 4 · Solution Blueprint · All 7 elements</div>
+    <div class="sc-text">Build a complete Problem → Outcome implementation plan. Root cause validated through the diagnostic chain — not asserted. Tracking method is automated.</div>
+    <button class="reveal-btn" id="rb-s4" onclick="reveal('s4')">Reveal checklist</button>
+    <div class="gold-block" id="gold-s4">
+      <div class="gold-section"><div class="gold-label">7-element checklist</div><div class="gold-text">1. Problem Definition — measurable, specific, delta stated. 2. Root Cause — structural, derived from chain. 3. System Gap — specific mechanism that is absent. 4. Solution — named GC capability. 5. Implementation Plan — phased, owned, timed. 6. Expected Outcome — KPI movement + annual dollar figure. 7. Tracking Method — automated, verifiable without conversation.</div></div>
+      <div class="gold-section"><div class="gold-label">Element 7 test</div><div class="gold-text">Can the system prove it is working from 1,000 miles away? If the answer requires asking anyone at the school — the tracking method fails. Required: CRM report, dashboard flag, or time-stamped completion log.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SIM 5 -->
+<div class="panel" id="panel-s5">
+  <div class="scenario-card">
+    <div class="sc-label">Sim 5 · Resistance Diagnosis · Tap each pattern to reveal response</div>
+    <div class="sc-text">Identify the resistance type from the operator statement. Deliver the response protocol: Acknowledge → Clarify → Reframe → Resolve. No defensive language.</div>
+  </div>
+  <div id="resistance-patterns"></div>
+</div>
+
+<script>
+const RESISTANCE = [
+  { cls:'r-logical', type:'Logical', statement:'"Your numbers don\'t match what I\'ve seen. Our retention feels fine to me."', response:'Acknowledge → Clarify → Reframe → Resolve. "I hear you — let\'s use your data. What is your retention rate, and what was it 12 months ago?" Force the operator to supply the baseline. If they can\'t, the number stands.' },
+  { cls:'r-emotional', type:'Emotional', statement:'"This feels like you\'re attacking what we\'ve built over 15 years."', response:'"Your 15 years built something real — the data reflects what the school has outgrown, not what you did wrong. Every number in this analysis is a system design decision, not a judgment." Return to the structural cause immediately.' },
+  { cls:'r-practical', type:'Practical', statement:'"We don\'t have the bandwidth to implement anything right now."', response:'"Understood. Let\'s start with the one system that requires the least bandwidth and produces the fastest visible result." Offer Phase 1 only — Visibility First. Create momentum with the smallest deployable unit.' },
+  { cls:'r-identity', type:'Identity', statement:'"We\'ve always done it this way and it\'s worked for us."', response:'"It worked until it didn\'t — and that\'s exactly what the KPI is showing. The system that got you to 180 students isn\'t the system that gets you to 250." Reframe from criticism to scale constraint.' },
+];
+const resOpen = new Array(RESISTANCE.length).fill(false);
+function renderResistance() {
+  document.getElementById('resistance-patterns').innerHTML = RESISTANCE.map((r, i) => `
+    <div class="resistance-card ${r.cls}${resOpen[i]?' open':''}" onclick="toggleRes(${i})">
+      <div class="res-header"><span class="res-type-badge">${r.type}</span></div>
+      <div class="res-statement">${r.statement}</div>
+      <div class="res-detail${resOpen[i]?' show':''}"><div class="res-response">${r.response}</div></div>
+    </div>`).join('');
+}
+function toggleRes(i) { resOpen[i] = !resOpen[i]; renderResistance(); }
+renderResistance();
+
+function reveal(id) { document.getElementById(`gold-${id}`).classList.add('show'); document.getElementById(`rb-${id}`).style.display='none'; }
+function switchSim(id) {
+  ['s1','s2','s3','s4','s5'].forEach(s => {
+    document.getElementById(`panel-${s}`).classList.toggle('active', s===id);
+    document.getElementById(`tab-${s}`).className='tab'+(s===id?' act':'');
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 10 — Certification Gate</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.gate-note { font-size: 13px; color: #0C447C; background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 20px; line-height: 1.6; }
+@media (prefers-color-scheme: dark) { .gate-note { background: #0a1f3a; color: #B5D4F4; } }
+.trainee-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.trainee-row label { font-size: 13px; color: #6E6E73; white-space: nowrap; }
+.trainee-row input { font-family: inherit; font-size: 14px; padding: 8px 12px; border: 0.5px solid #AEAEB2; border-radius: 8px; background: #fff; color: #1D1D1F; flex: 1; }
+@media (prefers-color-scheme: dark) { .trainee-row input { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+.req-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 12px; padding: 15px 18px; margin-bottom: 6px; display: flex; gap: 14px; align-items: flex-start; cursor: pointer; user-select: none; }
+@media (prefers-color-scheme: dark) { .req-card { background: #1e1e1e; border-color: #333; } }
+.req-card.pass { border-left: 3px solid #0F6E56; background: #f0fdf8; }
+@media (prefers-color-scheme: dark) { .req-card.pass { background: #0a1f15; } }
+.checkbox { width: 22px; height: 22px; border: 1.5px solid #D1D1D6; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+.checkbox.checked { background: #0F6E56; border-color: #0F6E56; }
+.checkbox.checked::after { content: ''; display: block; width: 5px; height: 9px; border: 2px solid #fff; border-top: none; border-left: none; transform: rotate(45deg) translate(-1px,-1px); }
+.req-name { font-size: 14px; font-weight: 500; color: #1D1D1F; margin-bottom: 3px; }
+@media (prefers-color-scheme: dark) { .req-name { color: #e8e8e8; } }
+.req-std { font-size: 12px; color: #6E6E73; line-height: 1.5; }
+.fail-btn { font-family: inherit; font-size: 11px; padding: 3px 10px; border-radius: 6px; border: 0.5px solid #F09595; background: transparent; color: #A32D2D; cursor: pointer; margin-top: 5px; }
+.fail-mode { font-size: 12px; color: #A32D2D; margin-top: 5px; display: none; line-height: 1.5; }
+.fail-mode.show { display: block; }
+.result-bar { margin: 14px 0; padding: 14px 18px; border-radius: 12px; font-size: 15px; font-weight: 500; text-align: center; background: #F1EFE8; color: #6E6E73; }
+.result-bar.pass { background: #E1F5EE; color: #085041; }
+@media (prefers-color-scheme: dark) { .result-bar { background: #222; color: #9a9a9a; } .result-bar.pass { background: #052e1e; color: #9FE1CB; } }
+.controls { display: flex; gap: 8px; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 10, Section 10 · Certification Gate</div>
+<h1>Module 10 — certification criteria</h1>
+<p class="sub">Tap each requirement to mark Pass. All 5 must pass before Module 11 is unlocked.</p>
+<div class="gate-note">Run the MSOI recitation drill before any simulation begins. If any trainee cannot recite all five component formulas without reference, they are not ready for the simulation block.</div>
+
+<div class="trainee-row">
+  <label>Trainee</label>
+  <input type="text" id="trainee-name" placeholder="Enter trainee name">
+</div>
+
+<div id="req-list"></div>
+<div class="result-bar" id="result-bar">0 / 5 passed</div>
+<div class="controls">
+  <button class="secondary" onclick="resetAll()">Reset</button>
+  <button class="secondary" onclick="window.print()">Print</button>
+</div>
+
+<script>
+const REQS = [
+  { name: 'MSOI Calculation', std: 'MSOI calculated correctly for two consecutive presented scenarios. All five component formulas applied with visible derivation. Score within ±2 points of correct.', fail: 'Any component formula misapplied. Or a score that cannot be traced to a visible formula derivation. Or reciting the formula incorrectly.' },
+  { name: 'Highest-Leverage Component', std: 'Correct highest-leverage component identified with a specific dollar justification derived from the scenario data using Module 03 formulas.', fail: 'Identifying the lowest-scoring component rather than the highest-leverage one. Or a justification without a dollar figure. Leverage = the fix that moves the most other MSOI components.' },
+  { name: 'Flywheel Explanation — partner drill', std: '90-second explanation delivered to a partner — clearly enough that the partner can repeat the core loop without prompting. Partner says "yes, I follow that."', fail: 'Partner cannot repeat the loop. Or explanation exceeds 90 seconds. Or uses jargon the partner has to ask about. The audience is always the operator, not the trainer.' },
+  { name: 'Flywheel Design — ≥5 nodes', std: 'Complete flywheel with ≥5 nodes, each with a named data output, and a closed loop. Terminal node connects back to the starting node.', fail: 'Any node that is action-only with no data output. Or a chain that does not close back to the starting node. Or fewer than 5 nodes.' },
+  { name: 'Autonomy Test', std: 'When asked "if you leave for six months, does this system get better, stay the same, or get worse?" — answer is "better," with a specific explanation of the feedback loop that drives improvement.', fail: 'Answer of "stays the same" or "gets worse." Either answer indicates a Structured system, not an Intelligent one. Specific feedback loop must be named.' },
+];
+const state = new Array(REQS.length).fill(false);
+const showFail = new Array(REQS.length).fill(false);
+function render() {
+  document.getElementById('req-list').innerHTML = REQS.map((r, i) => `
+    <div class="req-card${state[i]?' pass':''}" onclick="toggle(${i})">
+      <div class="checkbox${state[i]?' checked':''}"></div>
+      <div style="flex:1">
+        <div class="req-name">${r.name}</div>
+        <div class="req-std">${r.std}</div>
+        <button class="fail-btn" onclick="toggleFail(event,${i})">${showFail[i]?'Hide':'Show'} failure mode</button>
+        <div class="fail-mode${showFail[i]?' show':''}">${r.fail}</div>
+      </div>
+    </div>`).join('');
+  const passed = state.filter(Boolean).length;
+  const bar = document.getElementById('result-bar');
+  bar.className='result-bar'+(passed===REQS.length?' pass':'');
+  bar.textContent=passed===REQS.length?'✓ All 5 passed — Module 11 unlocked':`${passed} / ${REQS.length} passed`;
+}
+function toggle(i){state[i]=!state[i];render();}
+function toggleFail(e,i){e.stopPropagation();showFail[i]=!showFail[i];render();}
+function resetAll(){state.fill(false);showFail.fill(false);document.getElementById('trainee-name').value='';render();}
+render();
+</script>
+</body>
+</html>

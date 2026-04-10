@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 01 — Kill Switch Trigger Logic</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  background: #f5f5f7;
+  color: #1D1D1F;
+  padding: 40px 28px;
+  max-width: 680px;
+  margin: 0 auto;
+}
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 5px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 3px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 28px; }
+
+.flow { display: flex; flex-direction: column; align-items: center; gap: 0; }
+
+.node {
+  width: 100%;
+  border-radius: 10px;
+  padding: 14px 20px;
+  text-align: center;
+}
+.node-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.node-text {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.trigger { background: #FCEBEB; border: 1.5px solid #A32D2D; }
+.trigger .node-label { color: #791F1F; }
+.trigger .node-text { color: #A32D2D; font-weight: 500; }
+
+.stop { background: #F7C1C1; border: 1px solid #A32D2D; }
+.stop .node-text { color: #501313; font-size: 15px; font-weight: 600; }
+
+.question { background: #F1EFE8; border: 1px solid #888780; }
+.question .node-text { color: #2C2C2A; }
+
+.arrow {
+  width: 2px;
+  height: 28px;
+  margin: 0 auto;
+  position: relative;
+}
+.arrow-line {
+  width: 1.5px;
+  height: 100%;
+  margin: 0 auto;
+}
+.arrow-line.red { background: #A32D2D; }
+.arrow-line.gray { background: #888780; }
+.arrow-head {
+  width: 0;
+  height: 0;
+  margin: 0 auto;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+}
+.arrow-head.red { border-top: 7px solid #A32D2D; }
+.arrow-head.gray { border-top: 7px solid #888780; }
+
+.branch-row {
+  display: grid;
+  grid-template-columns: 1fr 20px 1fr;
+  gap: 0;
+  width: 100%;
+  margin-top: 0;
+}
+.branch-col { display: flex; flex-direction: column; align-items: center; }
+.branch-divider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 0;
+}
+.branch-stem {
+  width: 1.5px;
+  height: 20px;
+  background: #888780;
+}
+.branch-bar {
+  width: 100%;
+  height: 1.5px;
+  background: #888780;
+  margin-top: 0;
+}
+.branch-label {
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  margin-top: 8px;
+}
+.branch-label.no { color: #A32D2D; }
+.branch-label.yes { color: #0F6E56; }
+.branch-arrow-down {
+  width: 1.5px;
+  height: 16px;
+  margin: 0 auto;
+}
+.branch-arrow-down.red { background: #A32D2D; }
+.branch-arrow-down.green { background: #0F6E56; }
+.branch-arrowhead {
+  width: 0; height: 0; margin: 0 auto;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+}
+.branch-arrowhead.red { border-top: 7px solid #A32D2D; }
+.branch-arrowhead.green { border-top: 7px solid #0F6E56; }
+
+.outcome {
+  border-radius: 10px;
+  padding: 14px 16px;
+  width: 100%;
+  text-align: center;
+}
+.outcome-head { font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+.outcome-body { font-size: 12px; line-height: 1.55; }
+
+.no-outcome { background: #FAECE7; border: 1px solid #993C1D; }
+.no-outcome .outcome-head { color: #712B13; }
+.no-outcome .outcome-body { color: #993C1D; }
+
+.yes-outcome { background: #E1F5EE; border: 1px solid #0F6E56; }
+.yes-outcome .outcome-head { color: #085041; }
+.yes-outcome .outcome-body { color: #0F6E56; }
+
+.caption {
+  margin-top: 24px;
+  font-size: 12px;
+  color: #8E8E93;
+  line-height: 1.65;
+  border-top: 0.5px solid #D1D1D6;
+  padding-top: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  .trigger { background: #2a0a0a; border-color: #A32D2D; }
+  .stop { background: #3a1010; border-color: #A32D2D; }
+  .stop .node-text { color: #F7C1C1; }
+  .question { background: #222; border-color: #555; }
+  .question .node-text { color: #c8c8c8; }
+  .no-outcome { background: #2a1008; border-color: #993C1D; }
+  .no-outcome .outcome-body { color: #F5C4B3; }
+  .yes-outcome { background: #082a1a; border-color: #0F6E56; }
+  .yes-outcome .outcome-body { color: #9FE1CB; }
+  .caption { border-top-color: #2a2a2a; }
+}
+@media print { body { background: #fff; padding: 20px; } }
+</style>
+</head>
+<body>
+
+<div class="meta">GroovConnect OAS™ · Module 01, Section 1 · Instructor Tool</div>
+<h1>Kill Switch — trigger logic</h1>
+<p class="sub">Applies from Module 01 forward. Does not expire.</p>
+
+<div class="flow">
+
+  <!-- TRIGGER -->
+  <div class="node trigger">
+    <div class="node-label">Kill Switch Trigger</div>
+    <div class="node-text">Trainee attributes a system outcome to a person — "lazy," "unmotivated," or "unreliable" used as an explanation for a system failure</div>
+  </div>
+
+  <!-- Arrow 1 -->
+  <div class="arrow">
+    <div class="arrow-line red"></div>
+    <div class="arrow-head red"></div>
+  </div>
+
+  <!-- STOP -->
+  <div class="node stop">
+    <div class="node-text">Stop the session immediately</div>
+  </div>
+
+  <!-- Arrow 2 -->
+  <div class="arrow">
+    <div class="arrow-line gray"></div>
+    <div class="arrow-head gray"></div>
+  </div>
+
+  <!-- QUESTION -->
+  <div class="node question">
+    <div class="node-text">"If that person were replaced tomorrow by someone equally motivated, would the outcome change?" — Pause. Wait for the answer.</div>
+  </div>
+
+  <!-- Branch -->
+  <div style="width:100%;display:flex;flex-direction:column;align-items:center">
+    <div style="width:1.5px;height:20px;background:#888780"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;width:80%;position:relative">
+      <div style="height:1.5px;background:#888780;margin-top:0;align-self:start"></div>
+      <div style="height:1.5px;background:#888780;margin-top:0;align-self:start"></div>
+    </div>
+  </div>
+
+  <!-- Branch outcomes -->
+  <div style="display:grid;grid-template-columns:1fr 32px 1fr;width:100%;gap:0;align-items:start">
+
+    <!-- No side -->
+    <div style="display:flex;flex-direction:column;align-items:center">
+      <div class="branch-label no">No</div>
+      <div class="branch-arrow-down red"></div>
+      <div class="branch-arrowhead red"></div>
+      <div style="height:8px"></div>
+      <div class="outcome no-outcome">
+        <div class="outcome-head">Failure is structural</div>
+        <div class="outcome-body">Reframe: "The system failed to filter, train, or incentivize. That is always where the diagnostic begins."</div>
+      </div>
+    </div>
+
+    <!-- spacer -->
+    <div></div>
+
+    <!-- Yes side -->
+    <div style="display:flex;flex-direction:column;align-items:center">
+      <div class="branch-label yes">Yes</div>
+      <div class="branch-arrow-down green"></div>
+      <div class="branch-arrowhead green"></div>
+      <div style="height:8px"></div>
+      <div class="outcome yes-outcome">
+        <div class="outcome-head">Possible Incentive or Selection failure</div>
+        <div class="outcome-body">Still audit Clarity and System layers fully before addressing incentives.</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="caption">This Kill Switch applies in every module from Module 01 forward — it does not expire. The goal is not to embarrass the trainee. The goal is to install the permanence test as an automatic checkpoint before any attribution is finalized.</div>
+
+</body>
+</html>

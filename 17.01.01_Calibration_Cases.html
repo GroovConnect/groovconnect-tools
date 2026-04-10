@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 17 — Calibration Library: Gold Standard Cases</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 700px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.no-show { font-size: 13px; color: #791F1F; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .no-show { background: #2a0a0a; color: #F09595; } }
+.case-tabs { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 16px; }
+.ctab { font-family: inherit; font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .ctab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.ctab.act { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.cpanel { display: none; }
+.cpanel.active { display: block; }
+.signal-box { background: #F1EFE8; border-radius: 12px; padding: 14px 18px; margin-bottom: 12px; }
+.signal-label { font-size: 11px; font-weight: 700; color: #5F5E5A; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 6px; }
+.signal-text { font-size: 14px; font-weight: 500; color: #1D1D1F; line-height: 1.5; }
+.signal-amateur { font-size: 12px; color: #A32D2D; margin-top: 6px; }
+@media (prefers-color-scheme: dark) { .signal-box { background: #222; } .signal-text { color: #e8e8e8; } }
+.gold-block { display: none; margin-top: 12px; }
+.gold-block.show { display: block; }
+.reveal-btn { font-family: inherit; font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: 8px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .reveal-btn { background: #2a2a2a; border-color: #444; color: #e8e8e8; } }
+/* CHAIN VISUAL */
+.chain-section { margin-bottom: 12px; }
+.chain-head { font-size: 11px; font-weight: 700; color: #0F6E56; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 8px; }
+.chain-canvas { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 12px; padding: 16px 20px; }
+@media (prefers-color-scheme: dark) { .chain-canvas { background: #1e1e1e; border-color: #333; } }
+.chain-node { border-radius: 7px; padding: 9px 14px; margin: 0 auto; width: 85%; display: flex; align-items: center; justify-content: center; text-align: center; min-height: 44px; font-size: 12px; line-height: 1.4; }
+.cn-root { background: #C0392B; color: #fff; font-weight: 600; }
+.cn-sys { background: #555555; color: #fff; }
+.cn-beh { background: #F2F3F4; color: #1D1D1F; border: 0.5px solid #D1D1D6; }
+@media (prefers-color-scheme: dark) { .cn-beh { background: #2a2a2a; color: #e8e8e8; border-color: #444; } }
+.cn-kpi { background: #1B2A4A; color: #fff; font-weight: 600; }
+.chain-arrow { text-align: center; padding: 2px 0; }
+.arrow-line { width: 2px; height: 14px; background: #1D1D1F; margin: 0 auto; }
+@media (prefers-color-scheme: dark) { .arrow-line { background: #e8e8e8; } }
+.arrow-head { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 6px solid #1D1D1F; margin: 0 auto; }
+@media (prefers-color-scheme: dark) { .arrow-head { border-top-color: #e8e8e8; } }
+.arrow-label { font-size: 10px; color: #555; font-style: italic; text-align: center; padding: 1px 4px; line-height: 1.3; max-width: 260px; margin: 0 auto; }
+@media (prefers-color-scheme: dark) { .arrow-label { color: #9a9a9a; } }
+/* Anchor + cap */
+.anchor-block { background: #E1F5EE; border-radius: 8px; padding: 10px 14px; margin-top: 8px; margin-bottom: 8px; font-size: 13px; color: #085041; line-height: 1.6; font-family: "SFMono-Regular", Menlo, monospace; }
+@media (prefers-color-scheme: dark) { .anchor-block { background: #052e1e; color: #9FE1CB; } }
+.cap-block { background: #E6F1FB; border-radius: 8px; padding: 8px 12px; font-size: 13px; color: #0C447C; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .cap-block { background: #0a1f3a; color: #B5D4F4; } }
+.label-row { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.color-key { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #6E6E73; }
+.ck-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 17 · Calibration Library</div>
+<h1>Calibration Library — Gold Standard Cases</h1>
+<p class="sub">Present only the Raw Signal first. Trainee diagnoses before seeing the Gold Standard. The gap between what they produce and what is shown here is the calibration feedback.</p>
+<div class="no-show">Do not reveal the Gold Standard until the trainee has submitted their own root cause, causal chain, economic anchor, and capability match in Lucidchart.</div>
+<div class="label-row">
+  <div class="color-key"><div class="ck-dot" style="background:#C0392B"></div>Root Cause</div>
+  <div class="color-key"><div class="ck-dot" style="background:#555555"></div>System Layer</div>
+  <div class="color-key"><div class="ck-dot" style="background:#D1D1D6;border:0.5px solid #aaa"></div>Behavior Step</div>
+  <div class="color-key"><div class="ck-dot" style="background:#1B2A4A"></div>KPI Outcome</div>
+</div>
+
+<div class="case-tabs">
+  <button class="ctab act" id="ctab-a" onclick="switchCase('a')">Case A — Invisible Churn</button>
+  <button class="ctab" id="ctab-b" onclick="switchCase('b')">Case B — Trial-to-Ghost</button>
+  <button class="ctab" id="ctab-c" onclick="switchCase('c')">Case C — Admin Overload</button>
+  <button class="ctab" id="ctab-d" onclick="switchCase('d')">Case D — Piano Waitlist</button>
+</div>
+
+<!-- CASE A -->
+<div class="cpanel active" id="cpanel-a">
+  <div class="signal-box">
+    <div class="signal-label">Raw Signal — present to trainee</div>
+    <div class="signal-text">Retention dropped from 88% to 74% at a single location over 6 months. High instructor turnover noted.</div>
+    <div class="signal-amateur">Amateur diagnosis: instructors leaving caused the churn.</div>
+  </div>
+  <button class="reveal-btn" id="rb-a" onclick="revealCase('a')">Reveal Gold Standard (chain + anchor + capability)</button>
+  <div class="gold-block" id="gold-a">
+    <div class="chain-section">
+      <div class="chain-head">Gold Standard — Lucidchart Causal Chain</div>
+      <div class="chain-canvas">
+        <div class="chain-node cn-root">No DISC-based matching system — instructor assigned by availability, no compatibility screen</div>
+        <div class="chain-arrow"><div class="arrow-line"></div><div class="arrow-label">Leaves student–instructor compatibility to chance</div><div class="arrow-head"></div></div>
+        <div class="chain-node cn-sys">Student/instructor communication styles misalign — rapport fails to develop</div>
+        <div class="chain-arrow"><div class="arrow-line"></div><div class="arrow-label">Disengages student from practice and progress</div><div class="arrow-head"></div></div>
+        <div class="chain-node cn-beh">Student disengages from practice — progress stalls; lessons feel like an obligation</div>
+        <div class="chain-arrow"><div class="arrow-line"></div><div class="arrow-label">Shifts parent perception from investment to expense</div><div class="arrow-head"></div></div>
+        <div class="chain-node cn-beh">Parent perceives ongoing cost without visible progress — re-evaluates enrollment</div>
+        <div class="chain-arrow"><div class="arrow-line"></div><div class="arrow-label">Produces cancellation — relationship with instructor, not school</div><div class="arrow-head"></div></div>
+        <div class="chain-node cn-kpi">Retention drops 14 points (88% → 74%) → $33,600 annual leakage</div>
+      </div>
+    </div>
+    <div class="anchor-block">(88% − 74%) × 200 students × $1,200 LTV = $33,600<br>All three inputs stated explicitly before the figure.</div>
+    <div class="cap-block"><strong>Capability Match:</strong> Matching Engine (ACA/DISC) — closes the compatibility gap that is the structural root cause. The instructor departure is a symptom; the absence of a school-level relationship is the fracture.</div>
+  </div>
+</div>
+
+<!-- CASE B -->
+<div class="cpanel" id="cpanel-b">
+  <div class="signal-box">
+    <div class="signal-label">Raw Signal — present to trainee</div>
+    <div class="signal-text">Trial conversion: 65%. 30-day post-enrollment churn: 31%. Combined effective conversion: 45%.</div>
+    <div class="signal-amateur">Amateur diagnosis: need a better sales script to improve conversion.</div>
+  </div>
+  <button class="reveal-btn" id="rb-b" onclick="revealCase('b')">Reveal Gold Standard</button>
+  <div class="gold-block" id="gold-b">
+    <div class="chain-section">
+      <div class="chain-head">Gold Standard — Lucidchart Causal Chain</div>
+      <div class="chain-canvas">
+        <div class="chain-node cn-root">No structured post-enrollment expectation-setting system — trial over-promises standard delivery</div>
+        <div class="chain-arrow"><div class="arrow-line"></div><div class="arrow-label">Creates expectation gap before first lesson</div><div class="arrow-head"></div></div>
+        <div class="chain-node cn-sys">Enrollment conversation sets experience expectations that standard lesson delivery does not meet</div>
+        <div class="chain-arrow"><div class="arrow-line"></div><div class="arrow-label">Month 1 reality falls short of trial experience</div><div class="arrow-head"></div></div>
+        <div class="chain-node cn-beh">Parent re-evaluates the investment decision within the first 30 days</div>
+        <div class="chain-arrow"><div class="arrow-line"></div><div class="arrow-label">Triggers early cancellation before relationship is established</div><div class="arrow-head"></div></div>
+        <div class="chain-node cn-kpi">31% of 16.25 monthly enrollments cancel → $57,000 annual leakage</div>
+      </div>
+    </div>
+    <div class="anchor-block">25 trials × 65% = 16.25 enrollments/month<br>31% of 16.25 = 5 cancellations in month 1<br>5 × 12 × $950 LTV = $57,000/year</div>
+    <div class="cap-block"><strong>Capability Match:</strong> Communication System — Parent Update Automation for the first 30 days post-enrollment. Closes the expectation gap before it produces early churn. The fix is in onboarding, not sales.</div>
+  </div>
+</div>
+
+<!-- CASE C -->
+<div class="cpanel" id="cpanel-c">
+  <div class="signal-box">
+    <div class="signal-label">Raw Signal — present to trainee</div>
+    <div class="signal-text">Admin labor hours increased 25% over 6 months while student count remained flat.</div>
+    <div class="signal-amateur">Amateur diagnosis: need a faster or better-organized office manager.</div>
+  </div>
+  <button class="reveal-btn" id="rb-c" onclick="revealCase('c')">Reveal Gold Standard</button>
+  <div class="gold-block" id="gold-c">
+    <div class="chain-section">
+      <div class="chain-head">Gold Standard — Lucidchart Causal Chain</div>
+      <div class="chain-canvas">
+        <div class="chain-node cn-root">No closed-loop reschedule policy — no resolution gate exists in the scheduling workflow</div>
+        <div class="chain-arrow"><div class="arrow-line"></div><div class="arrow-label">Leaves every reschedule as an indefinite open task</div><div class="arrow-head"></div></div>
+        <div class="chain-node cn-sys">Every reschedule request creates an open, unresolved manual task that accumulates weekly</div>
+        <div class="chain-arrow"><div class="arrow-line"></div><div class="arrow-label">Consumes admin capacity chasing open reschedules</div><div class="arrow-head"></div></div>
+        <div class="chain-node cn-beh">Admin spends increasing hours manually tracking and following up on unresolved reschedules</div>
+        <div class="chain-arrow"><div class="arrow-line"></div><div class="arrow-label">Inflates labor cost without corresponding revenue increase</div><div class="arrow-head"></div></div>
+        <div class="chain-node cn-kpi">25% admin labor increase → $10,400 annual cost inflation + opportunity cost of consumed capacity</div>
+      </div>
+    </div>
+    <div class="anchor-block">10 extra admin hours/week × $20/hr × 52 weeks = $10,400/year<br>+ opportunity cost of admin capacity consumed by manual reschedule chasing</div>
+    <div class="cap-block"><strong>Capability Match:</strong> Scheduling Optimization — Closed-Loop Reschedule System. Automates the reschedule resolution gate. The admin is not inefficient — the system has no resolution gate.</div>
+  </div>
+</div>
+
+<!-- CASE D -->
+<div class="cpanel" id="cpanel-d">
+  <div class="signal-box">
+    <div class="signal-label">Raw Signal — instructor-only; trainee diagnoses from raw signal only</div>
+    <div class="signal-text">School has 180 students. Piano waiting list: 22 names. Piano accounts for 35% of all lesson requests but only 18% of delivered lessons. Four piano instructors: two consistently underbooked, two overbooked. Admin receives 6–8 weekly calls about piano availability.</div>
+  </div>
+  <button class="reveal-btn" id="rb-d" onclick="revealCase('d')">Reveal Gold Standard</button>
+  <div class="gold-block" id="gold-d">
+    <div class="chain-section">
+      <div class="chain-head">Gold Standard — Lucidchart Causal Chain</div>
+      <div class="chain-canvas">
+        <div class="chain-node cn-root">No instrument-demand tracking system — instructor allocation based on generic availability, not demand</div>
+        <div class="chain-arrow"><div class="arrow-line"></div><div class="arrow-label">Misallocates piano slots: 2 instructors underbooked, 2 overbooked</div><div class="arrow-head"></div></div>
+        <div class="chain-node cn-sys">Piano slot allocation reflects legacy scheduling habits, not the actual 35% demand signal</div>
+        <div class="chain-arrow"><div class="arrow-line"></div><div class="arrow-label">Forces 22 interested students onto a waitlist</div><div class="arrow-head"></div></div>
+        <div class="chain-node cn-beh">22 families on piano waitlist — revenue-ready students unable to enroll</div>
+        <div class="chain-arrow"><div class="arrow-line"></div><div class="arrow-label">Prevents revenue that would otherwise exist</div><div class="arrow-head"></div></div>
+        <div class="chain-node cn-kpi">Piano waitlist of 22 → $30,492/year in unrealized revenue</div>
+      </div>
+    </div>
+    <div class="anchor-block">22 students × $210 tuition × 55% gross margin = $2,541/month<br>$2,541 × 12 = $30,492/year<br>Note: this is an opportunity gap — revenue prevented, not lost. State all three inputs explicitly.</div>
+    <div class="cap-block"><strong>Capability Match:</strong> Scheduling Optimization — instrument demand tracking and capacity reallocation. This is not a capacity shortage — it is a misallocation failure. Adequate total capacity exists.</div>
+  </div>
+</div>
+
+<script>
+function revealCase(id) { document.getElementById(`gold-${id}`).classList.add('show'); document.getElementById(`rb-${id}`).style.display='none'; }
+function switchCase(id) {
+  ['a','b','c','d'].forEach(c => {
+    document.getElementById(`cpanel-${c}`).classList.toggle('active', c===id);
+    document.getElementById(`ctab-${c}`).className='ctab'+(c===id?' act':'');
+  });
+}
+</script>
+</body>
+</html>

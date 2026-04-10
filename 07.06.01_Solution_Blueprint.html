@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 07 — Solution Design Blueprint</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.binary-rule { font-size: 13px; color: #791F1F; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .binary-rule { background: #2a0a0a; color: #F09595; } }
+.element-row { display: grid; grid-template-columns: 36px 1fr; gap: 0; margin-bottom: 4px; }
+.el-num { display: flex; align-items: flex-start; justify-content: center; padding-top: 13px; font-size: 12px; font-weight: 700; color: #fff; border-radius: 8px 0 0 8px; flex-shrink: 0; }
+.el-body { border-radius: 0 8px 8px 0; padding: 12px 16px; cursor: pointer; transition: opacity .12s; }
+.el-body:hover { opacity: .93; }
+.el-name { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+.el-def { font-size: 12px; line-height: 1.55; }
+.el-example { font-size: 12px; font-style: italic; margin-top: 6px; padding: 8px 10px; border-radius: 6px; display: none; line-height: 1.55; }
+.el-example.show { display: block; }
+.el-tap { font-size: 11px; color: #AEAEB2; margin-top: 3px; }
+
+.e1 .el-num { background: #185FA5; } .e1 .el-body { background: #E6F1FB; } .e1 .el-name { color: #0C447C; } .e1 .el-def { color: #185FA5; } .e1 .el-example { background: #B5D4F4; color: #042C53; }
+.e2 .el-num { background: #378ADD; } .e2 .el-body { background: #ddeef9; } .e2 .el-name { color: #0C447C; } .e2 .el-def { color: #185FA5; } .e2 .el-example { background: #B5D4F4; color: #042C53; }
+.e3 .el-num { background: #534AB7; } .e3 .el-body { background: #EEEDFE; } .e3 .el-name { color: #26215C; } .e3 .el-def { color: #534AB7; } .e3 .el-example { background: #CECBF6; color: #26215C; }
+.e4 .el-num { background: #BA7517; } .e4 .el-body { background: #FAEEDA; } .e4 .el-name { color: #633806; } .e4 .el-def { color: #854F0B; } .e4 .el-example { background: #FAC775; color: #412402; }
+.e5 .el-num { background: #993C1D; } .e5 .el-body { background: #FAECE7; } .e5 .el-name { color: #712B13; } .e5 .el-def { color: #993C1D; } .e5 .el-example { background: #F5C4B3; color: #4A1B0C; }
+.e6 .el-num { background: #0F6E56; } .e6 .el-body { background: #E1F5EE; } .e6 .el-name { color: #085041; } .e6 .el-def { color: #0F6E56; } .e6 .el-example { background: #9FE1CB; color: #04342C; }
+.e7 .el-num { background: #1D9E75; } .e7 .el-body { background: #9FE1CB; } .e7 .el-name { color: #04342C; } .e7 .el-def { color: #085041; } .e7 .el-example { background: #5DCAA5; color: #04342C; }
+
+@media (prefers-color-scheme: dark) {
+  .e1 .el-body { background: #0a1f3a; } .e1 .el-def { color: #85B7EB; } .e1 .el-example { background: #0C447C; color: #B5D4F4; }
+  .e2 .el-body { background: #0a1525; } .e2 .el-def { color: #85B7EB; } .e2 .el-example { background: #0C447C; color: #B5D4F4; }
+  .e3 .el-body { background: #1a1730; } .e3 .el-def { color: #AFA9EC; } .e3 .el-example { background: #26215C; color: #CECBF6; }
+  .e4 .el-body { background: #2a1a00; } .e4 .el-def { color: #EF9F27; } .e4 .el-example { background: #412402; color: #FAC775; }
+  .e5 .el-body { background: #2a1208; } .e5 .el-def { color: #F0997B; } .e5 .el-example { background: #4A1B0C; color: #F5C4B3; }
+  .e6 .el-body { background: #052e1e; } .e6 .el-def { color: #5DCAA5; } .e6 .el-example { background: #085041; color: #9FE1CB; }
+  .e7 .el-body { background: #085041; } .e7 .el-def { color: #9FE1CB; } .e7 .el-example { background: #0F6E56; color: #E1F5EE; }
+}
+.track-note { font-size: 12px; color: #085041; background: #E1F5EE; border-left: 3px solid #1D9E75; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .track-note { background: #052e1e; color: #9FE1CB; } }
+.controls { display: flex; gap: 8px; margin-top: 12px; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 07, Section 6 · Reference Card</div>
+<h1>Solution Design Blueprint — 7 elements</h1>
+<p class="sub">Every proposed solution is incomplete until all seven elements are present. Tap each to reveal the gold standard example.</p>
+<div class="binary-rule">A recommendation missing any element cannot be implemented cleanly. The operator will encounter the missing information as a friction point during deployment and either stall or fill the gap incorrectly.</div>
+
+<div id="elements"></div>
+<div class="track-note">Element 7 — Automated Tracking Test: Can the system prove it is working from 1,000 miles away? If the answer requires asking anyone at the school, the tracking mechanism is missing. "We'll check" is not a tracking method. Required: a CRM report, automated dashboard flag, or time-stamped completion log that updates without human input.</div>
+<div class="controls">
+  <button class="primary" onclick="revealAll()">Reveal all examples</button>
+  <button class="secondary" onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+const ELEMENTS = [
+  { cls:'e1', name:'1. Problem Definition', def:'Clear, measurable statement of what is wrong.', example:'"Retention rate dropped from 85% to 71% over 60 days — a 14-point deficit vs. the network average of 85%." Not: "retention is low."' },
+  { cls:'e2', name:'2. Root Cause', def:'The validated structural cause, derived from the diagnostic chain.', example:'"No DISC-based compatibility matching system — instructors assigned by availability only." Not: "poor instructor matching."' },
+  { cls:'e3', name:'3. System Gap', def:'Precisely what mechanism is missing.', example:'"No algorithmic matching layer — compatibility is undocumented, untracked, and unmeasurable." Specific enough to build from this description alone.' },
+  { cls:'e4', name:'4. Solution', def:'The specific GroovConnect capability that closes the gap.', example:'"Matching Engine with ACA/DISC integration" — not "better matching." Named capability, not a category.' },
+  { cls:'e5', name:'5. Implementation Plan', def:'Step-by-step actions and timeline. Every step has an owner, timing, and a completion threshold.', example:'Phase 1–4 structure. ACA setup in week 1, DISC profiles loaded by week 2, matching logic activated by week 3, baseline MSOI reviewed at day 30.' },
+  { cls:'e6', name:'6. Expected Outcome', def:'The specific KPI movement and financial impact the solution will produce.', example:'"Retention from 71% → 80% in 90 days. Annual leakage reduction: ~$28,000 at 200 students, $1,200 LTV."' },
+  { cls:'e7', name:'7. Tracking Method', def:'How success is measured without asking anyone — the automated verification mechanism.', example:'"MSOI score weekly; retention rate vs. 85% network baseline; match score distribution tracked by CRM. Alert fires when weekly retention falls below 80%."' },
+];
+const open = new Array(ELEMENTS.length).fill(false);
+function render() {
+  document.getElementById('elements').innerHTML = ELEMENTS.map((e, i) => `
+    <div class="element-row ${e.cls}" onclick="toggle(${i})">
+      <div class="el-num">${i+1}</div>
+      <div class="el-body">
+        <div class="el-name">${e.name}</div>
+        <div class="el-def">${e.def}</div>
+        <div class="el-example${open[i]?' show':''}">${e.example}</div>
+        <div class="el-tap">${open[i] ? '' : 'tap for example'}</div>
+      </div>
+    </div>`).join('');
+}
+function toggle(i) { open[i] = !open[i]; render(); }
+function revealAll() { open.fill(true); render(); }
+function resetAll() { open.fill(false); render(); }
+render();
+</script>
+</body>
+</html>

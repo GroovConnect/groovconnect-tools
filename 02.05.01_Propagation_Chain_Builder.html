@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 02 — Propagation Chain Builder</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.chain-rule { font-size: 13px; color: #0C447C; background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 20px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .chain-rule { background: #0a1f3a; color: #B5D4F4; } }
+.pips { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; }
+.pip { width: 8px; height: 8px; border-radius: 50%; background: #D1D1D6; transition: background .2s; flex-shrink: 0; }
+@media (prefers-color-scheme: dark) { .pip { background: #3a3a3a; } }
+.pip.on { background: #185FA5; transform: scale(1.3); }
+.pip-label { font-size: 12px; color: #8E8E93; margin-left: 4px; }
+.failure-card { background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 12px 12px 0; padding: 14px 18px; margin-bottom: 12px; }
+.failure-label { font-size: 11px; font-weight: 700; color: #A32D2D; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 6px; }
+.failure-text { font-size: 15px; font-weight: 500; color: #791F1F; line-height: 1.45; }
+.link-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
+.link-badge { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 2px; text-align: center; line-height: 1.2; }
+.lb-f { background: #FCEBEB; color: #A32D2D; }
+.lb-b { background: #FAEEDA; color: #854F0B; }
+.lb-e { background: #E6F1FB; color: #185FA5; }
+.lb-k { background: #E1F5EE; color: #085041; }
+.link-body { flex: 1; background: #fff; border: 0.5px solid #D1D1D6; border-radius: 0 10px 10px 0; padding: 10px 14px; cursor: pointer; transition: background .12s; }
+@media (prefers-color-scheme: dark) { .link-body { background: #1e1e1e; border-color: #333; } .link-body:hover { background: #252525; } }
+.link-body:hover { background: #fafafa; }
+.link-phase { font-size: 11px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 4px; }
+.lp-f { color: #A32D2D; }
+.lp-b { color: #854F0B; }
+.lp-e { color: #185FA5; }
+.lp-k { color: #085041; }
+.link-text { font-size: 13px; color: #3A3A3C; line-height: 1.55; display: none; }
+@media (prefers-color-scheme: dark) { .link-text { color: #c8c8c8; } }
+.link-text.show { display: block; }
+.link-tap { font-size: 11px; color: #AEAEB2; font-style: italic; }
+.error-box { background: #FAEEDA; border-left: 3px solid #BA7517; border-radius: 0 10px 10px 0; padding: 12px 16px; font-size: 13px; color: #633806; line-height: 1.55; margin-top: 12px; display: none; }
+.error-box.show { display: block; }
+.error-head { font-weight: 600; margin-bottom: 4px; }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+.ks-note { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .ks-note { background: #2a0a0a; color: #F09595; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 02, Section 5 · Chain Builder</div>
+<h1>Propagation chain — four-link builder</h1>
+<p class="sub">Present the failure node. Trainee builds all four links aloud — no pausing, no notes. Reveal one link at a time.</p>
+<div class="chain-rule">Four mandatory links: Failure → Behavior Change → Experience Degradation → KPI Impact. A human actor at every link. A chain that jumps from Behavior Change to KPI without passing through human experience is an assertion, not a causal argument.</div>
+
+<div class="pips" id="pips"></div>
+<div id="main"></div>
+<div class="controls">
+  <button class="primary" id="reveal-btn" onclick="revealNext()">Reveal next link</button>
+  <button class="secondary" onclick="revealAll()">Reveal all</button>
+  <button class="secondary" onclick="nextScenario()">Next scenario</button>
+  <button class="secondary" onclick="resetAll()">Reset</button>
+</div>
+<div class="ks-note">Kill Switch: trainee connects Behavior Change directly to KPI Impact, skipping Experience Degradation. Stop. "What does the affected person feel between that behavior and the metric change? What decision does that feeling produce?"</div>
+
+<script>
+const SCENARIOS = [
+  {
+    failure: 'No automated 24-hour trial follow-up trigger in the enrollment workflow.',
+    links: [
+      { cls: 'f', badge: 'lb-f', phase: 'lp-f', label: 'Failure', text: 'Enrollment workflow has no task auto-generation after trial completion.' },
+      { cls: 'b', badge: 'lb-b', phase: 'lp-b', label: 'Behavior change', text: 'Front desk contacts the trial family 36–48 hours after the lesson — beyond the optimal engagement window.' },
+      { cls: 'e', badge: 'lb-e', phase: 'lp-e', label: 'Experience degradation', text: 'Trial family perceives the school as disorganized. They have spent 36 hours researching alternatives and their initial enthusiasm has cooled.' },
+      { cls: 'k', badge: 'lb-k', phase: 'lp-k', label: 'KPI impact', text: 'Trial conversion drops from 71% to 49% — $7,084/month in lost revenue at $920 LTV and 35 trials/month. Annualized: $85,008.' },
+    ],
+    error: 'Most common error: trainee connects "front desk calls late" directly to "conversion drops" without naming the parent\'s experience. The internal experience is the causal mechanism — without it the argument is a correlation, not a cause.'
+  },
+  {
+    failure: 'No lesson note submission gate — submission is optional, not enforced by the system.',
+    links: [
+      { cls: 'f', badge: 'lb-f', phase: 'lp-f', label: 'Failure', text: 'Standardization System has no mandatory submission mechanism — notes are optional.' },
+      { cls: 'b', badge: 'lb-b', phase: 'lp-b', label: 'Behavior change', text: 'Instructors skip notes under time pressure — compliance is entirely discretionary.' },
+      { cls: 'e', badge: 'lb-e', phase: 'lp-e', label: 'Experience degradation', text: 'Parents receive no post-lesson update on their child\'s progress. They perceive the school as disengaged and begin to question the value.' },
+      { cls: 'k', badge: 'lb-k', phase: 'lp-k', label: 'KPI impact', text: 'Parent-perceived value drops. Churn rises in the 3–6 month window — the point where value must be demonstrated or the parent cancels.' },
+    ],
+    error: 'Most common error: vague behavior change — "instructor behavior changes" — without specifying what changes. Required: notes are skipped, parents receive no update. Vague behavior produces a vague economic stake the operator won\'t believe.'
+  },
+];
+
+let cur = 0;
+let revealed = 0;
+
+function render() {
+  document.getElementById('pips').innerHTML =
+    SCENARIOS.map((_, i) => `<div class="pip${i === cur ? ' on' : ''}"></div>`).join('') +
+    `<span class="pip-label">Scenario ${cur + 1} of ${SCENARIOS.length}</span>`;
+
+  if (cur >= SCENARIOS.length) {
+    document.getElementById('main').innerHTML = '<div style="text-align:center;padding:32px 0"><p style="font-size:16px;font-weight:500">Both scenarios complete.</p></div>';
+    document.getElementById('reveal-btn').style.display = 'none';
+    return;
+  }
+
+  revealed = 0;
+  document.getElementById('reveal-btn').style.display = '';
+  const s = SCENARIOS[cur];
+  document.getElementById('main').innerHTML = `
+    <div class="failure-card">
+      <div class="failure-label">Failure node — present to trainee</div>
+      <div class="failure-text">${s.failure}</div>
+    </div>
+    ${s.links.map((l, i) => `
+      <div class="link-row" id="lr-${i}">
+        <div class="link-badge ${l.badge}">${i + 1}</div>
+        <div class="link-body" onclick="revealLink(${i})">
+          <div class="link-phase ${l.phase}">${l.label}</div>
+          <div class="link-text${revealed > i ? ' show' : ''}" id="lt-${i}">${l.text}</div>
+          <div class="link-tap" id="lh-${i}">${revealed > i ? '' : 'tap to reveal'}</div>
+        </div>
+      </div>`).join('')}
+    <div class="error-box" id="err-box">
+      <div class="error-head">Watch for — common error</div>
+      ${s.error}
+    </div>`;
+}
+
+function revealLink(i) {
+  const s = SCENARIOS[cur];
+  for (let j = 0; j <= i; j++) {
+    const lt = document.getElementById(`lt-${j}`);
+    const lh = document.getElementById(`lh-${j}`);
+    if (lt) lt.classList.add('show');
+    if (lh) lh.textContent = '';
+    revealed = Math.max(revealed, j + 1);
+  }
+  if (revealed >= s.links.length) document.getElementById('err-box').classList.add('show');
+}
+function revealNext() { if (cur < SCENARIOS.length) revealLink(revealed); }
+function revealAll() { if (cur < SCENARIOS.length) revealLink(SCENARIOS[cur].links.length - 1); }
+function nextScenario() { cur++; render(); }
+function resetAll() { cur = 0; render(); document.getElementById('reveal-btn').style.display = ''; }
+render();
+</script>
+</body>
+</html>

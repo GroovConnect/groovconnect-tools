@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 01 — Sim 1: Bias Detection</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  background: #f5f5f7;
+  color: #1D1D1F;
+  padding: 32px 24px;
+  max-width: 640px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 22px; }
+.hdr {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.timer-d {
+  font-size: 36px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: #1D1D1F;
+  letter-spacing: -1px;
+  transition: color .3s;
+}
+@media (prefers-color-scheme: dark) { .timer-d { color: #e8e8e8; } }
+.timer-d.urgent { color: #C0392B; }
+.progress-txt { font-size: 13px; color: #8E8E93; }
+.card {
+  background: #fff;
+  border: 0.5px solid #D1D1D6;
+  border-radius: 14px;
+  padding: 22px 24px;
+  margin-bottom: 14px;
+}
+@media (prefers-color-scheme: dark) { .card { background: #1e1e1e; border-color: #333; } }
+.sim-label { font-size: 11px; font-weight: 600; color: #A32D2D; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 8px; }
+.statement { font-size: 17px; font-weight: 500; font-style: italic; color: #1D1D1F; margin-bottom: 6px; line-height: 1.45; }
+@media (prefers-color-scheme: dark) { .statement { color: #e8e8e8; } }
+.bias-hint { font-size: 12px; color: #8E8E93; margin-bottom: 14px; }
+.reveal-btn {
+  font-family: inherit; font-size: 13px; font-weight: 500;
+  padding: 8px 18px; border-radius: 8px;
+  border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer;
+}
+@media (prefers-color-scheme: dark) { .reveal-btn { background: #2a2a2a; border-color: #444; color: #e8e8e8; } }
+.answer-block {
+  margin-top: 14px;
+  padding: 12px 16px;
+  border-radius: 0 8px 8px 0;
+  display: none;
+}
+.answer-block.visible { display: block; }
+.answer-block.bias-name { background: #FAEEDA; border-left: 3px solid #BA7517; }
+.answer-head { font-size: 12px; font-weight: 600; color: #854F0B; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 4px; }
+.answer-text { font-size: 13px; color: #633806; line-height: 1.55; }
+.correction-block {
+  margin-top: 8px;
+  padding: 10px 14px;
+  background: #E1F5EE;
+  border-left: 3px solid #0F6E56;
+  border-radius: 0 8px 8px 0;
+  display: none;
+}
+.correction-block.visible { display: block; }
+.corr-head { font-size: 12px; font-weight: 600; color: #0F6E56; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 4px; }
+.corr-text { font-size: 13px; color: #085041; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .corr-text { color: #9FE1CB; } }
+.score-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #E6F1FB;
+  border-radius: 99px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #185FA5;
+  margin-bottom: 16px;
+}
+.controls { display: flex; gap: 8px; flex-wrap: wrap; }
+button.primary {
+  font-family: inherit; font-size: 14px; font-weight: 500;
+  padding: 9px 22px; border-radius: 9px; border: none;
+  background: #1D1D1F; color: #fff; cursor: pointer;
+}
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } }
+button.secondary {
+  font-family: inherit; font-size: 14px; font-weight: 500;
+  padding: 9px 22px; border-radius: 9px;
+  border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer;
+}
+@media (prefers-color-scheme: dark) { button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 01, Section 6 · Simulation 1</div>
+<h1>Sim 1 — Bias detection (rapid-fire)</h1>
+<p class="sub">5 scenarios · 30 seconds each · Name the bias + structural correction before time expires.</p>
+
+<div class="hdr">
+  <div class="timer-d" id="timer">30</div>
+  <div class="progress-txt" id="prog">1 of 5</div>
+</div>
+
+<div class="score-pill" id="score-pill">Score: 0 / 5</div>
+
+<div id="card-area"></div>
+
+<div class="controls">
+  <button class="primary" id="main-btn" onclick="mainAction()">Start timer</button>
+  <button class="secondary" onclick="nextSim()">Next scenario</button>
+  <button class="secondary" onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+const SIMS = [
+  {
+    id: '1.1',
+    statement: '"We just had our worst month ever. Everything is broken."',
+    bias: 'Recency Bias',
+    correction: 'Pull 7/30/90-day averages. One bad month is noise until confirmed by trend. Force the trainee to name a baseline before accepting the narrative.'
+  },
+  {
+    id: '1.2',
+    statement: '"The owner has 15 years of experience. If she says the matching process works, it works."',
+    bias: 'Authority Bias',
+    correction: 'Request the KPI data that demonstrates the matching process produces retention outcomes. Tenure is not a KPI.'
+  },
+  {
+    id: '1.3',
+    statement: '"I know retention is probably the root cause, but the owner wants to talk about scheduling first."',
+    bias: 'Approval Seeking',
+    correction: 'The Master Sequence is non-negotiable. Operator preference does not reorder the diagnostic chain.'
+  },
+  {
+    id: '1.4',
+    statement: '"Our retention is 78%. I\'ve seen schools at 60%, so we\'re fine."',
+    bias: 'Confirmation Bias',
+    correction: 'The network average is 85%. A 7-point deficit is not a success. Force the comparison against the correct benchmark.'
+  },
+  {
+    id: '1.5',
+    statement: '"We lost three students this week — let\'s immediately redesign onboarding."',
+    bias: 'Action Bias',
+    correction: 'Pull the 30-day trend before recommending action. Three students may be statistical noise.'
+  },
+];
+
+let cur = 0;
+let score = 0;
+let timerInterval = null;
+let seconds = 30;
+let running = false;
+let timedOut = false;
+
+function fmt(s) { return String(s); }
+
+function render() {
+  const prog = document.getElementById('prog');
+  const mb = document.getElementById('main-btn');
+
+  if (cur >= SIMS.length) {
+    document.getElementById('card-area').innerHTML = `
+      <div style="text-align:center;padding:32px 0">
+        <p style="font-size:20px;font-weight:500;margin-bottom:8px">Complete — ${score}/5</p>
+        <p style="font-size:13px;color:#6E6E73">${score >= 4 ? 'Pass — 4 of 5 correct required.' : 'Below pass threshold. Re-run the drill.'}</p>
+      </div>`;
+    mb.style.display = 'none';
+    prog.textContent = 'Done';
+    return;
+  }
+
+  const s = SIMS[cur];
+  prog.textContent = `${cur + 1} of ${SIMS.length}`;
+  mb.style.display = '';
+
+  document.getElementById('card-area').innerHTML = `
+    <div class="card">
+      <div class="sim-label">Scenario ${s.id}</div>
+      <div class="statement">${s.statement}</div>
+      <div class="bias-hint">Name the bias, then state the structural correction.</div>
+      <button class="reveal-btn" onclick="reveal()">Reveal answer</button>
+      <div class="answer-block bias-name" id="ans-block">
+        <div class="answer-head">Bias</div>
+        <div class="answer-text">${s.bias}</div>
+      </div>
+      <div class="correction-block" id="corr-block">
+        <div class="corr-head">Structural correction</div>
+        <div class="corr-text">${s.correction}</div>
+      </div>
+    </div>`;
+
+  resetTimer();
+}
+
+function reveal() {
+  clearInterval(timerInterval);
+  running = false;
+  timedOut = true;
+  document.getElementById('ans-block').classList.add('visible');
+  document.getElementById('corr-block').classList.add('visible');
+  document.getElementById('main-btn').textContent = 'Reset timer';
+  document.getElementById('timer').className = 'timer-d passed';
+  document.getElementById('timer').style.color = '#0F6E56';
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  running = false;
+  timedOut = false;
+  seconds = 30;
+  const el = document.getElementById('timer');
+  el.textContent = fmt(seconds);
+  el.className = 'timer-d';
+  el.style.color = '';
+  document.getElementById('main-btn').textContent = 'Start timer';
+}
+
+function mainAction() {
+  if (!running && !timedOut) {
+    running = true;
+    document.getElementById('main-btn').textContent = 'Running…';
+    timerInterval = setInterval(() => {
+      seconds--;
+      const el = document.getElementById('timer');
+      el.textContent = fmt(seconds);
+      if (seconds <= 8) el.className = 'timer-d urgent';
+      if (seconds <= 0) {
+        clearInterval(timerInterval);
+        running = false;
+        timedOut = true;
+        document.getElementById('main-btn').textContent = 'Reset timer';
+      }
+    }, 1000);
+  } else if (timedOut) {
+    resetTimer();
+  }
+}
+
+function nextSim() {
+  clearInterval(timerInterval);
+  cur++;
+  render();
+}
+
+function markPass() {
+  score++;
+  document.getElementById('score-pill').textContent = `Score: ${score} / ${SIMS.length}`;
+}
+
+function resetAll() {
+  clearInterval(timerInterval);
+  cur = 0;
+  score = 0;
+  document.getElementById('score-pill').textContent = 'Score: 0 / 5';
+  document.getElementById('main-btn').style.display = '';
+  render();
+}
+
+render();
+</script>
+</body>
+</html>

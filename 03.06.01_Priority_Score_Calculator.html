@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 03 — Priority Score Calculator</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 640px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.formula-bar { background: #E6F1FB; border-radius: 10px; padding: 12px 18px; text-align: center; margin-bottom: 8px; }
+.formula-text { font-size: 16px; font-weight: 600; color: #0C447C; font-family: "SFMono-Regular", Menlo, monospace; }
+.formula-sub { font-size: 12px; color: #185FA5; margin-top: 3px; }
+@media (prefers-color-scheme: dark) { .formula-bar { background: #0a1f3a; } .formula-text { color: #85B7EB; } .formula-sub { color: #B5D4F4; } }
+.scale-note { font-size: 12px; color: #6E6E73; margin-bottom: 20px; }
+.failure-section { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 14px; padding: 18px 20px; margin-bottom: 10px; }
+@media (prefers-color-scheme: dark) { .failure-section { background: #1e1e1e; border-color: #333; } }
+.fail-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.fail-label { font-size: 12px; font-weight: 700; color: #185FA5; letter-spacing: .4px; text-transform: uppercase; }
+.fail-score { font-size: 24px; font-weight: 500; color: #1D1D1F; font-variant-numeric: tabular-nums; }
+@media (prefers-color-scheme: dark) { .fail-score { color: #e8e8e8; } }
+.factor-row { margin-bottom: 12px; }
+.factor-name { font-size: 13px; font-weight: 600; color: #1D1D1F; margin-bottom: 4px; }
+@media (prefers-color-scheme: dark) { .factor-name { color: #e8e8e8; } }
+.factor-def { font-size: 11px; color: #6E6E73; margin-bottom: 6px; }
+.rating-row { display: flex; gap: 6px; align-items: center; }
+.rating-btn { width: 36px; height: 36px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; font-size: 14px; font-weight: 500; color: #888780; cursor: pointer; transition: all .15s; font-family: inherit; }
+@media (prefers-color-scheme: dark) { .rating-btn { background: #2a2a2a; border-color: #444; color: #6E6E73; } }
+.rating-btn.sel { background: #185FA5; border-color: #185FA5; color: #fff; }
+.justification { font-family: inherit; font-size: 12px; padding: 7px 10px; border: 0.5px solid #AEAEB2; border-radius: 8px; background: #fff; color: #1D1D1F; width: 100%; resize: none; height: 44px; margin-top: 6px; }
+@media (prefers-color-scheme: dark) { .justification { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+.comparison { background: #E1F5EE; border-radius: 12px; padding: 16px 18px; margin-bottom: 16px; }
+@media (prefers-color-scheme: dark) { .comparison { background: #052e1e; } }
+.comp-head { font-size: 12px; font-weight: 600; color: #0F6E56; margin-bottom: 10px; }
+.comp-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.comp-name { font-size: 13px; color: #1D1D1F; }
+@media (prefers-color-scheme: dark) { .comp-name { color: #e8e8e8; } }
+.comp-score { font-size: 18px; font-weight: 600; color: #085041; font-variant-numeric: tabular-nums; }
+@media (prefers-color-scheme: dark) { .comp-score { color: #9FE1CB; } }
+.comp-lead { font-size: 11px; font-weight: 700; color: #0F6E56; background: #9FE1CB; border-radius: 99px; padding: 2px 8px; margin-left: 8px; }
+.sequencing-note { font-size: 12px; color: #633806; background: #FAEEDA; border-left: 3px solid #BA7517; border-radius: 0 8px 8px 0; padding: 10px 14px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .sequencing-note { background: #2a1a00; color: #FAC775; } }
+button.add-btn { font-family: inherit; font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { button.add-btn { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 03, Section 6 · Calculator</div>
+<h1>Priority Score — Magnitude × Frequency × Depth</h1>
+<p class="sub">Rate each factor 1–5 with a stated justification. Show the math. Score determines sequencing.</p>
+
+<div class="formula-bar">
+  <div class="formula-text">Priority Score = M × F × D</div>
+  <div class="formula-sub">Magnitude × Frequency × Propagation Depth &nbsp;·&nbsp; Range: 1–125</div>
+</div>
+<div class="scale-note">1 = minor/isolated/single-step &nbsp;·&nbsp; 5 = major/universal/4+ chain links &nbsp;·&nbsp; Higher score addresses first</div>
+
+<div id="failures-container"></div>
+<button class="add-btn" onclick="addFailure()">+ Add another failure</button>
+
+<div class="comparison" id="comparison" style="display:none">
+  <div class="comp-head">Priority sequencing</div>
+  <div id="comp-rows"></div>
+</div>
+
+<div class="sequencing-note">The score must be shown, not stated. "This is the highest priority" is not a Priority Score. "Magnitude 5, Frequency 5, Depth 4 — 5 × 5 × 4 = 100" is a Priority Score. Operators who challenge sequencing must be answered with the math.</div>
+<div style="margin-top:12px"><button class="secondary" onclick="resetAll()">Reset</button></div>
+
+<script>
+const FACTORS = [
+  { key: 'mag', name: 'Magnitude', def: 'Size of economic impact per occurrence. 1 = minor. 5 = drives primary KPI by 10+ points.' },
+  { key: 'freq', name: 'Frequency', def: 'How often the failure affects students. 1 = isolated. 5 = majority of students every month.' },
+  { key: 'depth', name: 'Propagation Depth', def: 'Number of causal chain links. 1 = single-step. 5 = traces through 4+ behavior and experience layers.' },
+];
+
+let failures = [{ name: 'Failure 1', mag: 0, freq: 0, depth: 0, just: '' }, { name: 'Failure 2', mag: 0, freq: 0, depth: 0, just: '' }];
+
+function render() {
+  const container = document.getElementById('failures-container');
+  container.innerHTML = failures.map((f, fi) => `
+    <div class="failure-section">
+      <div class="fail-header">
+        <input style="font-family:inherit;font-size:13px;font-weight:600;color:#185FA5;border:none;background:transparent;outline:none;width:160px" value="${f.name}" oninput="failures[${fi}].name=this.value;renderComparison()">
+        <span class="fail-score">${f.mag && f.freq && f.depth ? f.mag * f.freq * f.depth : '—'}</span>
+      </div>
+      ${FACTORS.map(fac => `
+        <div class="factor-row">
+          <div class="factor-name">${fac.name}</div>
+          <div class="factor-def">${fac.def}</div>
+          <div class="rating-row">
+            ${[1,2,3,4,5].map(v => `<button class="rating-btn${f[fac.key]===v?' sel':''}" onclick="rate(${fi},'${fac.key}',${v})">${v}</button>`).join('')}
+          </div>
+        </div>`).join('')}
+    </div>`).join('');
+  renderComparison();
+}
+
+function rate(fi, key, val) {
+  failures[fi][key] = val;
+  render();
+}
+
+function renderComparison() {
+  const comp = document.getElementById('comparison');
+  const scored = failures.filter(f => f.mag && f.freq && f.depth).map(f => ({ name: f.name, score: f.mag * f.freq * f.depth })).sort((a,b) => b.score - a.score);
+  if (scored.length < 2) { comp.style.display = 'none'; return; }
+  comp.style.display = 'block';
+  document.getElementById('comp-rows').innerHTML = scored.map((f, i) => `
+    <div class="comp-row">
+      <span class="comp-name">${i + 1}. ${f.name}</span>
+      <span><span class="comp-score">${f.score}</span>${i===0?'<span class="comp-lead">leads</span>':''}</span>
+    </div>`).join('');
+}
+
+function addFailure() {
+  failures.push({ name: `Failure ${failures.length + 1}`, mag: 0, freq: 0, depth: 0 });
+  render();
+}
+
+function resetAll() {
+  failures = [{ name: 'Failure 1', mag: 0, freq: 0, depth: 0 }, { name: 'Failure 2', mag: 0, freq: 0, depth: 0 }];
+  render();
+}
+
+render();
+</script>
+</body>
+</html>

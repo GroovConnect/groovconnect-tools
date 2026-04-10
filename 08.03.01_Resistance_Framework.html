@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 08 — Resistance Typology & Response Framework</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.framework-rule { font-size: 13px; color: #0C447C; background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .framework-rule { background: #0a1f3a; color: #B5D4F4; } }
+.acrr-bar { display: flex; gap: 4px; margin-bottom: 16px; }
+.acrr-step { flex: 1; border-radius: 8px; padding: 8px 10px; text-align: center; }
+.acrr-step .step-n { font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 2px; }
+.acrr-step .step-v { font-size: 13px; font-weight: 600; }
+.a1 { background: #E6F1FB; } .a1 .step-n { color: #185FA5; } .a1 .step-v { color: #0C447C; }
+.a2 { background: #FAEEDA; } .a2 .step-n { color: #BA7517; } .a2 .step-v { color: #633806; }
+.a3 { background: #EEEDFE; } .a3 .step-n { color: #534AB7; } .a3 .step-v { color: #26215C; }
+.a4 { background: #E1F5EE; } .a4 .step-n { color: #0F6E56; } .a4 .step-v { color: #085041; }
+@media (prefers-color-scheme: dark) { .a1{background:#0a1f3a}.a1 .step-v{color:#B5D4F4} .a2{background:#2a1a00}.a2 .step-v{color:#FAC775} .a3{background:#1a1730}.a3 .step-v{color:#CECBF6} .a4{background:#052e1e}.a4 .step-v{color:#9FE1CB} }
+.type-card { border-radius: 12px; padding: 0; margin-bottom: 6px; overflow: hidden; cursor: pointer; transition: opacity .12s; }
+.type-card:hover { opacity: .93; }
+.type-header { display: flex; align-items: center; gap: 12px; padding: 14px 18px; }
+.type-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px; white-space: nowrap; flex-shrink: 0; }
+.type-statement { font-size: 13px; font-style: italic; flex: 1; line-height: 1.4; }
+.type-expand { font-size: 11px; color: #AEAEB2; }
+.type-detail { padding: 0 18px 14px; display: none; }
+.type-detail.show { display: block; }
+.acrr-steps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.acrr-block { border-radius: 8px; padding: 8px 12px; }
+.acrr-block-label { font-size: 10px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 3px; }
+.acrr-block-text { font-size: 12px; line-height: 1.5; }
+
+.t-logical { background: #EEEDFE; } .t-logical .type-badge { background: #534AB7; color: #fff; } .t-logical .type-statement { color: #26215C; } .t-logical .acrr-block { background: #CECBF6; } .t-logical .acrr-block-label { color: #3C3489; } .t-logical .acrr-block-text { color: #26215C; }
+.t-emotional { background: #FAECE7; } .t-emotional .type-badge { background: #993C1D; color: #fff; } .t-emotional .type-statement { color: #712B13; } .t-emotional .acrr-block { background: #F5C4B3; } .t-emotional .acrr-block-label { color: #712B13; } .t-emotional .acrr-block-text { color: #4A1B0C; }
+.t-practical { background: #FAEEDA; } .t-practical .type-badge { background: #BA7517; color: #fff; } .t-practical .type-statement { color: #633806; } .t-practical .acrr-block { background: #FAC775; } .t-practical .acrr-block-label { color: #633806; } .t-practical .acrr-block-text { color: #412402; }
+.t-identity { background: #F1EFE8; } .t-identity .type-badge { background: #5F5E5A; color: #fff; } .t-identity .type-statement { color: #2C2C2A; } .t-identity .acrr-block { background: #D3D1C7; } .t-identity .acrr-block-label { color: #444441; } .t-identity .acrr-block-text { color: #2C2C2A; }
+
+@media (prefers-color-scheme: dark) {
+  .t-logical{background:#1a1730}.t-logical .type-statement{color:#CECBF6}.t-logical .acrr-block{background:#26215C}.t-logical .acrr-block-text{color:#CECBF6}
+  .t-emotional{background:#2a1208}.t-emotional .type-statement{color:#F5C4B3}.t-emotional .acrr-block{background:#4A1B0C}.t-emotional .acrr-block-text{color:#F5C4B3}
+  .t-practical{background:#2a1a00}.t-practical .type-statement{color:#FAC775}.t-practical .acrr-block{background:#412402}.t-practical .acrr-block-text{color:#FAC775}
+  .t-identity{background:#222}.t-identity .type-statement{color:#D3D1C7}.t-identity .acrr-block{background:#333}.t-identity .acrr-block-text{color:#D3D1C7}
+}
+.ks-note { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .ks-note { background: #2a0a0a; color: #F09595; } }
+.controls { display: flex; gap: 8px; margin-top: 4px; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 08, Section 3 · Reference & Drill</div>
+<h1>Resistance Typology — 4 types</h1>
+<p class="sub">Resistance is information. Identify the type within 10 seconds. Never fight it — redirect it back to the KPI data.</p>
+<div class="framework-rule">Framework: Acknowledge → Clarify → Reframe → Resolve. The data is not the analyst's opinion — it does not require defense, only verification. When challenged, invite the operator to provide their own numbers and run the calculation live.</div>
+
+<div class="acrr-bar">
+  <div class="acrr-step a1"><div class="step-n">Step 1</div><div class="step-v">Acknowledge</div></div>
+  <div class="acrr-step a2"><div class="step-n">Step 2</div><div class="step-v">Clarify</div></div>
+  <div class="acrr-step a3"><div class="step-n">Step 3</div><div class="step-v">Reframe</div></div>
+  <div class="acrr-step a4"><div class="step-n">Step 4</div><div class="step-v">Resolve</div></div>
+</div>
+
+<div id="types"></div>
+<div class="ks-note">Kill Switch: trainee argues with the instructor playing the operator — defending the data, justifying the methodology, or escalating tone. Stop. "Arguing destroys influence. Invite the operator to provide their own numbers and recalculate live." The burden of correction must move to the operator, not be carried by the analyst.</div>
+<div class="controls" style="margin-top:12px">
+  <button class="primary" onclick="revealAll()">Reveal all</button>
+  <button class="secondary" onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+const TYPES = [
+  { cls:'t-logical', type:'Logical', statement:'"I\'m not convinced this data is correct."',
+    steps:['Acknowledge: "That\'s a fair challenge — let\'s verify it together."','Clarify: State the data source, date range, and calculation method. Ask what numbers the operator has.','"If you have different figures, give me the correct number and I\'ll recalculate it right now."','Resolve: Run the calculation live with operator-supplied data. The burden of correction is now on the operator.'] },
+  { cls:'t-emotional', type:'Emotional', statement:'"This is how we\'ve always done it and it worked fine."',
+    steps:['Acknowledge: "The school you built is strong — that\'s real."','Clarify: "The question isn\'t whether what you built worked. The question is what happens to it under the current pressures."','"The system that worked at 100 students isn\'t the same system that protects 200 students in today\'s market."','Resolve: Connect the past success to the current structural gap — without dismissing either.'] },
+  { cls:'t-practical', type:'Practical', statement:'"We don\'t have the bandwidth for this right now."',
+    steps:['Acknowledge: "Bandwidth is a real constraint — I heard that."','Clarify: Identify exactly where the bandwidth bottleneck is. Which processes are consuming it?','"The implementation creates bandwidth — it eliminates the manual admin work currently consuming it. Let me show you the hours per week."','Resolve: Quantify the labor reduction from the solution in hours per week. Make the bandwidth argument auditable.'] },
+  { cls:'t-identity', type:'Identity', statement:'"My teachers would never accept standardized lesson formats."',
+    steps:['Acknowledge: "Your instructors\' autonomy built the culture here."','Clarify: "This isn\'t about removing their method — it\'s about making their results visible."','"Instructors who show measurable student progress have more job security, not less. The system serves their interest — not just the school\'s."','Resolve: Show the instructor how the solution improves their professional standing — not just the school\'s metrics.'] },
+];
+const open = new Array(TYPES.length).fill(false);
+function render() {
+  document.getElementById('types').innerHTML = TYPES.map((t, i) => `
+    <div class="type-card ${t.cls}${open[i]?' open':''}" onclick="toggle(${i})">
+      <div class="type-header">
+        <span class="type-badge">${t.type}</span>
+        <span class="type-statement">${t.statement}</span>
+        <span class="type-expand">${open[i]?'▲':'▼'}</span>
+      </div>
+      <div class="type-detail${open[i]?' show':''}">
+        <div class="acrr-steps-grid">
+          ${t.steps.map(s => `<div class="acrr-block"><div class="acrr-block-text">${s}</div></div>`).join('')}
+        </div>
+      </div>
+    </div>`).join('');
+}
+function toggle(i) { open[i]=!open[i]; render(); }
+function revealAll() { open.fill(true); render(); }
+function resetAll() { open.fill(false); render(); }
+render();
+</script>
+</body>
+</html>

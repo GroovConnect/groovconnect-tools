@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 02 — Complete Output Standard</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #fff; color: #1D1D1F; padding: 40px 28px; max-width: 680px; margin: 0 auto; }
+@media (prefers-color-scheme: dark) { body { background: #1a1a1a; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 5px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 3px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 6px; }
+.binary-rule { font-size: 13px; color: #791F1F; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 20px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .binary-rule { background: #2a0a0a; color: #F09595; } }
+.component { display: grid; grid-template-columns: 36px 1fr; gap: 0; margin-bottom: 4px; }
+.comp-num { display: flex; align-items: flex-start; justify-content: center; padding-top: 13px; font-size: 12px; font-weight: 700; color: #fff; background: #185FA5; border-radius: 8px 0 0 8px; }
+.comp-body { background: #E6F1FB; border-radius: 0 8px 8px 0; padding: 12px 16px; }
+.comp-name { font-size: 14px; font-weight: 600; color: #0C447C; margin-bottom: 4px; }
+.comp-std { font-size: 12px; color: #185FA5; line-height: 1.55; }
+.comp-body.c2 { background: #ddeef9; }
+.comp-body.c3 { background: #cfe4f7; }
+.comp-body.c4 { background: #FAEEDA; } .comp-body.c4 .comp-name { color: #633806; } .comp-body.c4 .comp-std { color: #854F0B; }
+.comp-body.c5 { background: #FAC775; } .comp-body.c5 .comp-name { color: #412402; } .comp-body.c5 .comp-std { color: #633806; }
+.comp-num.c4 { background: #BA7517; }
+.comp-num.c5 { background: #854F0B; }
+.comp-num.c6 { background: #1D9E75; }
+.comp-body.c6 { background: #E1F5EE; } .comp-body.c6 .comp-name { color: #085041; } .comp-body.c6 .comp-std { color: #0F6E56; }
+.comp-num.c7 { background: #085041; }
+.comp-body.c7 { background: #9FE1CB; } .comp-body.c7 .comp-name { color: #04342C; } .comp-body.c7 .comp-std { color: #085041; }
+.breath-note { font-size: 13px; color: #0F6E56; background: #E1F5EE; border-left: 3px solid #0F6E56; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .breath-note { background: #052e1e; color: #9FE1CB; } }
+.caption { margin-top: 20px; font-size: 12px; color: #8E8E93; line-height: 1.6; border-top: 0.5px solid #D1D1D6; padding-top: 14px; }
+@media (prefers-color-scheme: dark) { .caption { border-top-color: #2a2a2a; } }
+@media print { body { padding: 20px; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 02, Section 7 · Reference Card</div>
+<h1>The Complete Output Standard — 7 components</h1>
+<p class="sub">A diagnostic output missing any component is incomplete. The standard is binary: complete or incomplete.</p>
+<div class="binary-rule">There is no partial credit in field deployment. "Retention is a problem" is not a KPI. "Communication failure" is not a failure localization. Both fail immediately.</div>
+
+<div class="component"><div class="comp-num">1</div><div class="comp-body"><div class="comp-name">KPI</div><div class="comp-std">Named, quantified, baseline and current value both stated. "Retention dropped from 83% to 71% over 60 days" — not "retention is low."</div></div></div>
+<div class="component"><div class="comp-num">2</div><div class="comp-body c2"><div class="comp-name">System</div><div class="comp-std">Primary system identified by name. Secondary noted if contributing. One primary system in the diagnosis at a time.</div></div></div>
+<div class="component"><div class="comp-num">3</div><div class="comp-body c3"><div class="comp-name">Failure</div><div class="comp-std">The exact missing or broken mechanism. Specific enough that an engineer could build it from this description alone. No category-level statements.</div></div></div>
+<div class="component"><div class="comp-num c4">4</div><div class="comp-body c4"><div class="comp-name">Propagation</div><div class="comp-std">All four links present: Failure → Behavior Change → Experience Degradation → KPI Impact. Human actor at every link. Dollar figure at the terminus.</div></div></div>
+<div class="component"><div class="comp-num c5">5</div><div class="comp-body c5"><div class="comp-name">Assumptions</div><div class="comp-std">Student count, tuition or ARPU, gross margin %, LTV basis — all stated before the economic figure is presented.</div></div></div>
+<div class="component"><div class="comp-num c6">6</div><div class="comp-body c6"><div class="comp-name">Economic Calc</div><div class="comp-std">Formula shown with inputs. No hidden math. LTV model, Conversion Loss, or Utilization Loss applied correctly and labeled.</div></div></div>
+<div class="component"><div class="comp-num c7">7</div><div class="comp-body c7"><div class="comp-name">Priority Score</div><div class="comp-std">Magnitude × Frequency × Propagation Depth — each factor rated 1–5 and briefly justified. Score stated explicitly, not implied.</div></div></div>
+
+<div class="breath-note">Breath Test: after completing a simulation, trainee delivers the entire output in one unbroken sentence — KPI, System, Failure, Chain, Economic figure, Priority, Capability — no pauses, no filler words, no notes. Target: under 30 seconds. A pause between any two components indicates a logic gap at that link.</div>
+<div class="caption">GroovConnect OAS™ · Module 02 · Post every session — trainees self-score against this checklist before submitting.</div>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 09 — Four-Phase Implementation Framework</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.view-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 13px; font-weight: 500; padding: 7px 18px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.active-phases { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.tab.active-example { background: #E1F5EE; border-color: #0F6E56; color: #0F6E56; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+.skip-rule { font-size: 13px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .skip-rule { background: #2a0a0a; color: #F09595; } }
+.phase-card { border-radius: 12px; margin-bottom: 6px; overflow: hidden; cursor: pointer; transition: opacity .12s; }
+.phase-card:hover { opacity: .93; }
+.phase-header { display: flex; align-items: center; gap: 12px; padding: 14px 18px; }
+.phase-badge { flex-shrink: 0; width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; }
+.phase-focus { font-size: 14px; font-weight: 600; flex: 1; }
+.phase-expand { font-size: 11px; color: #AEAEB2; }
+.phase-detail { padding: 0 18px 14px; display: none; }
+.phase-detail.show { display: block; }
+.activity-list { list-style: none; padding: 0; }
+.activity-list li { font-size: 13px; line-height: 1.55; padding: 4px 0; border-bottom: 0.5px solid rgba(0,0,0,.06); }
+.activity-list li:last-child { border-bottom: none; }
+.exit-block { border-radius: 8px; padding: 8px 12px; margin-top: 8px; font-size: 12px; line-height: 1.5; }
+.exit-label { font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 3px; }
+
+.p1 { background: #E6F1FB; } .p1 .phase-badge { background: #185FA5; } .p1 .phase-focus { color: #0C447C; } .p1 .activity-list li { color: #185FA5; border-bottom-color: rgba(24,95,165,.12); } .p1 .exit-block { background: #B5D4F4; } .p1 .exit-label { color: #0C447C; } .p1 .exit-block { color: #042C53; }
+.p2 { background: #FAEEDA; } .p2 .phase-badge { background: #BA7517; } .p2 .phase-focus { color: #633806; } .p2 .activity-list li { color: #854F0B; border-bottom-color: rgba(186,117,23,.12); } .p2 .exit-block { background: #FAC775; } .p2 .exit-label { color: #633806; } .p2 .exit-block { color: #412402; }
+.p3 { background: #EEEDFE; } .p3 .phase-badge { background: #534AB7; } .p3 .phase-focus { color: #26215C; } .p3 .activity-list li { color: #534AB7; border-bottom-color: rgba(83,74,183,.12); } .p3 .exit-block { background: #CECBF6; } .p3 .exit-label { color: #3C3489; } .p3 .exit-block { color: #26215C; }
+.p4 { background: #E1F5EE; } .p4 .phase-badge { background: #0F6E56; } .p4 .phase-focus { color: #085041; } .p4 .activity-list li { color: #0F6E56; border-bottom-color: rgba(15,110,86,.12); } .p4 .exit-block { background: #9FE1CB; } .p4 .exit-label { color: #085041; } .p4 .exit-block { color: #04342C; }
+
+@media (prefers-color-scheme: dark) {
+  .p1 { background: #0a1f3a; } .p1 .phase-focus { color: #B5D4F4; } .p1 .activity-list li { color: #85B7EB; } .p1 .exit-block { background: #0C447C; color: #B5D4F4; }
+  .p2 { background: #2a1a00; } .p2 .phase-focus { color: #FAC775; } .p2 .activity-list li { color: #EF9F27; } .p2 .exit-block { background: #412402; color: #FAC775; }
+  .p3 { background: #1a1730; } .p3 .phase-focus { color: #CECBF6; } .p3 .activity-list li { color: #AFA9EC; } .p3 .exit-block { background: #26215C; color: #CECBF6; }
+  .p4 { background: #052e1e; } .p4 .phase-focus { color: #9FE1CB; } .p4 .activity-list li { color: #5DCAA5; } .p4 .exit-block { background: #085041; color: #9FE1CB; }
+}
+.ks-note { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .ks-note { background: #2a0a0a; color: #F09595; } }
+.ex-row { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 10px; padding: 12px 16px; margin-bottom: 6px; }
+@media (prefers-color-scheme: dark) { .ex-row { background: #1e1e1e; border-color: #333; } }
+.ex-phase { font-size: 11px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 4px; }
+.ex-text { font-size: 13px; color: #1D1D1F; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .ex-text { color: #e8e8e8; } }
+.controls { display: flex; gap: 8px; margin-top: 4px; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 09, Section 2 · Framework & Worked Example</div>
+<h1>Four-Phase Implementation Framework</h1>
+<p class="sub">Tap each phase to expand activities and exit conditions. Skipping phases guarantees failure.</p>
+
+<div class="view-tabs">
+  <button class="tab active-phases" id="tab-phases" onclick="switchView('phases')">Four phases</button>
+  <button class="tab" id="tab-ex" onclick="switchView('ex')">Worked example</button>
+</div>
+
+<!-- FOUR PHASES -->
+<div class="panel active" id="panel-phases">
+  <div class="skip-rule">Skipping phases does not accelerate implementation — it guarantees failure. Each phase has a specific exit condition. A phase is not complete until its exit condition is met.</div>
+  <div id="phases"></div>
+  <div class="ks-note">Kill Switch: trainee suggests "voting" on whether to use a new system or frames adoption as a team decision. "The vote was taken when the diagnostic was accepted at the commitment sequence. The question now is how to implement it so the team can adopt successfully — not whether to implement it."</div>
+  <div class="controls" style="margin-top:12px">
+    <button class="primary" onclick="revealAll()">Reveal all</button>
+    <button class="secondary" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<!-- WORKED EXAMPLE -->
+<div class="panel" id="panel-ex">
+  <div style="font-size:13px;color:#0F6E56;background:#E1F5EE;border-left:3px solid #0F6E56;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:16px;line-height:1.55">Trial Follow-Up System deployment — gold standard execution across all four phases.</div>
+  <div class="ex-row"><div class="ex-phase" style="color:#185FA5">Phase 1 — Preparation</div><div class="ex-text">Blueprint finalized. Front Desk Coordinator designated as sole owner. 24-hour follow-up target set. Weekly % report auto-generated from CRM. Early adopter briefed privately before all-staff training.</div></div>
+  <div class="ex-row"><div class="ex-phase" style="color:#BA7517">Phase 2 — Deployment</div><div class="ex-text">30-minute live training on trial feedback form and CRM follow-up log. SOP printed and posted at front desk — not emailed. Instructor briefed on 2-hour post-trial note deadline. Analyst available for first-week questions.</div></div>
+  <div class="ex-row"><div class="ex-phase" style="color:#534AB7">Phase 3 — Stabilization</div><div class="ex-text">Week 1 review: 72% follow-up rate. Two instructors not submitting notes within 2 hours — friction identified. Feedback form shortened from 20 fields to 7. Week 3: 91% — above 30-day benchmark.</div></div>
+  <div class="ex-row"><div class="ex-phase" style="color:#0F6E56">Phase 4 — Optimization</div><div class="ex-text">Month 2 review: follow-up rate 95%. Trial conversion moved from 52% to 64%. Next priority identified from Priority Score ranking. Conversion improvement data fed back into MSOI.</div></div>
+</div>
+
+<script>
+const PHASES = [
+  { cls:'p1', badge:'1', focus:'Preparation — define scope, align stakeholders',
+    activities:['Finalize Solution Design Blueprint (all 7 elements)','Identify early adopters — the 1–2 team members most likely to adopt quickly','Set the 30-day adoption target for each system','Define the audit mechanism — what automated report confirms adoption is tracking'],
+    exitLabel:'Exit condition', exit:'Blueprint finalized. Owner named. 30-day target set. Audit mechanism identified. Early adopter briefed privately.' },
+  { cls:'p2', badge:'2', focus:'Deployment — introduce the system, train users',
+    activities:['Live training session — 30 minutes maximum. Role-based, not all-hands','SOP distribution — printed at the workstation, not emailed','First-week concierge support — analyst available for real-time questions','Document every issue raised for Phase 3 friction reduction'],
+    exitLabel:'Exit condition', exit:'Training complete. SOPs posted at workstations. First-week issues documented. System live and generating tracking data.' },
+  { cls:'p3', badge:'3', focus:'Stabilization — monitor, fix friction, reinforce',
+    activities:['Weekly Rhythm review — adoption rate vs. 30-day target','Drift detection — any KPI failing to improve 3+ pts in 3 consecutive weeks','Reinforce early adopters publicly. Address laggards privately','Apply Accountability Architecture: self → system → social, in that order'],
+    exitLabel:'Exit condition', exit:'Adoption at or above 30-day benchmark. Drift threshold not triggered for 2 consecutive weeks. No unresolved friction issues.' },
+  { cls:'p4', badge:'4', focus:'Optimization — improve, scale, feed intelligence',
+    activities:['Monthly Rhythm review — MSOI recalculation vs. pre-implementation baseline','Identify the next highest-priority failure for resolution','Reduce remaining friction in the Phase 3 system','Feed performance data back into GC Intelligence Layer'],
+    exitLabel:'Exit condition', exit:'Adoption at 60-day benchmark. MSOI improving vs. baseline. Next priority identified and sequenced.' },
+];
+const open = new Array(PHASES.length).fill(false);
+function render() {
+  document.getElementById('phases').innerHTML = PHASES.map((p, i) => `
+    <div class="phase-card ${p.cls}${open[i]?' open':''}" onclick="toggle(${i})">
+      <div class="phase-header">
+        <div class="phase-badge">${p.badge}</div>
+        <div class="phase-focus">${p.focus}</div>
+        <span class="phase-expand">${open[i]?'▲':'▼'}</span>
+      </div>
+      <div class="phase-detail${open[i]?' show':''}">
+        <ul class="activity-list">${p.activities.map(a=>`<li>${a}</li>`).join('')}</ul>
+        <div class="exit-block"><div class="exit-label">${p.exitLabel}</div>${p.exit}</div>
+      </div>
+    </div>`).join('');
+}
+function toggle(i) { open[i]=!open[i]; render(); }
+function revealAll() { open.fill(true); render(); }
+function resetAll() { open.fill(false); render(); }
+render();
+
+function switchView(v) {
+  document.getElementById('panel-phases').classList.toggle('active', v==='phases');
+  document.getElementById('panel-ex').classList.toggle('active', v==='ex');
+  document.getElementById('tab-phases').className='tab'+(v==='phases'?' active-phases':'');
+  document.getElementById('tab-ex').className='tab'+(v==='ex'?' active-example':'');
+}
+</script>
+</body>
+</html>

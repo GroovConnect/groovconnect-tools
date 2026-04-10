@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 11 — Certification Gate: Level 3 Capstone Requirement</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.terminal-note { font-size: 13px; color: #791F1F; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 8px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .terminal-note { background: #2a0a0a; color: #F09595; } }
+.spec-note { font-size: 13px; color: #0F6E56; background: #E1F5EE; border-left: 3px solid #0F6E56; border-radius: 0 8px 8px 0; padding: 8px 14px; margin-bottom: 20px; line-height: 1.5; }
+@media (prefers-color-scheme: dark) { .spec-note { background: #052e1e; color: #9FE1CB; } }
+.trainee-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.trainee-row label { font-size: 13px; color: #6E6E73; white-space: nowrap; }
+.trainee-row input { font-family: inherit; font-size: 14px; padding: 8px 12px; border: 0.5px solid #AEAEB2; border-radius: 8px; background: #fff; color: #1D1D1F; flex: 1; }
+@media (prefers-color-scheme: dark) { .trainee-row input { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+.req-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 12px; padding: 15px 18px; margin-bottom: 6px; display: flex; gap: 14px; align-items: flex-start; cursor: pointer; user-select: none; transition: background .12s; }
+@media (prefers-color-scheme: dark) { .req-card { background: #1e1e1e; border-color: #333; } }
+.req-card:hover { background: #fafafa; }
+@media (prefers-color-scheme: dark) { .req-card:hover { background: #252525; } }
+.req-card.pass { border-left: 3px solid #0F6E56; background: #f0fdf8; }
+@media (prefers-color-scheme: dark) { .req-card.pass { background: #0a1f15; } }
+.checkbox { width: 22px; height: 22px; border: 1.5px solid #D1D1D6; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+.checkbox.checked { background: #0F6E56; border-color: #0F6E56; }
+.checkbox.checked::after { content:''; display:block; width:5px; height:9px; border:2px solid #fff; border-top:none; border-left:none; transform:rotate(45deg) translate(-1px,-1px); }
+.req-name { font-size: 14px; font-weight: 500; color: #1D1D1F; margin-bottom: 3px; }
+@media (prefers-color-scheme: dark) { .req-name { color: #e8e8e8; } }
+.req-spec { font-size: 12px; color: #6E6E73; line-height: 1.5; margin-bottom: 4px; }
+.req-min { font-size: 11px; font-weight: 600; color: #0F6E56; background: #E1F5EE; padding: 3px 8px; border-radius: 5px; display: inline-block; margin-top: 2px; }
+@media (prefers-color-scheme: dark) { .req-min { background: #052e1e; color: #9FE1CB; } }
+.fail-btn { font-family: inherit; font-size: 11px; padding: 3px 10px; border-radius: 6px; border: 0.5px solid #F09595; background: transparent; color: #A32D2D; cursor: pointer; margin-top: 6px; }
+.fail-mode { font-size: 12px; color: #A32D2D; margin-top: 5px; display: none; line-height: 1.5; }
+.fail-mode.show { display: block; }
+.result-bar { margin: 14px 0; padding: 14px 18px; border-radius: 12px; font-size: 15px; font-weight: 500; text-align: center; background: #F1EFE8; color: #6E6E73; }
+.result-bar.pass { background: #E1F5EE; color: #085041; }
+@media (prefers-color-scheme: dark) { .result-bar { background: #222; color: #9a9a9a; } .result-bar.pass { background: #052e1e; color: #9FE1CB; } }
+.controls { display: flex; gap: 8px; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 11, Section 6 · Level 3 Capstone Gate</div>
+<h1>Module 11 — Level 3 Capstone Requirement</h1>
+<p class="sub">The terminal gate. All five elements must pass. No partial credit. No rounding. No exceptions for strong performance in earlier modules.</p>
+<div class="terminal-note">The Capstone is evaluated against all five dimensions simultaneously. An analyst who produces a correct diagnosis but cannot communicate it clearly has not passed the Communication &amp; Commitment dimension — regardless of Diagnostic Accuracy. All five are required. All five must score ≥4.0.</div>
+<div class="spec-note">Scenario: Multi-location, multi-system failure. Three fractured systems. 120-minute time limit. Lucidchart only — no notes, no reference cards. Materials: Module 22 for the full operator narrative and reference standard.</div>
+
+<div class="trainee-row">
+  <label>Trainee</label>
+  <input type="text" id="trainee-name" placeholder="Enter trainee name">
+</div>
+
+<div id="req-list"></div>
+<div class="result-bar" id="result-bar">0 / 5 passed</div>
+<div class="controls">
+  <button class="secondary" onclick="resetAll()">Reset</button>
+  <button class="secondary" onclick="window.print()">Print</button>
+</div>
+
+<script>
+const REQS = [
+  {
+    name: 'Fracture Identification — all three systems',
+    spec: 'All three fractured systems identified without prompting: Matching System, Standardization System, Scheduling System. No symptom-level diagnoses.',
+    min: 'All three fractures identified. Zero prompted.',
+    fail: 'Identifying only two fractures. Accepting the drum teacher departure as a people problem rather than a Matching System failure. Any symptom-level diagnosis.'
+  },
+  {
+    name: 'Lucidchart Submission — three valid chains',
+    spec: 'Three separate, syntactically valid causal chain diagrams — one per fracture. Each chain: minimum 4 nodes, correct color standard, all arrows labeled, no crossing lines.',
+    min: 'Each chain scores ≥18/25 on the Lucidchart Scoring Rubric.',
+    fail: 'Fewer than three chains submitted. Any syntax violations (crossing lines, unlabeled arrows, standalone nouns). Any chain scoring below 18/25.'
+  },
+  {
+    name: 'Economic Anchor — full formula derivation',
+    spec: 'Total leakage figure derived with all formula inputs stated explicitly. No hidden math. All three leakage components itemized separately.',
+    min: 'Within ±$10,000 of Gold Standard ($110,000). All assumptions stated before the figure.',
+    fail: 'Any figure without traceable formula derivation. Hidden math. Missing any of the three components. Figure outside ±$10,000 of $110,000.'
+  },
+  {
+    name: 'Adversarial Pivot — marketing-first reframe',
+    spec: 'Operator\'s marketing-first framing redirected to structural foundation without defensiveness. Response names the leakage figure, explains the accelerating effect of adding students to a leaking system, and states the correct implementation sequence.',
+    min: 'Delivered without defensiveness. Leakage figure named. Sequence stated: Matching Engine + Milestone Visibility System before any marketing spend.',
+    fail: 'Any defensive response. Any concession on the diagnosis. Accepting the marketing framing. Failing to explain why adding students accelerates losses.'
+  },
+  {
+    name: 'GC Capability Mapping — all three fractures',
+    spec: 'All three fractures mapped to specific named GC capabilities with implementation sequence stated.',
+    min: 'Sequence follows Visibility → Core → Optimization → Automation for each fracture.',
+    fail: 'Any fracture unmapped. Any feature-level capability name rather than a structural response. Incorrect sequencing.'
+  },
+];
+const state = new Array(REQS.length).fill(false);
+const showFail = new Array(REQS.length).fill(false);
+function render() {
+  document.getElementById('req-list').innerHTML = REQS.map((r, i) => `
+    <div class="req-card${state[i]?' pass':''}" onclick="toggle(${i})">
+      <div class="checkbox${state[i]?' checked':''}"></div>
+      <div style="flex:1">
+        <div class="req-name">${r.name}</div>
+        <div class="req-spec">${r.spec}</div>
+        <span class="req-min">${r.min}</span>
+        <br>
+        <button class="fail-btn" onclick="toggleFail(event,${i})">${showFail[i]?'Hide':'Show'} failure mode</button>
+        <div class="fail-mode${showFail[i]?' show':''}">${r.fail}</div>
+      </div>
+    </div>`).join('');
+  const passed = state.filter(Boolean).length;
+  const bar = document.getElementById('result-bar');
+  bar.className = 'result-bar' + (passed===REQS.length?' pass':'');
+  bar.textContent = passed===REQS.length
+    ? '✓ All 5 passed — Level 3 Certified Architect'
+    : `${passed} / ${REQS.length} passed — Level 3 not granted`;
+}
+function toggle(i){state[i]=!state[i];render();}
+function toggleFail(e,i){e.stopPropagation();showFail[i]=!showFail[i];render();}
+function resetAll(){state.fill(false);showFail.fill(false);document.getElementById('trainee-name').value='';render();}
+render();
+</script>
+</body>
+</html>

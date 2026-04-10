@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 02 — Sim 1: KPI Extraction</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 640px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.hdr { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+.timer-d { font-size: 36px; font-weight: 500; font-variant-numeric: tabular-nums; color: #1D1D1F; letter-spacing: -1px; transition: color .3s; }
+@media (prefers-color-scheme: dark) { .timer-d { color: #e8e8e8; } }
+.timer-d.urgent { color: #C0392B; }
+.prog-txt { font-size: 13px; color: #8E8E93; }
+.narrative-card { background: #fff; border: 0.5px solid #D1D1D6; border-top: 3px solid #8E8E93; border-radius: 12px; padding: 18px 20px; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { .narrative-card { background: #1e1e1e; border-color: #333; border-top-color: #555; } }
+.narr-label { font-size: 11px; font-weight: 700; color: #8E8E93; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 8px; }
+.narr-text { font-size: 15px; color: #1D1D1F; font-style: italic; line-height: 1.65; }
+@media (prefers-color-scheme: dark) { .narr-text { color: #c8c8c8; } }
+.answer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.answer-block { border-radius: 10px; padding: 14px 16px; display: none; }
+.answer-block.show { display: block; }
+.signals-block { background: #E1F5EE; border-left: 3px solid #0F6E56; border-radius: 0 10px 10px 0; }
+.noise-block { background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 10px 10px 0; }
+.ans-head { font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 8px; }
+.signals-block .ans-head { color: #0F6E56; }
+.noise-block .ans-head { color: #A32D2D; }
+.ans-item { font-size: 12px; line-height: 1.55; margin-bottom: 6px; padding-left: 8px; border-left: 2px solid rgba(0,0,0,0.1); }
+.ans-item strong { display: block; font-weight: 600; margin-bottom: 1px; }
+.signals-block .ans-item { color: #085041; }
+.noise-block .ans-item { color: #791F1F; }
+.reveal-btn, .start-btn { font-family: inherit; font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: 8px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .reveal-btn, .start-btn { background: #2a2a2a; border-color: #444; color: #e8e8e8; } }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 02, Section 8 · Simulation 1</div>
+<h1>Sim 1 — KPI extraction from operator narrative</h1>
+<p class="sub">4 scenarios · 60 seconds each · Name 3 valid KPIs before time expires. Score: 3 = pass · 2 = retry · 1 = full retry.</p>
+
+<div class="hdr">
+  <div class="timer-d" id="timer">1:00</div>
+  <div class="prog-txt" id="prog">Scenario 1 of 4</div>
+</div>
+
+<div id="card-area"></div>
+<div class="controls">
+  <button class="primary" id="main-btn" onclick="mainAction()">Start timer</button>
+  <button class="secondary" onclick="nextSim()">Next scenario</button>
+  <button class="secondary" onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+const SIMS = [
+  {
+    narrative: '"Things feel off. Parents seem less engaged than usual. We had a great showcase last month — best one we\'ve ever done, parents loved it. But we\'ve lost maybe six or seven students since. I can\'t put my finger on it — it just doesn\'t feel like we\'re growing."',
+    signals: [
+      { name: '30-day retention rate %', note: 'The 6–7 student churn post-showcase is a measurable signal.' },
+      { name: 'Trial conversion rate %', note: 'Flat growth feeling = conversion or early-churn issue.' },
+      { name: 'Trial volume (monthly)', note: 'Need baseline to determine if volume is the constraint.' },
+    ],
+    noise: [
+      { name: '"Feels off"', note: 'Not a number. Not trackable.' },
+      { name: '"Great showcase"', note: 'No KPI anchor — narrative without a metric.' },
+      { name: '"Parents loved it"', note: 'Adjective. Translate to a portal login rate or NPS score.' },
+    ],
+  },
+  {
+    narrative: '"Revenue is fine. We added two new instructors in September and they\'re settling in. But I feel like we\'re not using our space as well as we could be — rooms are empty in the afternoon."',
+    signals: [
+      { name: 'Utilization rate % (lessons delivered ÷ scheduled)', note: 'Empty rooms = measurable utilization gap.' },
+      { name: 'Prime-time slot fill %', note: 'Afternoon vacancies suggest specific time-slot misallocation.' },
+      { name: 'Revenue per student', note: 'Revenue flat despite new instructors = ARPU compression signal.' },
+    ],
+    noise: [
+      { name: '"Settling in"', note: 'Human attribution. Not a KPI.' },
+      { name: '"Revenue is fine"', note: 'Relative — fine compared to what baseline?' },
+      { name: '"Feel like"', note: 'Perception without data.' },
+    ],
+  },
+  {
+    narrative: '"My best teacher has been here 8 years. She never turns in lesson notes but her students love her. My newest teacher submits every note but three of his students left last month."',
+    signals: [
+      { name: 'Instructor-specific retention %', note: 'Compare retention rates per instructor vs. school average.' },
+      { name: 'Lesson note submission rate %', note: 'Already measurable — the senior teacher is at 0%.' },
+      { name: 'Trial conversion rate by instructor', note: 'Student departure may map to trial flow, not just retention.' },
+    ],
+    noise: [
+      { name: '"Her students love her"', note: 'Adjective. Translate to retention rate or renewal rate.' },
+      { name: '"Best teacher"', note: 'Qualitative label — needs a KPI to be diagnostic.' },
+      { name: '"Students left"', note: 'Not a KPI until quantified as a rate with a baseline.' },
+    ],
+  },
+  {
+    narrative: '"We\'ve been doing 40 trials a month but revenue isn\'t moving the way I\'d expect. I think the problem is that families just don\'t have money right now — the economy is tough."',
+    signals: [
+      { name: 'Trial conversion rate %', note: '40 trials with flat revenue = conversion failure signal.' },
+      { name: '30-day post-enrollment churn %', note: 'Early drop-off may be masking a deeper retention problem.' },
+      { name: 'Follow-up completion rate within 24 hours', note: 'If 40 trials aren\'t converting, follow-up timing is the first mechanism to audit.' },
+    ],
+    noise: [
+      { name: '"The economy is tough"', note: 'External attribution. Not diagnosable. Not traceable to a KPI.' },
+      { name: '"Families don\'t have money"', note: 'Narrative. If true, it affects all schools equally — needs comparison data.' },
+      { name: '"Revenue isn\'t moving the way I\'d expect"', note: 'Expectation, not a baseline. Need the actual numbers.' },
+    ],
+  },
+];
+
+let cur = 0;
+let seconds = 60;
+let running = false;
+let timedOut = false;
+let timerInterval = null;
+
+function fmt(s) { return Math.floor(s/60) + ':' + (s%60 < 10 ? '0' : '') + s%60; }
+
+function render() {
+  const prog = document.getElementById('prog');
+  const mb = document.getElementById('main-btn');
+  if (cur >= SIMS.length) {
+    document.getElementById('card-area').innerHTML = '<div style="text-align:center;padding:32px 0"><p style="font-size:16px;font-weight:500">All 4 scenarios complete.</p></div>';
+    mb.style.display = 'none'; prog.textContent = 'Done'; return;
+  }
+  mb.style.display = '';
+  prog.textContent = `Scenario ${cur + 1} of ${SIMS.length}`;
+  const s = SIMS[cur];
+  document.getElementById('card-area').innerHTML = `
+    <div class="narrative-card">
+      <div class="narr-label">Operator narrative — read aloud</div>
+      <div class="narr-text">${s.narrative}</div>
+    </div>
+    <div class="answer-grid">
+      <div class="answer-block signals-block" id="sig-block">
+        <div class="ans-head">3 KPI signals</div>
+        ${s.signals.map(i => `<div class="ans-item"><strong>${i.name}</strong>${i.note}</div>`).join('')}
+      </div>
+      <div class="answer-block noise-block" id="noise-block">
+        <div class="ans-head">Noise — reject</div>
+        ${s.noise.map(i => `<div class="ans-item"><strong>${i.name}</strong>${i.note}</div>`).join('')}
+      </div>
+    </div>
+    <button class="reveal-btn" id="rev-btn" onclick="reveal()">Reveal signals & noise</button>`;
+  resetTimer();
+}
+
+function reveal() {
+  clearInterval(timerInterval); running = false; timedOut = true;
+  document.getElementById('sig-block').classList.add('show');
+  document.getElementById('noise-block').classList.add('show');
+  const rb = document.getElementById('rev-btn');
+  if (rb) rb.style.display = 'none';
+  document.getElementById('main-btn').textContent = 'Reset timer';
+  document.getElementById('timer').style.color = '#0F6E56';
+}
+
+function resetTimer() {
+  clearInterval(timerInterval); running = false; timedOut = false; seconds = 60;
+  const el = document.getElementById('timer');
+  el.textContent = fmt(seconds); el.className = 'timer-d'; el.style.color = '';
+  document.getElementById('main-btn').textContent = 'Start timer';
+}
+
+function mainAction() {
+  if (!running && !timedOut) {
+    running = true; document.getElementById('main-btn').textContent = 'Running…';
+    timerInterval = setInterval(() => {
+      seconds--;
+      const el = document.getElementById('timer');
+      el.textContent = fmt(seconds);
+      if (seconds <= 15) el.className = 'timer-d urgent';
+      if (seconds <= 0) { clearInterval(timerInterval); running = false; timedOut = true; document.getElementById('main-btn').textContent = 'Reset timer'; reveal(); }
+    }, 1000);
+  } else if (timedOut) { resetTimer(); }
+}
+
+function nextSim() { clearInterval(timerInterval); cur++; render(); }
+function resetAll() { clearInterval(timerInterval); cur = 0; render(); document.getElementById('main-btn').style.display = ''; }
+render();
+</script>
+</body>
+</html>

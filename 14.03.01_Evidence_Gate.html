@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 14 — Evidence Gate & Existing Tools Analysis</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.view-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 13px; font-weight: 500; padding: 7px 18px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.act-gate { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.tab.act-tools { background: #FAEEDA; border-color: #BA7517; color: #854F0B; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+.hard-gate { font-size: 13px; color: #791F1F; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .hard-gate { background: #2a0a0a; color: #F09595; } }
+.gate-q { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 12px; padding: 16px 18px; margin-bottom: 8px; }
+@media (prefers-color-scheme: dark) { .gate-q { background: #1e1e1e; border-color: #333; } }
+.gq-num { font-size: 11px; font-weight: 700; color: #185FA5; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 6px; }
+.gq-text { font-size: 14px; font-weight: 500; color: #1D1D1F; margin-bottom: 10px; line-height: 1.4; }
+@media (prefers-color-scheme: dark) { .gq-text { color: #e8e8e8; } }
+.gq-source { font-size: 12px; color: #6E6E73; margin-bottom: 8px; }
+textarea.gq-answer { font-family: inherit; font-size: 13px; width: 100%; padding: 8px 12px; border: 0.5px solid #AEAEB2; border-radius: 8px; background: #fff; color: #1D1D1F; resize: none; height: 64px; margin-bottom: 6px; }
+@media (prefers-color-scheme: dark) { textarea.gq-answer { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+.gq-check { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+.gq-checkbox { width: 18px; height: 18px; border: 1.5px solid #D1D1D6; border-radius: 5px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.gq-checkbox.checked { background: #0F6E56; border-color: #0F6E56; }
+.gq-checkbox.checked::after { content:''; display:block; width:4px; height:8px; border:2px solid #fff; border-top:none; border-left:none; transform:rotate(45deg) translate(-1px,-1px); }
+.gq-label { font-size: 12px; color: #6E6E73; }
+.gate-status { padding: 12px 16px; border-radius: 10px; font-size: 14px; font-weight: 500; text-align: center; background: #F1EFE8; color: #6E6E73; margin-top: 4px; }
+.gate-status.passed { background: #E1F5EE; color: #085041; }
+@media (prefers-color-scheme: dark) { .gate-status { background: #222; color: #9a9a9a; } .gate-status.passed { background: #052e1e; color: #9FE1CB; } }
+.tool-card { border-radius: 12px; padding: 16px 18px; margin-bottom: 6px; }
+.tool-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.tool-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px; }
+.tool-name { font-size: 14px; font-weight: 600; flex: 1; }
+.tool-what { font-size: 13px; line-height: 1.5; margin-bottom: 6px; }
+.tool-gap { font-size: 12px; font-style: italic; padding: 8px 12px; border-radius: 8px; line-height: 1.5; }
+.t-sched { background: #FCEBEB; } .t-sched .tool-badge { background: #A32D2D; color: #fff; } .t-sched .tool-name { color: #791F1F; } .t-sched .tool-what { color: #A32D2D; } .t-sched .tool-gap { background: #F7C1C1; color: #501313; }
+.t-crm { background: #FAEEDA; } .t-crm .tool-badge { background: #BA7517; color: #fff; } .t-crm .tool-name { color: #633806; } .t-crm .tool-what { color: #854F0B; } .t-crm .tool-gap { background: #FAC775; color: #412402; }
+.t-lms { background: #EEEDFE; } .t-lms .tool-badge { background: #534AB7; color: #fff; } .t-lms .tool-name { color: #26215C; } .t-lms .tool-what { color: #534AB7; } .t-lms .tool-gap { background: #CECBF6; color: #26215C; }
+.t-gc { background: #E1F5EE; } .t-gc .tool-badge { background: #0F6E56; color: #fff; } .t-gc .tool-name { color: #085041; } .t-gc .tool-what { color: #0F6E56; } .t-gc .tool-gap { background: #9FE1CB; color: #04342C; }
+@media (prefers-color-scheme: dark) {
+  .t-sched{background:#2a0a0a}.t-sched .tool-what{color:#F09595}.t-sched .tool-gap{background:#3a1010;color:#F7C1C1}
+  .t-crm{background:#2a1a00}.t-crm .tool-what{color:#EF9F27}.t-crm .tool-gap{background:#412402;color:#FAC775}
+  .t-lms{background:#1a1730}.t-lms .tool-what{color:#AFA9EC}.t-lms .tool-gap{background:#26215C;color:#CECBF6}
+  .t-gc{background:#052e1e}.t-gc .tool-what{color:#5DCAA5}.t-gc .tool-gap{background:#085041;color:#9FE1CB}
+}
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; margin-top: 4px; }
+@media (prefers-color-scheme: dark) { button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 14, Sections 2–3 · Evidence Gate & Tools Analysis</div>
+<h1>Evidence Gate — pass before any manifesto delivery</h1>
+<p class="sub">This is a hard gate. No manifesto delivery until all four questions are answered in writing for the specific scenario.</p>
+
+<div class="view-tabs">
+  <button class="tab act-gate" id="tab-gate" onclick="switchView('gate')">Evidence Gate</button>
+  <button class="tab" id="tab-tools" onclick="switchView('tools')">Existing tools gaps</button>
+</div>
+
+<!-- EVIDENCE GATE -->
+<div class="panel active" id="panel-gate">
+  <div class="hard-gate">The Evidence Gate transforms the manifesto from a pitch into a conclusion. A category claim without diagnostic evidence behind it is an assertion an operator can dismiss. When all four are answered, the manifesto is not a claim — it is a summary.</div>
+  <div id="gate-questions"></div>
+  <div class="gate-status" id="gate-status">0 / 4 answered</div>
+  <button class="secondary" onclick="resetGate()">Reset</button>
+</div>
+
+<!-- TOOLS GAPS -->
+<div class="panel" id="panel-tools">
+  <div class="tool-card t-sched">
+    <div class="tool-header"><span class="tool-badge">Scheduling Software</span><div class="tool-name">Manages time slot logistics</div></div>
+    <div class="tool-what">Does not capture compatibility data. Cannot detect engagement decline.</div>
+    <div class="tool-gap">Structural gap: fixes the container, not the content. The scheduling platform cannot connect instructor-student compatibility to retention outcomes — because it was designed to manage availability, not relationship quality.</div>
+  </div>
+  <div class="tool-card t-crm">
+    <div class="tool-header"><span class="tool-badge">CRM Platform</span><div class="tool-name">Tracks lead pipeline and contact history</div></div>
+    <div class="tool-what">Does not optimize the lesson relationship. Cannot connect communication history to retention outcomes.</div>
+    <div class="tool-gap">Structural gap: measures activity, not quality. The CRM was designed to track the sales pipeline — not optimize the lesson relationship. Activity without quality is motion without progress.</div>
+  </div>
+  <div class="tool-card t-lms">
+    <div class="tool-header"><span class="tool-badge">LMS Platform</span><div class="tool-name">Delivers curriculum content</div></div>
+    <div class="tool-what">Does not track relationship quality. Completion metrics do not predict retention.</div>
+    <div class="tool-gap">Structural gap: measures delivery, not engagement. A student who completes lessons is not the same as a student who is engaged. The LMS cannot distinguish them.</div>
+  </div>
+  <div class="tool-card t-gc">
+    <div class="tool-header"><span class="tool-badge">GroovConnect</span><div class="tool-name">Music School Operating System</div></div>
+    <div class="tool-what">Diagnoses system performance, optimizes relationships, tracks engagement, and improves itself through data.</div>
+    <div class="tool-gap">Category position: addresses the Operational Intelligence Deficit — the root cause, not the symptom. The question is not which tool is better — it is whether the school has an operating system at all.</div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  { num:'Q1', text:'What is the economic cost of the operator\'s current approach?', source:'Source: Module 03 diagnostic. Dollar figure calculated from LTV, Conversion Loss, or Utilization Loss formula — never estimated.', placeholder:'State the dollar figure and the formula that produced it.' },
+  { num:'Q2', text:'Why do existing tools fail to solve it?', source:'Source: Module 07 Solution Mapping. Map each tool\'s structural function vs. the diagnosed failure mode.', placeholder:'Name each tool and its specific structural gap — not a feature comparison.' },
+  { num:'Q3', text:'What does the GC alternative produce, in outcomes?', source:'Source: Module 13 network benchmark data. Use the network delta as proof — not a projection.', placeholder:'State the documented network outcome for schools at a comparable MSOI baseline.' },
+  { num:'Q4', text:'What happens if the operator does nothing?', source:'Source: Module 03 Priority Score + Module 10 compounding logic. Monthly leakage × 12 months + data moat gap.', placeholder:'State the monthly cost of inaction and the compounding intelligence gap.' },
+];
+const answered = new Array(QUESTIONS.length).fill(false);
+function renderGate() {
+  document.getElementById('gate-questions').innerHTML = QUESTIONS.map((q, i) => `
+    <div class="gate-q">
+      <div class="gq-num">${q.num}</div>
+      <div class="gq-text">${q.text}</div>
+      <div class="gq-source">${q.source}</div>
+      <textarea class="gq-answer" placeholder="${q.placeholder}" oninput="checkAnswer(${i}, this.value)"></textarea>
+      <div class="gq-check" onclick="toggleAnswered(${i})">
+        <div class="gq-checkbox${answered[i]?' checked':''}"></div>
+        <span class="gq-label">${answered[i] ? 'Marked as answered' : 'Mark as answered'}</span>
+      </div>
+    </div>`).join('');
+  const cnt = answered.filter(Boolean).length;
+  const gs = document.getElementById('gate-status');
+  gs.className = 'gate-status' + (cnt === QUESTIONS.length ? ' passed' : '');
+  gs.textContent = cnt === QUESTIONS.length ? '✓ Evidence Gate passed — manifesto delivery permitted' : `${cnt} / ${QUESTIONS.length} answered`;
+}
+function toggleAnswered(i) { answered[i] = !answered[i]; renderGate(); }
+function checkAnswer(i, v) { if (v.trim().length > 20) { answered[i] = true; renderGate(); } }
+function resetGate() { answered.fill(false); renderGate(); document.querySelectorAll('.gq-answer').forEach(t => t.value = ''); }
+renderGate();
+
+function switchView(v) {
+  document.getElementById('panel-gate').classList.toggle('active', v==='gate');
+  document.getElementById('panel-tools').classList.toggle('active', v==='tools');
+  document.getElementById('tab-gate').className='tab'+(v==='gate'?' act-gate':'');
+  document.getElementById('tab-tools').className='tab'+(v==='tools'?' act-tools':'');
+}
+</script>
+</body>
+</html>

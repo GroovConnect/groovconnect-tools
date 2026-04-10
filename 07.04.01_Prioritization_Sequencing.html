@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 07 — Prioritization & Implementation Sequencing</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.view-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 13px; font-weight: 500; padding: 7px 18px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.active-priority { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.tab.active-sequence { background: #E1F5EE; border-color: #0F6E56; color: #0F6E56; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+.formula-bar { background: #E6F1FB; border-radius: 10px; padding: 12px 18px; text-align: center; margin-bottom: 16px; }
+.formula-text { font-size: 16px; font-weight: 600; color: #0C447C; font-family: "SFMono-Regular", Menlo, monospace; }
+.formula-sub { font-size: 12px; color: #185FA5; margin-top: 3px; }
+@media (prefers-color-scheme: dark) { .formula-bar { background: #0a1f3a; } .formula-text { color: #85B7EB; } .formula-sub { color: #B5D4F4; } }
+.factor-rows { margin-bottom: 16px; }
+.factor-row-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 10px; padding: 12px 16px; margin-bottom: 6px; }
+@media (prefers-color-scheme: dark) { .factor-row-card { background: #1e1e1e; border-color: #333; } }
+.factor-name { font-size: 13px; font-weight: 600; color: #1D1D1F; margin-bottom: 3px; }
+@media (prefers-color-scheme: dark) { .factor-name { color: #e8e8e8; } }
+.factor-scale { font-size: 12px; color: #6E6E73; line-height: 1.45; }
+.calc-section { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { .calc-section { background: #1e1e1e; border-color: #333; } }
+.calc-head { font-size: 13px; font-weight: 600; color: #1D1D1F; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { .calc-head { color: #e8e8e8; } }
+.rating-group { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+.rating-label { font-size: 13px; color: #1D1D1F; min-width: 140px; }
+@media (prefers-color-scheme: dark) { .rating-label { color: #e8e8e8; } }
+.rating-btns { display: flex; gap: 4px; }
+.rb { width: 32px; height: 32px; border-radius: 7px; border: 0.5px solid #D1D1D6; background: #fff; font-size: 13px; font-weight: 500; color: #888780; cursor: pointer; font-family: inherit; }
+@media (prefers-color-scheme: dark) { .rb { background: #2a2a2a; border-color: #444; color: #6E6E73; } }
+.rb.sel { background: #185FA5; border-color: #185FA5; color: #fff; }
+.score-display { background: #E1F5EE; border-radius: 10px; padding: 12px 16px; text-align: center; margin-top: 8px; }
+@media (prefers-color-scheme: dark) { .score-display { background: #052e1e; } }
+.score-val { font-size: 28px; font-weight: 500; color: #085041; font-variant-numeric: tabular-nums; }
+@media (prefers-color-scheme: dark) { .score-val { color: #9FE1CB; } }
+.score-formula { font-size: 12px; color: #0F6E56; margin-top: 4px; font-family: "SFMono-Regular", Menlo, monospace; }
+.overlap-rule { font-size: 12px; color: #633806; background: #FAEEDA; border-left: 3px solid #BA7517; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .overlap-rule { background: #2a1a00; color: #FAC775; } }
+.phase-card { border-radius: 12px; padding: 14px 18px; margin-bottom: 6px; }
+.ph { display: flex; align-items: flex-start; gap: 12px; }
+.phase-num { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; color: #fff; margin-top: 2px; }
+.phase-body { flex: 1; }
+.phase-name { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+.phase-systems { font-size: 12px; margin-bottom: 4px; }
+.phase-rule { font-size: 12px; font-style: italic; line-height: 1.5; }
+.ph1 { background: #E6F1FB; } .ph1 .phase-num { background: #185FA5; } .ph1 .phase-name { color: #0C447C; } .ph1 .phase-systems { color: #185FA5; } .ph1 .phase-rule { color: #0C447C; }
+.ph2 { background: #FAEEDA; } .ph2 .phase-num { background: #BA7517; } .ph2 .phase-name { color: #633806; } .ph2 .phase-systems { color: #854F0B; } .ph2 .phase-rule { color: #633806; }
+.ph3 { background: #EEEDFE; } .ph3 .phase-num { background: #534AB7; } .ph3 .phase-name { color: #26215C; } .ph3 .phase-systems { color: #534AB7; } .ph3 .phase-rule { color: #26215C; }
+.ph4 { background: #E1F5EE; } .ph4 .phase-num { background: #0F6E56; } .ph4 .phase-name { color: #085041; } .ph4 .phase-systems { color: #0F6E56; } .ph4 .phase-rule { color: #085041; }
+@media (prefers-color-scheme: dark) {
+  .ph1 { background: #0a1f3a; } .ph1 .phase-name { color: #B5D4F4; } .ph1 .phase-rule { color: #85B7EB; }
+  .ph2 { background: #2a1a00; } .ph2 .phase-name { color: #FAC775; } .ph2 .phase-rule { color: #EF9F27; }
+  .ph3 { background: #1a1730; } .ph3 .phase-name { color: #CECBF6; } .ph3 .phase-rule { color: #AFA9EC; }
+  .ph4 { background: #052e1e; } .ph4 .phase-name { color: #9FE1CB; } .ph4 .phase-rule { color: #5DCAA5; }
+}
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; margin-top: 4px; }
+@media (prefers-color-scheme: dark) { button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 07, Sections 4–5 · Calculator & Reference</div>
+<h1>Prioritization Model & Implementation Sequencing</h1>
+<p class="sub">Calculate priority scores with visible math. Sequence follows the 4-phase standard.</p>
+
+<div class="view-tabs">
+  <button class="tab active-priority" id="tab-p" onclick="switchView('p')">Priority Score</button>
+  <button class="tab" id="tab-s" onclick="switchView('s')">Implementation Sequence</button>
+</div>
+
+<!-- PRIORITY SCORE -->
+<div class="panel active" id="panel-p">
+  <div class="formula-bar">
+    <div class="formula-text">Priority = Impact × Frequency × Severity × Ease</div>
+    <div class="formula-sub">Each factor rated 1–5 &nbsp;·&nbsp; Range: 1–625 &nbsp;·&nbsp; Higher scores lead</div>
+  </div>
+  <div class="factor-rows">
+    <div class="factor-row-card"><div class="factor-name">Impact (1–5)</div><div class="factor-scale">Revenue, retention, or direct cost reduction. 5 = directly affects a primary KPI by more than 10 points.</div></div>
+    <div class="factor-row-card"><div class="factor-name">Frequency (1–5)</div><div class="factor-scale">How often the breakdown occurs and affects students. 5 = affects the majority of students every month.</div></div>
+    <div class="factor-row-card"><div class="factor-name">Severity (1–5)</div><div class="factor-scale">Degree of damage per occurrence. 5 = directly produces student churn or revenue loss.</div></div>
+    <div class="factor-row-card"><div class="factor-name">Ease of Implementation (1–5)</div><div class="factor-scale">Time, complexity, and resource requirements. 5 = deployable within one week with no additional infrastructure.</div></div>
+  </div>
+  <div id="problems-container"></div>
+  <button class="secondary" onclick="addProblem()">+ Add another problem</button>
+  <div id="ranking" style="margin-top:14px"></div>
+  <button class="secondary" onclick="resetProblems()">Reset</button>
+</div>
+
+<!-- IMPLEMENTATION SEQUENCE -->
+<div class="panel" id="panel-s">
+  <div class="overlap-rule">Rule: if multiple problems map to one GC capability, prioritize that capability regardless of individual scores. Deviating from the Standard Sequencing Order produces failure even when the solutions themselves are correct.</div>
+  <div class="phase-card ph1"><div class="ph"><div class="phase-num">1</div><div class="phase-body"><div class="phase-name">Visibility First</div><div class="phase-systems">Operational Dashboard · MSOI Baseline</div><div class="phase-rule">You cannot optimize what you cannot see. Measurement must exist before any corrective system is installed or evaluated.</div></div></div></div>
+  <div class="phase-card ph2"><div class="ph"><div class="phase-num">2</div><div class="phase-body"><div class="phase-name">Core Systems</div><div class="phase-systems">Matching Engine · Scheduling Optimization</div><div class="phase-rule">Fix the primary revenue engine. Retention and utilization are the highest-leverage systems — address them before adding intelligence layers.</div></div></div></div>
+  <div class="phase-card ph3"><div class="ph"><div class="phase-num">3</div><div class="phase-body"><div class="phase-name">Optimization</div><div class="phase-systems">Engagement Tracking · Communication Automation</div><div class="phase-rule">Optimize the now-functional core systems with real-time intelligence and automated touchpoints.</div></div></div></div>
+  <div class="phase-card ph4"><div class="ph"><div class="phase-num">4</div><div class="phase-body"><div class="phase-name">Automation</div><div class="phase-systems">Automated triggers · Self-improving algorithms</div><div class="phase-rule">Scale efficiency only after the underlying systems are producing reliable, measurable outcomes. Automating a broken process scales the failure.</div></div></div></div>
+</div>
+
+<script>
+let problems = [
+  { name: 'Problem 1', imp: 0, freq: 0, sev: 0, ease: 0 },
+  { name: 'Problem 2', imp: 0, freq: 0, sev: 0, ease: 0 },
+];
+
+function score(p) { return p.imp && p.freq && p.sev && p.ease ? p.imp * p.freq * p.sev * p.ease : null; }
+
+function renderProblems() {
+  const c = document.getElementById('problems-container');
+  c.innerHTML = problems.map((p, pi) => `
+    <div class="calc-section">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <input style="font-family:inherit;font-size:13px;font-weight:600;color:#185FA5;border:none;background:transparent;outline:none;width:180px" value="${p.name}" oninput="problems[${pi}].name=this.value;renderRanking()">
+        <span style="font-size:18px;font-weight:500;color:#1D1D1F">${score(p) !== null ? score(p) : '—'}</span>
+      </div>
+      ${[['Impact','imp'],['Frequency','freq'],['Severity','sev'],['Ease','ease']].map(([label,key]) => `
+        <div class="rating-group">
+          <span class="rating-label">${label}</span>
+          <div class="rating-btns">${[1,2,3,4,5].map(v => `<button class="rb${p[key]===v?' sel':''}" onclick="rate(${pi},'${key}',${v})">${v}</button>`).join('')}</div>
+        </div>`).join('')}
+    </div>`).join('');
+  renderRanking();
+}
+
+function rate(pi, key, val) { problems[pi][key] = val; renderProblems(); }
+
+function renderRanking() {
+  const scored = problems.filter(p => score(p) !== null).map(p => ({ name: p.name, s: score(p), formula: `${p.imp}×${p.freq}×${p.sev}×${p.ease}` })).sort((a,b) => b.s - a.s);
+  const r = document.getElementById('ranking');
+  if (scored.length < 2) { r.innerHTML = ''; return; }
+  r.innerHTML = `<div style="font-size:13px;font-weight:600;color:#1D1D1F;margin-bottom:8px">Sequence</div>` +
+    scored.map((p, i) => `<div style="background:#fff;border:0.5px solid #D1D1D6;border-radius:8px;padding:10px 14px;margin-bottom:4px;display:flex;align-items:center;gap:10px"><span style="font-size:12px;font-weight:700;color:#8E8E93;min-width:20px">${i+1}</span><span style="flex:1;font-size:13px;color:#1D1D1F">${p.name}</span><span style="font-size:13px;font-weight:600;color:#185FA5">${p.s}</span><span style="font-size:11px;color:#8E8E93;font-family:monospace">${p.formula}</span></div>`).join('');
+}
+
+function addProblem() { problems.push({ name: `Problem ${problems.length+1}`, imp:0, freq:0, sev:0, ease:0 }); renderProblems(); }
+function resetProblems() { problems = [{ name:'Problem 1',imp:0,freq:0,sev:0,ease:0 },{ name:'Problem 2',imp:0,freq:0,sev:0,ease:0 }]; renderProblems(); }
+
+function switchView(v) {
+  document.getElementById('panel-p').classList.toggle('active', v==='p');
+  document.getElementById('panel-s').classList.toggle('active', v==='s');
+  document.getElementById('tab-p').className = 'tab' + (v==='p' ? ' active-priority' : '');
+  document.getElementById('tab-s').className = 'tab' + (v==='s' ? ' active-sequence' : '');
+}
+
+renderProblems();
+</script>
+</body>
+</html>

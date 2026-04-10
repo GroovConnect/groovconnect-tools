@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module A-3 — Simulation Enhancement: Additional Scenario Scripts</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 680px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.purpose-note { font-size: 13px; color: #0C447C; background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .purpose-note { background: #0a1f3a; color: #B5D4F4; } }
+.tier-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 13px; font-weight: 500; padding: 7px 18px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.t1a { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.tab.t2a { background: #FAEEDA; border-color: #BA7517; color: #854F0B; font-weight: 600; }
+.tab.t3a { background: #FCEBEB; border-color: #A32D2D; color: #A32D2D; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+.tier-badge { display: inline-flex; border-radius: 8px; padding: 7px 14px; margin-bottom: 14px; font-size: 13px; font-weight: 500; }
+.t1-badge { background: #E6F1FB; color: #0C447C; }
+.t2-badge { background: #FAEEDA; color: #633806; }
+.t3-badge { background: #FCEBEB; color: #791F1F; }
+.sim-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 14px; padding: 16px 20px; margin-bottom: 10px; }
+@media (prefers-color-scheme: dark) { .sim-card { background: #1e1e1e; border-color: #333; } }
+.sim-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.sim-id { font-size: 11px; font-weight: 700; color: #185FA5; }
+.skill-chip { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 99px; background: #EEEDFE; color: #534AB7; }
+.sim-scenario { font-size: 14px; font-weight: 500; color: #1D1D1F; font-style: italic; background: #F1EFE8; border-radius: 8px; padding: 10px 14px; margin-bottom: 8px; line-height: 1.5; }
+@media (prefers-color-scheme: dark) { .sim-scenario { background: #222; color: #e8e8e8; } }
+.gold-block { display: none; margin-top: 8px; }
+.gold-block.show { display: block; }
+.gold-row { background: #E1F5EE; border-radius: 8px; padding: 8px 12px; margin-bottom: 5px; font-size: 13px; color: #085041; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .gold-row { background: #052e1e; color: #9FE1CB; } }
+.fail-row { background: #FAEEDA; border-radius: 8px; padding: 8px 12px; margin-bottom: 5px; font-size: 12px; color: #633806; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .fail-row { background: #2a1a00; color: #FAC775; } }
+.ks-chip { background: #FCEBEB; border-radius: 7px; padding: 5px 10px; font-size: 11px; color: #A32D2D; line-height: 1.45; margin-top: 4px; }
+@media (prefers-color-scheme: dark) { .ks-chip { background: #2a0a0a; color: #F09595; } }
+.reveal-btn { font-family: inherit; font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 7px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .reveal-btn { background: #2a2a2a; border-color: #444; color: #e8e8e8; } }
+/* Capstone scoring grid */
+.capstone-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 10px; }
+.cap-cell { border-radius: 8px; padding: 8px 10px; }
+.cc-event { font-size: 11px; font-weight: 700; margin-bottom: 3px; }
+.cc-pass { font-size: 12px; line-height: 1.4; }
+.cc1 { background: #E6F1FB; } .cc1 .cc-event { color: #185FA5; } .cc1 .cc-pass { color: #0C447C; }
+.cc2 { background: #FAEEDA; } .cc2 .cc-event { color: #BA7517; } .cc2 .cc-pass { color: #633806; }
+.cc3 { background: #E1F5EE; } .cc3 .cc-event { color: #0F6E56; } .cc3 .cc-pass { color: #085041; }
+.cc4 { background: #FCEBEB; } .cc4 .cc-event { color: #A32D2D; } .cc4 .cc-pass { color: #791F1F; }
+@media (prefers-color-scheme: dark) { .cc1{background:#0a1f3a}.cc2{background:#2a1a00}.cc3{background:#052e1e}.cc4{background:#2a0a0a} }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module A-3 · Simulation Enhancement Library</div>
+<h1>Simulation Enhancement — 14 additional scenarios</h1>
+<p class="sub">Targeted remediation tools. Select based on the trainee's 5-Axis scoring pattern — not as a linear sequence.</p>
+<div class="purpose-note">Use when a trainee has passed the core Module 18 library but needs more repetitions in a specific weakness area. Each simulation is labeled with the specific skill it tests. Never re-run a scenario the trainee has already seen.</div>
+
+<div class="tier-tabs">
+  <button class="tab t1a" id="tab-t1" onclick="switchTier('t1')">Tier 1 — Guided (E1)</button>
+  <button class="tab" id="tab-t2" onclick="switchTier('t2')">Tier 2 — Independent (E2)</button>
+  <button class="tab" id="tab-t3" onclick="switchTier('t3')">Tier 3 — Adversarial (E3)</button>
+</div>
+
+<div class="panel active" id="panel-t1">
+  <div class="tier-badge t1-badge">2 guided drills · use when trainee struggles with KPI identification or baseline anchoring</div>
+  <div class="sim-card">
+    <div class="sim-head"><span class="sim-id">E1.1 — The Waiting Room</span><span class="skill-chip">KPI Identification</span></div>
+    <div class="sim-scenario">"We're getting a lot of inquiries — the phone is ringing — but I feel like we're not converting them into students. Something is off at the front desk."</div>
+    <div style="font-size:12px;color:#6E6E73;margin-bottom:8px">Skill: KPI identification from a vague narrative that attributes the problem to a person rather than a system.</div>
+    <button class="reveal-btn" id="rb-e11" onclick="revealSim('e11')">Reveal correct KPIs + gold standard question</button>
+    <div class="gold-block" id="gold-e11">
+      <div class="gold-row"><strong>Correct KPIs:</strong> Trial count (monthly), Trial-to-enrollment conversion rate (%), 24-hour follow-up completion rate (%).</div>
+      <div class="gold-row"><strong>Gold standard question:</strong> "Of the inquiries you receive each month, how many result in a trial lesson? And of those trial lessons, how many enroll?" — surfaces both KPIs in one question.</div>
+      <div class="ks-chip">Kill Switch: trainee asks "Is the front desk doing a good job?" — a person-based question before a single KPI is named. Resets to Step 1 of the Master Sequence.</div>
+    </div>
+  </div>
+  <div class="sim-card">
+    <div class="sim-head"><span class="sim-id">E1.2 — The Happy Numbers</span><span class="skill-chip">Baseline vs. Benchmark</span></div>
+    <div class="sim-scenario">An owner shows a retention chart showing 78% retention: "We've actually been improving. Last year we were at 72%. We're doing well."</div>
+    <div style="font-size:12px;color:#6E6E73;margin-bottom:8px">Skill: anchoring year-over-year improvement against the network benchmark.</div>
+    <button class="reveal-btn" id="rb-e12" onclick="revealSim('e12')">Reveal gold standard response</button>
+    <div class="gold-block" id="gold-e12">
+      <div class="gold-row">Acknowledge the improvement. Then: "The network average is 85%. Your improvement from 72% to 78% is real progress — and there's a 7-point gap remaining. At your student count and LTV, that gap represents approximately $[X] in annual leakage."</div>
+      <div class="ks-chip">Kill Switch: trainee responds "Good work!" without anchoring the benchmark. Year-over-year improvement is not a certification of system health.</div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-t2">
+  <div class="tier-badge t2-badge">3 independent drills · signal embedded in narrative noise</div>
+  <div class="sim-card">
+    <div class="sim-head"><span class="sim-id">E2.1 — The Vanishing Revenue</span><span class="skill-chip">Signal Extraction</span></div>
+    <div class="sim-scenario">"Revenue is basically the same as last year but it feels harder to generate it. I'm working longer hours, my front desk coordinator is stressed, and we recently lost our two best drummers. But the students who stayed seem really happy. We did add 15 new students this quarter though, so we must be doing okay."</div>
+    <button class="reveal-btn" id="rb-e21" onclick="revealSim('e21')">Reveal signal map + hidden reality</button>
+    <div class="gold-block" id="gold-e21">
+      <div class="gold-row"><strong>Revenue flat despite new students:</strong> Utilization failure — lesson delivery rate declined even as enrollment grew.</div>
+      <div class="gold-row"><strong>Admin stress / longer hours:</strong> Labor hour inflation — reschedule backlog or manual process overload.</div>
+      <div class="gold-row"><strong>Lost two instructors:</strong> Potential Matching or Incentive failure — requires cross-reference with churn data.</div>
+      <div class="fail-row"><strong>Noise:</strong> "Students seem really happy" — no retention KPI attached. Satisfaction without a retention figure is noise. If trainee anchors on this — fail.</div>
+    </div>
+  </div>
+  <div class="sim-card">
+    <div class="sim-head"><span class="sim-id">E2.2 — The Loyal Deserters</span><span class="skill-chip">Exit Data Analysis</span></div>
+    <div class="sim-scenario">22 students cancelled in the last 60 days. Exit survey: 85% gave "personal reasons." Owner: "It's just life. Families are busy. Nothing we could have done."</div>
+    <button class="reveal-btn" id="rb-e22" onclick="revealSim('e22')">Reveal required analysis</button>
+    <div class="gold-block" id="gold-e22">
+      <div class="gold-row">"Personal reasons" is the most common response when the student is too polite to name the real cause. It is not a valid diagnostic conclusion — it is a social courtesy.</div>
+      <div class="gold-row"><strong>Required analysis:</strong> Cross-reference the 22 cancellations against: enrollment duration (clustering at months 6–9?), instructor assignment (concentrated on specific instructors?), lesson note engagement signals (did engagement drop before cancellation?).</div>
+      <div class="ks-chip">Kill Switch: trainee accepts "personal reasons" as the diagnostic conclusion without requesting the cross-reference data.</div>
+    </div>
+  </div>
+  <div class="sim-card">
+    <div class="sim-head"><span class="sim-id">E2.3 — The New Competitor</span><span class="skill-chip">External Attribution Reframe</span></div>
+    <div class="sim-scenario">Trial conversion dropped from 68% to 49% in one quarter. Owner: "A new music school opened three blocks away. They're cheaper. That's where everyone is going."</div>
+    <button class="reveal-btn" id="rb-e23" onclick="revealSim('e23')">Reveal gold standard reframe</button>
+    <div class="gold-block" id="gold-e23">
+      <div class="gold-row">"The competitor is a contextual factor. The question is: what in our conversion process has broken down in the last 90 days that made us more vulnerable when the competitor appeared? Has your trial follow-up timing changed? Has anything in the enrollment conversation changed?"</div>
+      <div class="ks-chip">Kill Switch: trainee accepts the competitor as the primary cause. The competitor is a market condition — not a diagnostic conclusion. The trainee must identify which part of the funnel has broken down.</div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-t3">
+  <div class="tier-badge t3-badge">6 adversarial drills + 1 multi-event capstone · targeted by 5-Axis failure pattern</div>
+  <div class="sim-card">
+    <div class="sim-head"><span class="sim-id">E3.1 — The Data Denier</span><span class="skill-chip">Calculation Defense</span></div>
+    <div class="sim-scenario">Trainee presents $44,000 leakage calculation. Adversary: "That number is completely wrong. Our margins are higher than 50%. And our LTV is much longer than 10 months. You're lowballing everything."</div>
+    <button class="reveal-btn" id="rb-e31" onclick="revealSim('e31')">Reveal correct response</button>
+    <div class="gold-block" id="gold-e31">
+      <div class="gold-row">Do not defend the number. Invite correction: "That's exactly the right challenge. Let's use your numbers. What is your actual gross margin? And what is your average student tenure?" Re-run the calculation live with the operator's inputs.</div>
+      <div class="ks-chip">Kill Switch: trainee defends their original inputs. The number is not the argument — the methodology is. The operator improving it is the preferred outcome.</div>
+    </div>
+  </div>
+  <div class="sim-card">
+    <div class="sim-head"><span class="sim-id">E3.2 — The Priority Switcher</span><span class="skill-chip">Diagnostic Thread</span></div>
+    <div class="sim-scenario">Mid-diagnosis. Adversary: "Actually, forget the retention stuff for a second. I have a bigger problem. My recital is in 3 weeks and I need to know how to promote it."</div>
+    <button class="reveal-btn" id="rb-e32" onclick="revealSim('e32')">Reveal correct response</button>
+    <div class="gold-block" id="gold-e32">
+      <div class="gold-row">"The recital is important and I want to help you with it. Let's spend the last 5 minutes of this session on recital promotion and then schedule a specific session for the diagnostic work — the retention issue is costing you approximately $[X]/month while we delay it."</div>
+      <div class="ks-chip">Trainee must protect the diagnostic thread without dismissing the recital concern. Both are acknowledged — only one takes priority based on financial urgency.</div>
+    </div>
+  </div>
+  <div class="sim-card">
+    <div class="sim-head"><span class="sim-id">E3.3 — The Yes-Sayer</span><span class="skill-chip">Commitment Extraction</span></div>
+    <div class="sim-scenario">Operator agreed with everything. At commitment: "Yes, I'm definitely on board with all of this. Let's touch base in a few weeks once things settle down."</div>
+    <button class="reveal-btn" id="rb-e33" onclick="revealSim('e33')">Reveal correct response</button>
+    <div class="gold-block" id="gold-e33">
+      <div class="gold-row">"'A few weeks' concerns me because this is currently costing approximately $3,600 per month. Every week of delay has a real cost. Can we agree: by [specific date], [specific named action]?"</div>
+      <div class="ks-chip">Vague agreement is not a commitment. The trainee must name the vagueness and convert it to a specific action with a specific date before the session ends.</div>
+    </div>
+  </div>
+  <div class="sim-card">
+    <div class="sim-head"><span class="sim-id">E3.4 — The Emotional Explosion</span><span class="skill-chip">Relationship Preservation</span></div>
+    <div class="sim-scenario">"I have poured my heart into this school for 15 years. I barely sleep. I've sacrificed everything. And now you're telling me I've been doing it wrong for 15 years? That's insulting."</div>
+    <button class="reveal-btn" id="rb-e34" onclick="revealSim('e34')">Reveal correct response</button>
+    <div class="gold-block" id="gold-e34">
+      <div class="gold-row">"This isn't about the last 15 years being wrong. You built something from nothing. The MSOI findings reflect what happens to any great school when it scales beyond the systems that were right for a smaller operation. You didn't fail the system — you outgrew it. That's a success problem, not a character problem."</div>
+      <div class="gold-row">After response: stop the diagnostic. Return only after the operator signals readiness.</div>
+      <div class="ks-chip">Kill Switch: trainee pushes through the emotional moment to continue the diagnostic. Fails Communication axis regardless of diagnostic accuracy.</div>
+    </div>
+  </div>
+  <div class="sim-card">
+    <div class="sim-head"><span class="sim-id">E3.5 — The Staff Mutiny</span><span class="skill-chip">Structural Requirement Defense</span></div>
+    <div class="sim-scenario">Week 2 of implementation. "Three of my four instructors refuse to use the lesson note system. They say it's too much work and insulting. I don't want to lose them. Should we just drop it?"</div>
+    <button class="reveal-btn" id="rb-e35" onclick="revealSim('e35')">Reveal correct response</button>
+    <div class="gold-block" id="gold-e35">
+      <div class="gold-row">Diagnose the friction first: is the form too long? Is mobile submission not working? Is the purpose unclear to instructors? Address the friction without reducing the requirement.</div>
+      <div class="ks-chip">"Let's find out what's making it hard" is not "let's make it optional." The structural requirement is non-negotiable once part of the Solution Blueprint.</div>
+    </div>
+  </div>
+  <div class="sim-card">
+    <div class="sim-head"><span class="sim-id">E3.6 — Full Adversarial Capstone</span><span class="skill-chip">Multi-Event Composure</span></div>
+    <div class="sim-scenario">Combines E3.1 + E3.2 + E3.3 + E3.4 in one continuous session. The operator: (1) disputes the math mid-diagnosis, (2) tries to switch topics, (3) agrees with everything but commits to nothing, (4) has an emotional reaction when the scope of the diagnosis is revealed.</div>
+    <button class="reveal-btn" id="rb-e36" onclick="revealSim('e36')">Reveal pass conditions per event</button>
+    <div class="gold-block" id="gold-e36">
+      <div class="capstone-grid">
+        <div class="cap-cell cc1"><div class="cc-event">Math Dispute</div><div class="cc-pass">Operator's own numbers used to re-derive anchor. Original number not defended.</div></div>
+        <div class="cap-cell cc2"><div class="cc-event">Priority Switch</div><div class="cc-pass">Diagnostic protected. Recital acknowledged and deferred with a specific follow-up commitment.</div></div>
+        <div class="cap-cell cc3"><div class="cc-event">Vague Agreement</div><div class="cc-pass">Specific first action with a specific date secured before session ends.</div></div>
+        <div class="cap-cell cc4"><div class="cc-event">Emotional Event</div><div class="cc-pass">Diagnostic paused. Relationship acknowledged. Data returned to only when operator signals readiness.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function revealSim(id) { document.getElementById(`gold-${id}`).classList.add('show'); document.getElementById(`rb-${id}`).style.display='none'; }
+function switchTier(t) {
+  ['t1','t2','t3'].forEach(tier => {
+    document.getElementById(`panel-${tier}`).classList.toggle('active', tier===t);
+    const cls = {t1:'t1a',t2:'t2a',t3:'t3a'}[tier];
+    document.getElementById(`tab-${tier}`).className='tab'+(tier===t?' '+cls:'');
+  });
+}
+</script>
+</body>
+</html>

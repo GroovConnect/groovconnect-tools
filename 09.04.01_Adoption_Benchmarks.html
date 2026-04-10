@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 09 — Adoption Rate Benchmarks</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #fff; color: #1D1D1F; padding: 40px 28px; max-width: 700px; margin: 0 auto; }
+@media (prefers-color-scheme: dark) { body { background: #1a1a1a; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 5px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 3px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.adoption-rule { font-size: 13px; color: #0C447C; background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 20px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .adoption-rule { background: #0a1f3a; color: #B5D4F4; } }
+.bench-card { border-radius: 12px; padding: 14px 18px; margin-bottom: 6px; cursor: pointer; transition: opacity .12s; }
+.bench-card:hover { opacity: .93; }
+.bench-header { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+.bench-type { font-size: 14px; font-weight: 600; flex: 1; }
+.bench-30 { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.bench-detail { display: none; }
+.bench-detail.show { display: block; }
+.bench-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.bench-block { border-radius: 8px; padding: 8px 12px; }
+.bench-label { font-size: 10px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 3px; }
+.bench-val { font-size: 13px; line-height: 1.5; }
+.diag-block { margin-top: 8px; border-radius: 8px; padding: 8px 12px; font-size: 12px; line-height: 1.5; }
+.diag-label { font-size: 10px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 2px; color: #A32D2D; }
+.diag-text { color: #791F1F; }
+
+.b1 { background: #E6F1FB; } .b1 .bench-type { color: #0C447C; } .b1 .bench-30 { color: #185FA5; } .b1 .bench-block { background: #B5D4F4; } .b1 .bench-label { color: #0C447C; } .b1 .bench-val { color: #042C53; } .b1 .diag-block { background: #FCEBEB; }
+.b2 { background: #FAEEDA; } .b2 .bench-type { color: #633806; } .b2 .bench-30 { color: #BA7517; } .b2 .bench-block { background: #FAC775; } .b2 .bench-label { color: #633806; } .b2 .bench-val { color: #412402; } .b2 .diag-block { background: #FCEBEB; }
+.b3 { background: #EEEDFE; } .b3 .bench-type { color: #26215C; } .b3 .bench-30 { color: #534AB7; } .b3 .bench-block { background: #CECBF6; } .b3 .bench-label { color: #3C3489; } .b3 .bench-val { color: #26215C; } .b3 .diag-block { background: #FCEBEB; }
+.b4 { background: #FAECE7; } .b4 .bench-type { color: #712B13; } .b4 .bench-30 { color: #993C1D; } .b4 .bench-block { background: #F5C4B3; } .b4 .bench-label { color: #712B13; } .b4 .bench-val { color: #4A1B0C; } .b4 .diag-block { background: #FCEBEB; }
+.b5 { background: #E1F5EE; } .b5 .bench-type { color: #085041; } .b5 .bench-30 { color: #0F6E56; } .b5 .bench-block { background: #9FE1CB; } .b5 .bench-label { color: #085041; } .b5 .bench-val { color: #04342C; } .b5 .diag-block { background: #FCEBEB; }
+
+@media (prefers-color-scheme: dark) {
+  .b1{background:#0a1f3a}.b1 .bench-type{color:#B5D4F4}.b1 .bench-block{background:#0C447C}.b1 .bench-val{color:#B5D4F4}
+  .b2{background:#2a1a00}.b2 .bench-type{color:#FAC775}.b2 .bench-block{background:#412402}.b2 .bench-val{color:#FAC775}
+  .b3{background:#1a1730}.b3 .bench-type{color:#CECBF6}.b3 .bench-block{background:#26215C}.b3 .bench-val{color:#CECBF6}
+  .b4{background:#2a1208}.b4 .bench-type{color:#F5C4B3}.b4 .bench-block{background:#4A1B0C}.b4 .bench-val{color:#F5C4B3}
+  .b5{background:#052e1e}.b5 .bench-type{color:#9FE1CB}.b5 .bench-block{background:#085041}.b5 .bench-val{color:#9FE1CB}
+  .diag-block{background:#2a0a0a!important}.diag-text{color:#F09595}
+}
+.controls { display: flex; gap: 8px; margin-top: 12px; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+.caption { margin-top: 16px; font-size: 12px; color: #8E8E93; border-top: 0.5px solid #D1D1D6; padding-top: 12px; }
+@media (prefers-color-scheme: dark) { .caption { border-top-color: #2a2a2a; } }
+@media print { body { padding: 20px; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 09, Section 4 · Reference Card</div>
+<h1>Adoption Rate Benchmarks</h1>
+<p class="sub">Tap each system type to reveal 30-day target, 60-day target, and failure diagnostic. An adoption rate below the benchmark is a system failure — not a people problem.</p>
+<div class="adoption-rule">An adoption rate below the benchmark triggers a structured diagnosis — not additional training or additional pressure. The analyst responds to a missed adoption benchmark the same way they respond to a missed KPI.</div>
+
+<div id="benchmarks"></div>
+<div class="controls">
+  <button class="primary" onclick="revealAll()">Reveal all</button>
+  <button class="secondary" onclick="resetAll()">Reset</button>
+</div>
+<div class="caption">GroovConnect OAS™ · Module 09 · Printable reference — memorize 30-day and 60-day targets for all five system types.</div>
+
+<script>
+const BENCHMARKS = [
+  { cls:'b1', type:'Lesson note submission (instructors)', target30:'70–80% by end of week 2; ≥90% by day 30', target60:'95%+ once enforcement gate is active', diag:'If below 70% at week 2: friction audit immediately. The form is too long or the submission process has too many steps.' },
+  { cls:'b2', type:'Trial follow-up completion (front desk)', target30:'85%+ by end of week 1; ≥95% by day 30', target60:'95%+', diag:'Failure at week 1 indicates Clarity or Ownership failure — not adoption resistance. The process is simple and immediate.' },
+  { cls:'b3', type:'Parent portal activation (parents)', target30:'30–40% by day 30', target60:'60%+ by day 60', diag:'Activation below 20% at day 30 indicates no onboarding occurred. Cannot be passive — requires proactive onboarding support.' },
+  { cls:'b4', type:'Scheduling system compliance (staff)', target30:'85%+ by end of week 2', target60:'95%+ by day 30', diag:'Below 60% at week 2 indicates training did not occur or the SOP was distributed but not demonstrated.' },
+  { cls:'b5', type:'Dashboard weekly review (management)', target30:'100% from week 1', target60:'100%', diag:'If below 100% at week 1, the commitment from Module 08 was not genuine — return to the commitment sequence.' },
+];
+const open = new Array(BENCHMARKS.length).fill(false);
+function render() {
+  document.getElementById('benchmarks').innerHTML = BENCHMARKS.map((b, i) => `
+    <div class="bench-card ${b.cls}${open[i]?' open':''}" onclick="toggle(${i})">
+      <div class="bench-header">
+        <span class="bench-type">${b.type}</span>
+        <span class="bench-30">${open[i] ? b.target30.split(';')[0] : '—'}</span>
+      </div>
+      <div class="bench-detail${open[i]?' show':''}">
+        <div class="bench-row">
+          <div class="bench-block"><div class="bench-label">30-day target</div><div class="bench-val">${b.target30}</div></div>
+          <div class="bench-block"><div class="bench-label">60-day target</div><div class="bench-val">${b.target60}</div></div>
+        </div>
+        <div class="diag-block"><div class="diag-label">Failure diagnostic</div><div class="diag-text">${b.diag}</div></div>
+      </div>
+    </div>`).join('');
+}
+function toggle(i) { open[i]=!open[i]; render(); }
+function revealAll() { open.fill(true); render(); }
+function resetAll() { open.fill(false); render(); }
+render();
+</script>
+</body>
+</html>

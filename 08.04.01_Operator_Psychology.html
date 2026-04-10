@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 08 — Operator Psychology & Preemptive Strike</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.view-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 13px; font-weight: 500; padding: 7px 18px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.active-disc { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.tab.active-strike { background: #FAEEDA; border-color: #BA7517; color: #854F0B; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+.adapt-rule { font-size: 13px; color: #0C447C; background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .adapt-rule { background: #0a1f3a; color: #B5D4F4; } }
+.disc-card { border-radius: 10px; padding: 14px 18px; margin-bottom: 6px; cursor: pointer; transition: opacity .12s; }
+.disc-card:hover { opacity: .93; }
+.disc-header { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+.disc-badge { font-size: 12px; font-weight: 700; width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fff; }
+.disc-name { font-size: 14px; font-weight: 600; flex: 1; }
+.disc-keyword { font-size: 12px; }
+.disc-detail { margin-top: 10px; display: none; }
+.disc-detail.show { display: block; }
+.disc-framing { border-radius: 8px; padding: 10px 14px; font-size: 13px; line-height: 1.6; }
+
+.d-d{background:#FCEBEB}.d-d .disc-badge{background:#A32D2D}.d-d .disc-name{color:#791F1F}.d-d .disc-keyword{color:#A32D2D}.d-d .disc-framing{background:#F7C1C1;color:#501313}
+.d-i{background:#FAEEDA}.d-i .disc-badge{background:#BA7517}.d-i .disc-name{color:#633806}.d-i .disc-keyword{color:#854F0B}.d-i .disc-framing{background:#FAC775;color:#412402}
+.d-s{background:#E1F5EE}.d-s .disc-badge{background:#0F6E56}.d-s .disc-name{color:#085041}.d-s .disc-keyword{color:#0F6E56}.d-s .disc-framing{background:#9FE1CB;color:#04342C}
+.d-c{background:#E6F1FB}.d-c .disc-badge{background:#185FA5}.d-c .disc-name{color:#0C447C}.d-c .disc-keyword{color:#185FA5}.d-c .disc-framing{background:#B5D4F4;color:#042C53}
+
+@media (prefers-color-scheme: dark) {
+  .d-d{background:#2a0a0a}.d-d .disc-name{color:#F7C1C1}.d-d .disc-keyword{color:#F09595}.d-d .disc-framing{background:#3a1010;color:#F7C1C1}
+  .d-i{background:#2a1a00}.d-i .disc-name{color:#FAC775}.d-i .disc-keyword{color:#EF9F27}.d-i .disc-framing{background:#3a2200;color:#FAC775}
+  .d-s{background:#052e1e}.d-s .disc-name{color:#9FE1CB}.d-s .disc-keyword{color:#5DCAA5}.d-s .disc-framing{background:#085041;color:#9FE1CB}
+  .d-c{background:#0a1f3a}.d-c .disc-name{color:#B5D4F4}.d-c .disc-keyword{color:#85B7EB}.d-c .disc-framing{background:#0C447C;color:#B5D4F4}
+}
+/* Motivation framing panel */
+.motiv-row { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 10px; padding: 14px 18px; margin-bottom: 6px; cursor: pointer; transition: background .12s; }
+@media (prefers-color-scheme: dark) { .motiv-row { background: #1e1e1e; border-color: #333; } }
+.motiv-row.open { border-left: 3px solid #BA7517; }
+.motiv-header { display: flex; align-items: center; gap: 10px; margin-bottom: 3px; }
+.motiv-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; background: #FAEEDA; color: #854F0B; }
+@media (prefers-color-scheme: dark) { .motiv-badge { background: #2a1a00; color: #FAC775; } }
+.motiv-name { font-size: 14px; font-weight: 500; color: #1D1D1F; flex: 1; }
+@media (prefers-color-scheme: dark) { .motiv-name { color: #e8e8e8; } }
+.motiv-detail { margin-top: 8px; font-size: 13px; color: #633806; background: #FAEEDA; border-radius: 8px; padding: 8px 12px; line-height: 1.55; display: none; }
+.motiv-detail.show { display: block; }
+@media (prefers-color-scheme: dark) { .motiv-detail { background: #2a1a00; color: #FAC775; } }
+/* Preemptive strike panel */
+.strike-rule { font-size: 13px; color: #633806; background: #FAEEDA; border-left: 3px solid #BA7517; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .strike-rule { background: #2a1a00; color: #FAC775; } }
+.concern-row { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 10px; padding: 14px 18px; margin-bottom: 6px; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .concern-row { background: #1e1e1e; border-color: #333; } }
+.concern-row.open { border-left: 3px solid #BA7517; }
+.concern-signal { font-size: 13px; font-style: italic; color: #1D1D1F; margin-bottom: 4px; }
+@media (prefers-color-scheme: dark) { .concern-signal { color: #e8e8e8; } }
+.concern-type { font-size: 11px; font-weight: 700; color: #854F0B; }
+.concern-frame { font-size: 13px; color: #633806; background: #FAEEDA; border-radius: 8px; padding: 8px 12px; margin-top: 8px; line-height: 1.55; display: none; }
+.concern-frame.show { display: block; }
+@media (prefers-color-scheme: dark) { .concern-frame { background: #2a1a00; color: #FAC775; } }
+.controls { display: flex; gap: 8px; margin-top: 4px; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 08, Sections 4–5 · Reference</div>
+<h1>Operator Psychology & Preemptive Strike</h1>
+<p class="sub">The diagnosis doesn't change. The framing adapts to the operator's decision frame and unvoiced concerns.</p>
+
+<div class="view-tabs">
+  <button class="tab active-disc" id="tab-disc" onclick="switchView('disc')">DISC + Motivation</button>
+  <button class="tab" id="tab-strike" onclick="switchView('strike')">Preemptive Strike</button>
+</div>
+
+<!-- DISC + MOTIVATION -->
+<div class="panel active" id="panel-disc">
+  <div class="adapt-rule">Identify the operator's dominant DISC profile within the first 3 minutes. The diagnostic content is identical across all four profiles. The framing, pace, and evidence emphasis adapt.</div>
+  <div id="disc-cards"></div>
+  <div style="font-size:13px;font-weight:600;color:#1D1D1F;margin:16px 0 8px">Motivation framing</div>
+  @media (prefers-color-scheme: dark) { color: #e8e8e8; }
+  <div id="motiv-rows"></div>
+  <div class="controls" style="margin-top:12px">
+    <button class="primary" onclick="revealAllDisc()">Reveal all</button>
+    <button class="secondary" onclick="resetDisc()">Reset</button>
+  </div>
+</div>
+
+<!-- PREEMPTIVE STRIKE -->
+<div class="panel" id="panel-strike">
+  <div class="strike-rule">Address the three most predictable unvoiced concerns before they are raised. An operator who hears their concerns addressed before they voice them experiences credibility — not pressure. Build from the operator's signals, not a generic template.</div>
+  <div id="concerns"></div>
+  <div class="controls" style="margin-top:12px">
+    <button class="primary" onclick="revealAllConcerns()">Reveal all frames</button>
+    <button class="secondary" onclick="resetConcerns()">Reset</button>
+  </div>
+</div>
+
+<script>
+const DISC = [
+  { cls:'d-d', badge:'D', name:'Dominance', keyword:'Results & brevity', framing:'Lead with the bottom line. "$44,000/year" before any methodology. Skip context — go straight to what changes and what it costs if they wait. D profiles experience detail as inefficiency.' },
+  { cls:'d-i', badge:'I', name:'Influence', keyword:'Vision & relationship', framing:'Paint the "after" state. Show the school they\'re building, not the system they\'re fixing. I profiles buy the future they can picture. Lead with momentum and possibility before the numbers.' },
+  { cls:'d-s', badge:'S', name:'Steadiness', keyword:'Stability & gradual change', framing:'Emphasize continuity. "This protects what you\'ve built." Show the implementation as a low-disruption, phased process. S profiles resist change that threatens their stability — reframe the solution as stability protection.' },
+  { cls:'d-c', badge:'C', name:'Conscientiousness', keyword:'Evidence & detail', framing:'Show the math. C profiles want to see the formula derivation, the assumptions, and the methodology before they accept any conclusion. Give them the data first — the recommendation follows.' },
+];
+const MOTIVATIONS = [
+  { name:'Revenue', detail:'Anchor to the specific dollar leakage from Module 03. "$44,000 per year" is more compelling than "significant revenue impact." The number is the argument — not the efficiency language.' },
+  { name:'Time', detail:'Quantify how much manual labor the solution eliminates. Hours per week is more convincing than "efficiency." "This frees up 6 hours of admin time per week" is auditable. "It\'s more efficient" is not.' },
+  { name:'Simplicity', detail:'Show the "after" state: what does the operator\'s week look like when the system runs itself? The operator is buying a future they can picture — not a feature they have to interpret.' },
+  { name:'Risk', detail:'Quantify the cost of inaction. Monthly leakage × months of delay = the cost of waiting. Make delay as expensive as action. "Every month you delay costs $3,700 in additional leakage."' },
+];
+const discOpen = new Array(DISC.length).fill(false);
+const motivOpen = new Array(MOTIVATIONS.length).fill(false);
+function renderDisc() {
+  document.getElementById('disc-cards').innerHTML = DISC.map((d, i) => `
+    <div class="disc-card ${d.cls}${discOpen[i]?' open':''}" onclick="toggleDisc(${i})">
+      <div class="disc-header"><div class="disc-badge">${d.badge}</div><div class="disc-name">${d.name}</div><span class="disc-keyword">${d.keyword}</span></div>
+      <div class="disc-detail${discOpen[i]?' show':''}"><div class="disc-framing">${d.framing}</div></div>
+    </div>`).join('');
+  document.getElementById('motiv-rows').innerHTML = MOTIVATIONS.map((m, i) => `
+    <div class="motiv-row${motivOpen[i]?' open':''}" onclick="toggleMotiv(${i})">
+      <div class="motiv-header"><span class="motiv-badge">${m.name}</span></div>
+      <div class="motiv-detail${motivOpen[i]?' show':''}">${m.detail}</div>
+    </div>`).join('');
+}
+function toggleDisc(i) { discOpen[i]=!discOpen[i]; renderDisc(); }
+function toggleMotiv(i) { motivOpen[i]=!motivOpen[i]; renderDisc(); }
+function revealAllDisc() { discOpen.fill(true); motivOpen.fill(true); renderDisc(); }
+function resetDisc() { discOpen.fill(false); motivOpen.fill(false); renderDisc(); }
+renderDisc();
+
+const CONCERNS = [
+  { signal:'"I\'ve been doing this for 12 years."', type:'Identity concern', frame:'"The school you built is strong. The question is whether the system that worked at 100 students is designed for the pressures at 200." Frame findings as a market shift — not a judgment of how the school was run.' },
+  { signal:'Operator recently invested in scheduling software.', type:'Investment concern', frame:'"The scheduling system solves the availability problem. It doesn\'t solve the compatibility matching problem — which is a different failure node." Acknowledge the investment; explain why it addresses logistics but not the retention root cause.' },
+  { signal:'Operator mentioned "the economy" twice.', type:'External attribution concern', frame:'"The economy makes the $44,000 leakage figure more urgent, not less. When discretionary spending is tight, a school that loses students to invisible churn loses them permanently." Reframe: the economy increases the cost of inaction.' },
+];
+const concernOpen = new Array(CONCERNS.length).fill(false);
+function renderConcerns() {
+  document.getElementById('concerns').innerHTML = CONCERNS.map((c, i) => `
+    <div class="concern-row${concernOpen[i]?' open':''}" onclick="toggleConcern(${i})">
+      <div class="concern-signal">${c.signal}</div>
+      <div class="concern-type">${c.type}</div>
+      <div class="concern-frame${concernOpen[i]?' show':''}">${c.frame}</div>
+    </div>`).join('');
+}
+function toggleConcern(i) { concernOpen[i]=!concernOpen[i]; renderConcerns(); }
+function revealAllConcerns() { concernOpen.fill(true); renderConcerns(); }
+function resetConcerns() { concernOpen.fill(false); renderConcerns(); }
+renderConcerns();
+
+function switchView(v) {
+  document.getElementById('panel-disc').classList.toggle('active', v==='disc');
+  document.getElementById('panel-strike').classList.toggle('active', v==='strike');
+  document.getElementById('tab-disc').className='tab'+(v==='disc'?' active-disc':'');
+  document.getElementById('tab-strike').className='tab'+(v==='strike'?' active-strike':'');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 11 — 5-Axis Scoring System</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 700px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.gatekeeper-note { font-size: 13px; color: #791F1F; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .gatekeeper-note { background: #2a0a0a; color: #F09595; } }
+.view-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 13px; font-weight: 500; padding: 7px 18px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.act-ref { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.tab.act-score { background: #FAEEDA; border-color: #BA7517; color: #854F0B; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+.axis-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 12px; padding: 0; margin-bottom: 6px; overflow: hidden; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .axis-card { background: #1e1e1e; border-color: #333; } }
+.axis-header { display: flex; align-items: center; gap: 12px; padding: 12px 18px; }
+.axis-num { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; color: #fff; }
+.axis-name { font-size: 14px; font-weight: 600; color: #1D1D1F; flex: 1; }
+@media (prefers-color-scheme: dark) { .axis-name { color: #e8e8e8; } }
+.axis-measures { font-size: 11px; color: #8E8E93; }
+.axis-detail { padding: 0 18px 14px; display: none; }
+.axis-detail.show { display: block; }
+.score-desc-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+.sd-block { border-radius: 8px; padding: 8px 10px; }
+.sd-label { font-size: 10px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 3px; }
+.sd-text { font-size: 11px; line-height: 1.5; }
+.sd1 { background: #FCEBEB; } .sd1 .sd-label { color: #A32D2D; } .sd1 .sd-text { color: #791F1F; }
+.sd3 { background: #FAEEDA; } .sd3 .sd-label { color: #BA7517; } .sd3 .sd-text { color: #633806; }
+.sd5 { background: #E1F5EE; } .sd5 .sd-label { color: #0F6E56; } .sd5 .sd-text { color: #085041; }
+@media (prefers-color-scheme: dark) { .sd1{background:#2a0a0a}.sd1 .sd-text{color:#F09595} .sd3{background:#2a1a00}.sd3 .sd-text{color:#FAC775} .sd5{background:#052e1e}.sd5 .sd-text{color:#9FE1CB} }
+/* Scorer panel */
+.cert-levels { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 16px; }
+.level-card { border-radius: 10px; padding: 10px 14px; text-align: center; }
+.l1-card { background: #FAEEDA; } .l1-card .lc-name { color: #633806; font-size: 13px; font-weight: 600; } .l1-card .lc-req { font-size: 11px; color: #854F0B; margin-top: 2px; }
+.l2-card { background: #E6F1FB; } .l2-card .lc-name { color: #0C447C; font-size: 13px; font-weight: 600; } .l2-card .lc-req { font-size: 11px; color: #185FA5; margin-top: 2px; }
+.l3-card { background: #E1F5EE; } .l3-card .lc-name { color: #085041; font-size: 13px; font-weight: 600; } .l3-card .lc-req { font-size: 11px; color: #0F6E56; margin-top: 2px; }
+@media (prefers-color-scheme: dark) { .l1-card{background:#2a1a00}.l1-card .lc-name{color:#FAC775} .l2-card{background:#0a1f3a}.l2-card .lc-name{color:#B5D4F4} .l3-card{background:#052e1e}.l3-card .lc-name{color:#9FE1CB} }
+.axis-scorer { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 12px; padding: 14px 18px; margin-bottom: 8px; }
+@media (prefers-color-scheme: dark) { .axis-scorer { background: #1e1e1e; border-color: #333; } }
+.as-name { font-size: 13px; font-weight: 600; color: #1D1D1F; margin-bottom: 8px; }
+@media (prefers-color-scheme: dark) { .as-name { color: #e8e8e8; } }
+.rating-row { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
+.rb { width: 36px; height: 36px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; font-size: 12px; font-weight: 500; color: #888780; cursor: pointer; font-family: inherit; transition: all .12s; }
+@media (prefers-color-scheme: dark) { .rb { background: #2a2a2a; border-color: #444; color: #6E6E73; } }
+.rb.sel { background: #185FA5; border-color: #185FA5; color: #fff; }
+.rb.sel.below-l2 { background: #A32D2D; border-color: #A32D2D; }
+.rb.sel.above-l3 { background: #0F6E56; border-color: #0F6E56; }
+.composite-result { background: #E6F1FB; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { .composite-result { background: #0a1f3a; } }
+.cr-label { font-size: 12px; color: #185FA5; margin-bottom: 4px; font-weight: 600; }
+.cr-score { font-size: 32px; font-weight: 500; color: #0C447C; font-variant-numeric: tabular-nums; }
+@media (prefers-color-scheme: dark) { .cr-score { color: #85B7EB; } }
+.cr-level { font-size: 14px; font-weight: 600; margin-top: 4px; }
+.cr-breakdown { font-size: 12px; color: #185FA5; margin-top: 4px; font-family: "SFMono-Regular", Menlo, monospace; }
+@media (prefers-color-scheme: dark) { .cr-breakdown { color: #B5D4F4; } }
+.controls { display: flex; gap: 8px; margin-top: 4px; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 11, Section 2 · Scoring System</div>
+<h1>5-Axis Scoring System</h1>
+<p class="sub">Reference: score descriptors per axis. Scorer: rate a trainee across all five axes and see the certification level.</p>
+<div class="gatekeeper-note">Score the axis, not the person. If Diagnostic Accuracy is 3.0 and the threshold is 4.0, the trainee stays in remediation regardless of other scores. A single axis below threshold fires a remediation trigger — composite score does not override it.</div>
+
+<div class="view-tabs">
+  <button class="tab act-ref" id="tab-ref" onclick="switchView('ref')">Axis reference</button>
+  <button class="tab" id="tab-score" onclick="switchView('score')">Trainee scorer</button>
+</div>
+
+<!-- AXIS REFERENCE -->
+<div class="panel active" id="panel-ref">
+  <div id="axis-cards"></div>
+</div>
+
+<!-- TRAINEE SCORER -->
+<div class="panel" id="panel-score">
+  <div class="cert-levels">
+    <div class="level-card l1-card"><div class="lc-name">Level 1</div><div class="lc-req">Composite ≥3.0</div></div>
+    <div class="level-card l2-card"><div class="lc-name">Level 2</div><div class="lc-req">Composite ≥4.0, no axis below 4.0</div></div>
+    <div class="level-card l3-card"><div class="lc-name">Level 3</div><div class="lc-req">Composite ≥4.5, no axis below 4.5</div></div>
+  </div>
+  <div class="composite-result">
+    <div class="cr-label">Composite score</div>
+    <div class="cr-score" id="cr-score">—</div>
+    <div class="cr-level" id="cr-level"></div>
+    <div class="cr-breakdown" id="cr-breakdown"></div>
+  </div>
+  <div id="axis-scorers"></div>
+  <div class="controls"><button class="secondary" onclick="resetScorer()">Reset</button></div>
+</div>
+
+<script>
+const AXES = [
+  { num:1, name:'Diagnostic Accuracy', measures:'Correct root causes, system failures, propagation chains.',
+    s1:'No diagnostic logic. Symptom accepted as root cause.',s3:'Correct system identified; chain incomplete or contains a skipped link.',s5:'Precise root cause; complete 4-link chain with human actor at each step.' },
+  { num:2, name:'Decision Quality', measures:'Structured, evidence-based decisions under pressure.',
+    s1:'Reactive — decides based on urgency or operator pressure.',s3:'Uses framework with prompting; correct under low pressure.',s5:'Autonomous; calibrated to evidence; maintains structure under adversarial conditions.' },
+  { num:3, name:'Execution Reliability', measures:'Consistency of system design and implementation output.',
+    s1:'Incomplete systems; missing components.',s3:'All six components present; drift-risk present.',s5:'Robust, drift-resistant design with all three accountability layers active.' },
+  { num:4, name:'Communication & Influence', measures:'Clarity, alignment, and commitment achievement.',
+    s1:'Unclear delivery; operator does not follow.',s3:'Insight communicated; no commitment secured.',s5:'30-second delivery; Preemptive Strike delivered; documented commitment achieved.' },
+  { num:5, name:'System Thinking', measures:'Ability to design scalable, intelligent, self-reinforcing systems.',
+    s1:'Event-based thinking; fixes one problem at a time.',s3:'System design present; no feedback loop.',s5:'Flywheel design with data feedback loop; passes Autonomy Test.' },
+];
+
+const axisOpen = new Array(AXES.length).fill(false);
+function renderRef() {
+  document.getElementById('axis-cards').innerHTML = AXES.map((a, i) => `
+    <div class="axis-card${axisOpen[i]?' open':''}" onclick="toggleAxis(${i})">
+      <div class="axis-header">
+        <div class="axis-num" style="background:#185FA5">${a.num}</div>
+        <div style="flex:1"><div class="axis-name">${a.name}</div><div class="axis-measures">${a.measures}</div></div>
+        <span style="font-size:11px;color:#AEAEB2">${axisOpen[i]?'▲':'▼'}</span>
+      </div>
+      <div class="axis-detail${axisOpen[i]?' show':''}">
+        <div class="score-desc-row">
+          <div class="sd-block sd1"><div class="sd-label">Score 1</div><div class="sd-text">${a.s1}</div></div>
+          <div class="sd-block sd3"><div class="sd-label">Score 3</div><div class="sd-text">${a.s3}</div></div>
+          <div class="sd-block sd5"><div class="sd-label">Score 5</div><div class="sd-text">${a.s5}</div></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function toggleAxis(i){axisOpen[i]=!axisOpen[i];renderRef();}
+renderRef();
+
+// Scorer
+const SCORE_VALS = [1,1.5,2,2.5,3,3.5,4,4.5,5];
+const axisScores = new Array(AXES.length).fill(null);
+
+function renderScorer() {
+  document.getElementById('axis-scorers').innerHTML = AXES.map((a, i) => `
+    <div class="axis-scorer">
+      <div class="as-name">${a.num}. ${a.name}</div>
+      <div class="rating-row">${SCORE_VALS.map(v => {
+        const sel = axisScores[i] === v;
+        const cls = sel ? (' sel' + (v < 4 ? ' below-l2' : v >= 4.5 ? ' above-l3' : '')) : '';
+        return `<button class="rb${cls}" onclick="rateAxis(${i},${v})">${v}</button>`;
+      }).join('')}</div>
+    </div>`).join('');
+  calcComposite();
+}
+
+function rateAxis(i, v) { axisScores[i] = v; renderScorer(); }
+
+function calcComposite() {
+  const filled = axisScores.filter(s => s !== null);
+  if (filled.length === 0) { document.getElementById('cr-score').textContent = '—'; document.getElementById('cr-level').textContent = ''; document.getElementById('cr-breakdown').textContent = ''; return; }
+  const composite = filled.reduce((s,v) => s+v, 0) / AXES.length;
+  const minScore = filled.length === AXES.length ? Math.min(...filled) : null;
+  let level = '', color = '';
+  if (filled.length === AXES.length) {
+    if (composite >= 4.5 && minScore >= 4.5) { level = 'Level 3 — Certified Architect'; color = '#085041'; }
+    else if (composite >= 4.0 && minScore >= 4.0) { level = 'Level 2 — Certified Operator'; color = '#0C447C'; }
+    else if (composite >= 3.0) { level = 'Level 1 — Certified Analyst'; color = '#633806'; }
+    else { level = 'Below Level 1 — Remediation required'; color = '#A32D2D'; }
+    if (minScore < 4.0 && composite >= 4.0) { level = 'Remediation trigger: axis below 4.0 threshold'; color = '#A32D2D'; }
+    if (minScore < 4.5 && composite >= 4.5) { level = 'Remediation trigger: axis below 4.5 (Level 3)'; color = '#A32D2D'; }
+  }
+  document.getElementById('cr-score').textContent = (composite.toFixed(2));
+  document.getElementById('cr-level').textContent = level;
+  document.getElementById('cr-level').style.color = color;
+  document.getElementById('cr-breakdown').textContent = AXES.map((a, i) => `A${a.num}: ${axisScores[i] !== null ? axisScores[i] : '—'}`).join('  ');
+}
+
+function resetScorer(){axisScores.fill(null);renderScorer();}
+renderScorer();
+
+function switchView(v){
+  document.getElementById('panel-ref').classList.toggle('active',v==='ref');
+  document.getElementById('panel-score').classList.toggle('active',v==='score');
+  document.getElementById('tab-ref').className='tab'+(v==='ref'?' act-ref':'');
+  document.getElementById('tab-score').className='tab'+(v==='score'?' act-score':'');
+}
+</script>
+</body>
+</html>

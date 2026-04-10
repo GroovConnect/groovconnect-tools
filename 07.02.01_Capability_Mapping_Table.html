@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 07 — Capability-to-Failure Mapping Table</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 680px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.derivation-rule { font-size: 13px; color: #0C447C; background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .derivation-rule { background: #0a1f3a; color: #B5D4F4; } }
+.mapping-row { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 10px; padding: 0; margin-bottom: 6px; overflow: hidden; cursor: pointer; transition: opacity .12s; }
+@media (prefers-color-scheme: dark) { .mapping-row { background: #1e1e1e; border-color: #333; } }
+.mapping-row:hover { opacity: .93; }
+.mapping-row.open { border-left: 3px solid #185FA5; }
+.mapping-header { display: flex; align-items: flex-start; gap: 12px; padding: 14px 18px; }
+.failure-text { font-size: 14px; font-weight: 500; color: #1D1D1F; flex: 1; line-height: 1.4; }
+@media (prefers-color-scheme: dark) { .failure-text { color: #e8e8e8; } }
+.capability-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 99px; background: #E6F1FB; color: #185FA5; white-space: nowrap; flex-shrink: 0; display: none; }
+.capability-badge.show { display: inline-block; }
+.expand-hint { font-size: 11px; color: #AEAEB2; flex-shrink: 0; }
+.mapping-detail { padding: 0 18px 14px; display: none; }
+.mapping-detail.show { display: block; }
+.detail-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.detail-block { border-radius: 8px; padding: 8px 12px; }
+.detail-label { font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 3px; }
+.capability-block { background: #E6F1FB; }
+.capability-block .detail-label { color: #185FA5; }
+.capability-block .detail-text { font-size: 12px; color: #0C447C; line-height: 1.5; }
+.outcome-block { background: #E1F5EE; }
+.outcome-block .detail-label { color: #0F6E56; }
+.outcome-block .detail-text { font-size: 12px; color: #085041; line-height: 1.5; }
+@media (prefers-color-scheme: dark) { .capability-block { background: #0a1f3a; } .capability-block .detail-text { color: #85B7EB; } .outcome-block { background: #052e1e; } .outcome-block .detail-text { color: #9FE1CB; } }
+.ks-note { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .ks-note { background: #2a0a0a; color: #F09595; } }
+.controls { display: flex; gap: 8px; margin-top: 4px; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 07, Section 2 · Reference & Drill</div>
+<h1>Capability-to-Failure Mapping Table</h1>
+<p class="sub">Tap each failure to reveal the GC capability and measurable outcome. Arrive at the capability through the diagnostic chain — then verify here.</p>
+<div class="derivation-rule">This is the derivation reference — not the solution selector. The analyst arrives at the capability through the diagnostic chain, then verifies the mapping against this table. Not the other way around.</div>
+
+<div id="mappings"></div>
+<div class="ks-note">Kill Switch: trainee names a GC capability before stating the root cause. Stop. "The capability must be derived, not selected. A trainee who leads with the product is operating in Sales Mode." Required sequence: root cause → system gap → specific capability → measurable outcome.</div>
+<div class="controls" style="margin-top:12px">
+  <button class="primary" onclick="revealAll()">Reveal all</button>
+  <button class="secondary" onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+const MAPPINGS = [
+  { failure: 'No student/instructor compatibility process', cap: 'Matching Engine (ACA/DISC)', outcome: 'Increase in average DISC match score; reduction in 6–9 month churn window.' },
+  { failure: 'Inconsistent lesson delivery quality', cap: 'Standardization System — Lesson Note Framework', outcome: 'Lesson note submission rate ≥95%; instructor delivery variance reduced.' },
+  { failure: 'No at-risk student detection', cap: 'Engagement Tracking — Risk Alert Engine', outcome: 'At-risk students flagged 30+ days before cancellation; intervention rate tracked.' },
+  { failure: 'Open-ended reschedule policy', cap: 'Scheduling Optimization — Closed-Loop Reschedule', outcome: 'Reschedule resolution within 24 hours; admin labor reduced ≥40%.' },
+  { failure: 'No parent progress visibility', cap: 'Parent Portal — Progress Visibility Layer', outcome: 'Portal login rate ≥60%; trial conversion improvement tracked.' },
+  { failure: 'No trial follow-up system', cap: 'Enrollment System — Automated Follow-Up Trigger', outcome: 'Follow-up completion ≥95% within 24 hours; conversion improvement KPIs tracked.' },
+  { failure: 'KPIs invisible to leadership', cap: 'Operational Dashboard', outcome: 'Weekly MSOI score visibility; KPI alerts on threshold breaches.' },
+  { failure: 'Instructor performance untracked', cap: 'Instructor Intelligence — Behavioral Analytics', outcome: 'Instructor-specific retention correlation; performance coaching data available.' },
+  { failure: 'No communication cadence for parents', cap: 'Communication System — Parent Update Automation', outcome: 'Monthly parent update completion rate; reduction in unsolicited complaint volume.' },
+  { failure: 'No centralized performance benchmark', cap: 'Network Intelligence — MSOI Benchmarking', outcome: 'School MSOI vs. network average; urgency anchor for implementation decisions.' },
+];
+
+const open = new Array(MAPPINGS.length).fill(false);
+
+function render() {
+  document.getElementById('mappings').innerHTML = MAPPINGS.map((m, i) => `
+    <div class="mapping-row${open[i] ? ' open' : ''}" onclick="toggle(${i})">
+      <div class="mapping-header">
+        <div class="failure-text">${m.failure}</div>
+        <span class="capability-badge${open[i] ? ' show' : ''}">${m.cap.split(' — ')[0]}</span>
+        <span class="expand-hint">${open[i] ? '▲' : '▼'}</span>
+      </div>
+      <div class="mapping-detail${open[i] ? ' show' : ''}">
+        <div class="detail-row">
+          <div class="detail-block capability-block"><div class="detail-label">GC Capability</div><div class="detail-text">${m.cap}</div></div>
+          <div class="detail-block outcome-block"><div class="detail-label">Measurable Outcome</div><div class="detail-text">${m.outcome}</div></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function toggle(i) { open[i] = !open[i]; render(); }
+function revealAll() { open.fill(true); render(); }
+function resetAll() { open.fill(false); render(); }
+render();
+</script>
+</body>
+</html>

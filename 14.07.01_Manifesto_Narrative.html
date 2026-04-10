@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 14 — Manifesto & 30-Second Narrative</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.view-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 13px; font-weight: 500; padding: 7px 18px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.act-manifesto { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.tab.act-narrative { background: #E1F5EE; border-color: #0F6E56; color: #0F6E56; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+/* Manifesto */
+.manifesto-box { background: #1B2A4A; border-radius: 14px; padding: 22px 24px; margin-bottom: 16px; }
+.manifesto-text { font-size: 15px; color: #E6F1FB; line-height: 1.7; }
+.dollar-placeholder { color: #FAC775; font-weight: 600; }
+.manifesto-components { display: flex; flex-direction: column; gap: 6px; }
+.mc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mc-block { border-radius: 8px; padding: 10px 14px; }
+.mc-label { font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 3px; }
+.mc-text { font-size: 12px; line-height: 1.5; }
+.mc-what { background: #E6F1FB; } .mc-what .mc-label { color: #185FA5; } .mc-what .mc-text { color: #0C447C; }
+.mc-without { background: #FCEBEB; } .mc-without .mc-label { color: #A32D2D; } .mc-without .mc-text { color: #791F1F; }
+@media (prefers-color-scheme: dark) { .mc-what{background:#0a1f3a}.mc-what .mc-text{color:#85B7EB} .mc-without{background:#2a0a0a}.mc-without .mc-text{color:#F09595} }
+.ks-note { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .ks-note { background: #2a0a0a; color: #F09595; } }
+/* Narrative */
+.timer-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+.timer-d { font-size: 42px; font-weight: 500; font-variant-numeric: tabular-nums; color: #1D1D1F; letter-spacing: -1px; transition: color .3s; }
+@media (prefers-color-scheme: dark) { .timer-d { color: #e8e8e8; } }
+.timer-d.urgent { color: #C0392B; }
+.narrative-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 12px; padding: 18px 20px; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { .narrative-card { background: #1e1e1e; border-color: #333; } }
+.nc-component { border-radius: 8px; padding: 10px 14px; margin-bottom: 6px; cursor: pointer; transition: opacity .12s; }
+.nc-component:hover { opacity: .9; }
+.nc-label { font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 4px; }
+.nc-sentence { font-size: 14px; font-weight: 500; line-height: 1.5; }
+.nc-annotation { font-size: 12px; margin-top: 6px; line-height: 1.5; display: none; }
+.nc-annotation.show { display: block; }
+.ncc1{background:#E6F1FB}.ncc1 .nc-label{color:#185FA5}.ncc1 .nc-sentence{color:#0C447C}.ncc1 .nc-annotation{color:#185FA5}
+.ncc2{background:#FAEEDA}.ncc2 .nc-label{color:#BA7517}.ncc2 .nc-sentence{color:#633806}.ncc2 .nc-annotation{color:#854F0B}
+.ncc3{background:#EEEDFE}.ncc3 .nc-label{color:#534AB7}.ncc3 .nc-sentence{color:#26215C}.ncc3 .nc-annotation{color:#534AB7}
+.ncc4{background:#E1F5EE}.ncc4 .nc-label{color:#0F6E56}.ncc4 .nc-sentence{color:#085041}.ncc4 .nc-annotation{color:#0F6E56}
+.ncc5{background:#F1EFE8}.ncc5 .nc-label{color:#5F5E5A}.ncc5 .nc-sentence{color:#2C2C2A}.ncc5 .nc-annotation{color:#5F5E5A}
+@media (prefers-color-scheme: dark) {
+  .ncc1{background:#0a1f3a}.ncc1 .nc-sentence{color:#B5D4F4}.ncc1 .nc-annotation{color:#85B7EB}
+  .ncc2{background:#2a1a00}.ncc2 .nc-sentence{color:#FAC775}.ncc2 .nc-annotation{color:#EF9F27}
+  .ncc3{background:#1a1730}.ncc3 .nc-sentence{color:#CECBF6}.ncc3 .nc-annotation{color:#AFA9EC}
+  .ncc4{background:#052e1e}.ncc4 .nc-sentence{color:#9FE1CB}.ncc4 .nc-annotation{color:#5DCAA5}
+  .ncc5{background:#222}.ncc5 .nc-sentence{color:#D3D1C7}.ncc5 .nc-annotation{color:#888780}
+}
+.tone-note { font-size: 12px; color: #633806; background: #FAEEDA; border-left: 3px solid #BA7517; border-radius: 0 8px 8px 0; padding: 10px 14px; line-height: 1.55; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { .tone-note { background: #2a1a00; color: #FAC775; } }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 14, Sections 7–8 · Manifesto & Category Narrative</div>
+<h1>Evidence-Anchored Manifesto & 30-Second Narrative</h1>
+<p class="sub">The manifesto is built live from the diagnostic record. The narrative is the 35-second category statement — delivered as fact.</p>
+
+<div class="view-tabs">
+  <button class="tab act-manifesto" id="tab-m" onclick="switchView('m')">Manifesto</button>
+  <button class="tab" id="tab-n" onclick="switchView('n')">30-second narrative</button>
+</div>
+
+<!-- MANIFESTO -->
+<div class="panel active" id="panel-m">
+  <div class="manifesto-box">
+    <div class="manifesto-text">"Based on what we found today, your school has an Operational Intelligence Deficit — you are making decisions without the system feedback required to see, measure, or improve performance. The <span class="dollar-placeholder">$[X]</span> leakage we identified is not a scheduling problem or a staff problem. It is what happens when a music school operates without an operating system.<br><br>GroovConnect is that operating system. It matches students and instructors for compatibility, tracks engagement at the lesson level, and improves its own recommendations through every data point your school generates.<br><br>Every school in our network that has moved from your current MSOI score to above 75 has recovered between 60% and 80% of their diagnosed leakage within 90 days. That is not a prediction — it is a documented outcome."</div>
+  </div>
+  <div class="manifesto-components">
+    <div class="mc-row">
+      <div class="mc-block mc-what"><div class="mc-label">$[X] leakage figure</div><div class="mc-text">Anchors the manifesto in the operator's own data — already accepted before this sentence. Without it, every sentence is a claim.</div></div>
+      <div class="mc-block mc-without"><div class="mc-label">Without this</div><div class="mc-text">The entire manifesto is an assertion. The operator has heard 10 similar assertions. Dismisses without engagement.</div></div>
+    </div>
+    <div class="mc-row">
+      <div class="mc-block mc-what"><div class="mc-label">"Not a scheduling problem or a staff problem"</div><div class="mc-text">Explicitly reframes the failure as structural. Removes the two most common deflections before they can be raised.</div></div>
+      <div class="mc-block mc-without"><div class="mc-label">Without this</div><div class="mc-text">Operator's instinct is to fix the symptom rather than install the system. Deflection is left open.</div></div>
+    </div>
+    <div class="mc-row">
+      <div class="mc-block mc-what"><div class="mc-label">"Operating without an operating system"</div><div class="mc-text">Names the category deficit — turns absence into cost. Operator is deciding whether to continue operating without infrastructure.</div></div>
+      <div class="mc-block mc-without"><div class="mc-label">Without this</div><div class="mc-text">Operator is deciding whether to add a tool. Different conversation. Different stakes.</div></div>
+    </div>
+    <div class="mc-row">
+      <div class="mc-block mc-what"><div class="mc-label">Network outcome data (60–80%)</div><div class="mc-text">Replaces projection with documented result. A prediction can be doubted. A documented network outcome cannot.</div></div>
+      <div class="mc-block mc-without"><div class="mc-label">Without this</div><div class="mc-text">Every forward-looking claim is a promise. Promises require trust. Network data requires only verification.</div></div>
+    </div>
+  </div>
+  <div class="ks-note" style="margin-top:12px">Kill Switch: manifesto delivered with an estimated or rounded figure rather than the calculated diagnostic figure. "The dollar figure is not decorative — it is the load-bearing element of the manifesto." No figure in the manifesto that is not traceable to a formula.</div>
+</div>
+
+<!-- 30-SECOND NARRATIVE -->
+<div class="panel" id="panel-n">
+  <div class="tone-note">The tone is "this is how the industry works now" — not "let me tell you about our product." Run the drill three times: neutral operator, skeptical operator, hostile operator. The narrative does not change between these scenarios. That consistency is the certification standard.</div>
+  <div class="timer-row">
+    <div class="timer-d" id="nav-timer">35</div>
+    <div style="font-size:12px;color:#8E8E93">seconds · zero filler words</div>
+  </div>
+  <div class="narrative-card" id="narrative-card">
+    <div id="narrative-components"></div>
+  </div>
+  <div class="controls">
+    <button class="primary" id="nav-btn" onclick="startNav()">Start timer</button>
+    <button class="secondary" onclick="revealAllNav()">Reveal all annotations</button>
+    <button class="secondary" onclick="resetNav()">Reset</button>
+  </div>
+</div>
+
+<script>
+const NAV = [
+  { cls:'ncc1', label:'Problem statement', sentence:'Music schools don\'t fail because of scheduling or curriculum — they fail because they lack operational intelligence.', annotation:'Sets the diagnostic frame. Moves the conversation from feature comparison to root cause. The operator is not choosing software — they are confronting a structural absence.' },
+  { cls:'ncc2', label:'Category claim', sentence:'GroovConnect is the first Operating System designed specifically for music schools.', annotation:'Names the category. Not "scheduling software." Not "a CRM." An Operating System — a new category that rules out feature comparisons.' },
+  { cls:'ncc3', label:'Mechanism', sentence:'It matches students and instructors, tracks engagement, diagnoses performance, and continuously improves outcomes through data.', annotation:'Four capabilities — each derived from a diagnosed failure mode, not assembled from a feature list.' },
+  { cls:'ncc4', label:'Flywheel hook', sentence:'Every lesson makes the system smarter; every school makes the network stronger.', annotation:'Introduces compounding without explaining the mechanism. Creates curiosity — the operator should ask "how?" That question opens the diagnosis.' },
+  { cls:'ncc5', label:'Category close', sentence:'This isn\'t software — it\'s the future of how music schools operate.', annotation:'Reframes from "should I buy this tool" to "am I in or out of the future of the industry." A competitor can copy our features. They cannot copy three years of aggregated behavioral network data.' },
+];
+const navOpen = new Array(NAV.length).fill(false);
+function renderNav() {
+  document.getElementById('narrative-components').innerHTML = NAV.map((n, i) => `
+    <div class="nc-component ${n.cls}" onclick="toggleNav(${i})">
+      <div class="nc-label">${n.label}</div>
+      <div class="nc-sentence">${n.sentence}</div>
+      <div class="nc-annotation${navOpen[i]?' show':''}">${n.annotation}</div>
+    </div>`).join('');
+}
+function toggleNav(i) { navOpen[i]=!navOpen[i]; renderNav(); }
+function revealAllNav() { navOpen.fill(true); renderNav(); }
+
+let navSec=35, navRun=false, navInt=null;
+function startNav() {
+  const btn=document.getElementById('nav-btn');
+  if(!navRun){navRun=true;btn.textContent='Running…';navInt=setInterval(()=>{navSec--;const el=document.getElementById('nav-timer');el.textContent=navSec;if(navSec<=8)el.className='timer-d urgent';if(navSec<=0){clearInterval(navInt);navRun=false;btn.textContent='Reset';}},1000);}
+  else{clearInterval(navInt);navRun=false;navSec=35;document.getElementById('nav-timer').textContent='35';document.getElementById('nav-timer').className='timer-d';btn.textContent='Start timer';}
+}
+function resetNav(){clearInterval(navInt);navRun=false;navSec=35;navOpen.fill(false);document.getElementById('nav-timer').textContent='35';document.getElementById('nav-timer').className='timer-d';document.getElementById('nav-btn').textContent='Start timer';renderNav();}
+renderNav();
+
+function switchView(v){
+  document.getElementById('panel-m').classList.toggle('active',v==='m');
+  document.getElementById('panel-n').classList.toggle('active',v==='n');
+  document.getElementById('tab-m').className='tab'+(v==='m'?' act-manifesto':'');
+  document.getElementById('tab-n').className='tab'+(v==='n'?' act-narrative':'');
+}
+</script>
+</body>
+</html>

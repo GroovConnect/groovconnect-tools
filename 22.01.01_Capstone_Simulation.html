@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 22 — Capstone: Full-System Fracture Simulation</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 680px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.view-tabs { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.act { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.tab.act-cert { background: #E1F5EE; border-color: #0F6E56; color: #0F6E56; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+.no-net { font-size: 13px; color: #791F1F; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .no-net { background: #2a0a0a; color: #F09595; } }
+.timer-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+.timer-d { font-size: 42px; font-weight: 500; font-variant-numeric: tabular-nums; color: #1D1D1F; letter-spacing: -1px; }
+@media (prefers-color-scheme: dark) { .timer-d { color: #e8e8e8; } }
+.timer-d.urgent { color: #C0392B; }
+.narrative-box { background: #1B2A4A; border-radius: 14px; padding: 20px 22px; margin-bottom: 16px; font-size: 15px; color: #E6F1FB; line-height: 1.7; font-style: italic; }
+.hidden-signals { margin-bottom: 16px; }
+.hs-row { display: flex; gap: 8px; align-items: flex-start; background: #fff; border: 0.5px solid #D1D1D6; border-radius: 10px; padding: 12px 16px; margin-bottom: 5px; }
+@media (prefers-color-scheme: dark) { .hs-row { background: #1e1e1e; border-color: #333; } }
+.hs-signal { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 6px; white-space: nowrap; flex-shrink: 0; }
+.hs-text { font-size: 13px; color: #6E6E73; line-height: 1.45; }
+.fracture-card { border-radius: 12px; padding: 14px 18px; margin-bottom: 6px; cursor: pointer; transition: opacity .12s; }
+.fracture-card:hover { opacity: .93; }
+.fr-header { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.fr-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px; white-space: nowrap; }
+.fr-name { font-size: 14px; font-weight: 600; flex: 1; }
+.fr-detail { margin-top: 10px; display: none; }
+.fr-detail.show { display: block; }
+.fr-block { border-radius: 8px; padding: 8px 12px; margin-bottom: 6px; }
+.fr-label { font-size: 10px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 3px; }
+.fr-text { font-size: 12px; line-height: 1.55; }
+.f1 { background: #E6F1FB; } .f1 .fr-badge { background: #185FA5; color: #fff; } .f1 .fr-name { color: #0C447C; } .f1 .fr-block { background: #B5D4F4; } .f1 .fr-label { color: #0C447C; } .f1 .fr-text { color: #042C53; }
+.f2 { background: #FAEEDA; } .f2 .fr-badge { background: #BA7517; color: #fff; } .f2 .fr-name { color: #633806; } .f2 .fr-block { background: #FAC775; } .f2 .fr-label { color: #633806; } .f2 .fr-text { color: #412402; }
+.f3 { background: #EEEDFE; } .f3 .fr-badge { background: #534AB7; color: #fff; } .f3 .fr-name { color: #26215C; } .f3 .fr-block { background: #CECBF6; } .f3 .fr-label { color: #3C3489; } .f3 .fr-text { color: #26215C; }
+@media (prefers-color-scheme: dark) {
+  .f1{background:#0a1f3a}.f1 .fr-name{color:#B5D4F4}.f1 .fr-block{background:#0C447C}.f1 .fr-text{color:#B5D4F4}
+  .f2{background:#2a1a00}.f2 .fr-name{color:#FAC775}.f2 .fr-block{background:#412402}.f2 .fr-text{color:#FAC775}
+  .f3{background:#1a1730}.f3 .fr-name{color:#CECBF6}.f3 .fr-block{background:#26215C}.f3 .fr-text{color:#CECBF6}
+}
+.pivot-box { background: #E1F5EE; border-radius: 12px; padding: 16px 18px; margin-top: 12px; font-size: 13px; color: #085041; line-height: 1.7; font-style: italic; }
+@media (prefers-color-scheme: dark) { .pivot-box { background: #052e1e; color: #9FE1CB; } }
+/* Certification checklist */
+.req-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 12px; padding: 15px 18px; margin-bottom: 6px; display: flex; gap: 14px; align-items: flex-start; cursor: pointer; user-select: none; }
+@media (prefers-color-scheme: dark) { .req-card { background: #1e1e1e; border-color: #333; } }
+.req-card.pass { border-left: 3px solid #0F6E56; background: #f0fdf8; }
+@media (prefers-color-scheme: dark) { .req-card.pass { background: #0a1f15; } }
+.checkbox { width: 22px; height: 22px; border: 1.5px solid #D1D1D6; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+.checkbox.checked { background: #0F6E56; border-color: #0F6E56; }
+.checkbox.checked::after { content:''; display:block; width:5px; height:9px; border:2px solid #fff; border-top:none; border-left:none; transform:rotate(45deg) translate(-1px,-1px); }
+.req-name { font-size: 14px; font-weight: 500; color: #1D1D1F; margin-bottom: 3px; }
+@media (prefers-color-scheme: dark) { .req-name { color: #e8e8e8; } }
+.req-std { font-size: 12px; color: #6E6E73; line-height: 1.5; }
+.result-bar { margin: 12px 0; padding: 14px 18px; border-radius: 12px; font-size: 15px; font-weight: 500; text-align: center; background: #F1EFE8; color: #6E6E73; }
+.result-bar.pass { background: #E1F5EE; color: #085041; }
+@media (prefers-color-scheme: dark) { .result-bar { background: #222; color: #9a9a9a; } .result-bar.pass { background: #052e1e; color: #9FE1CB; } }
+.controls { display: flex; gap: 8px; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 22 · Level 3 Capstone</div>
+<h1>Capstone — The Full-System Fracture Simulation</h1>
+<p class="sub">No safety net. Three systems have failed simultaneously. The operator is screaming about one.</p>
+
+<div class="view-tabs">
+  <button class="tab act" id="tab-sim" onclick="switchTab('sim')">Simulation</button>
+  <button class="tab" id="tab-ref" onclick="switchTab('ref')">Reference (instructor only)</button>
+  <button class="tab act-cert" id="tab-cert" onclick="switchTab('cert')">Level 3 Checklist</button>
+</div>
+
+<!-- SIMULATION -->
+<div class="panel active" id="panel-sim">
+  <div class="no-net">Be fully adversarial. If the trainee misses the propagation link between the three systems, they fail. If they accept the drum teacher departure as the primary problem, they fail. If their economic anchor lacks formula derivation, they fail. This simulation is not graded on a curve.</div>
+  <div class="timer-row">
+    <div class="timer-d" id="cap-timer">2:00:00</div>
+    <div style="font-size:12px;color:#8E8E93">120-minute limit · no extensions</div>
+  </div>
+  <div class="narrative-box">"It's the economy. Parents are cutting back on extras. Plus my best drum teacher just left to start his own studio and I think he's poaching my students. I need a non-compete lawyer and a cheaper marketing agency to get me 50 new leads."</div>
+  <div style="font-size:13px;color:#6E6E73;margin-bottom:12px">After reading verbatim — go silent. Do not answer questions about where to start. Do not confirm or deny any hypothesis.</div>
+  <div class="controls">
+    <button class="primary" id="cap-btn" onclick="startCap()">Start 120-min timer</button>
+    <button class="secondary" onclick="resetCap()">Reset</button>
+  </div>
+</div>
+
+<!-- REFERENCE -->
+<div class="panel" id="panel-ref">
+  <div style="font-size:13px;color:#633806;background:#FAEEDA;border-left:3px solid #BA7517;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:16px">Do not reveal this reference until the trainee has presented their complete diagnosis.</div>
+  <div class="hidden-signals">
+    <div class="hs-row"><span class="hs-signal" style="background:#FCEBEB;color:#A32D2D">Retention</span><div class="hs-text">Churn highest in the 6–9 month window (Engagement Wall) → Standardization System failure.</div></div>
+    <div class="hs-row"><span class="hs-signal" style="background:#EEEDFE;color:#534AB7">Utilization</span><div class="hs-text">40% of prime-time slots empty; piano waitlist has 20 names → Scheduling System failure.</div></div>
+    <div class="hs-row"><span class="hs-signal" style="background:#E6F1FB;color:#185FA5">Communication</span><div class="hs-text">Parent portal login rate: under 5% → Communication System failure.</div></div>
+  </div>
+  <div id="fractures"></div>
+  <div class="pivot-box">"Marketing for new leads will accelerate your losses. You are currently losing approximately $110,000 a year because of a Capacity Utilization Gap and a Standardization System Failure. Bringing in 50 new students without fixing the Engagement Wall means 18% of them leave at month seven — you'll spend the marketing budget to replace students you should have kept. I am installing the Matching Engine and the Milestone Visibility System to secure your current revenue base first. Once retention is stabilized, every marketing dollar produces compounding returns instead of patching a leak."</div>
+</div>
+
+<!-- LEVEL 3 CHECKLIST -->
+<div class="panel" id="panel-cert">
+  <div id="cert-items"></div>
+  <div class="result-bar" id="cert-result">0 / 5 passed</div>
+  <div class="controls">
+    <button class="secondary" onclick="resetCert()">Reset</button>
+    <button class="secondary" onclick="window.print()">Print</button>
+  </div>
+</div>
+
+<script>
+const FRACTURES = [
+  { cls:'f1', badge:'Fracture 1', name:'Matching System', chain:'No DISC-anchored school–student relationship. Students had loyalty to the instructor, not the school. Loss of one instructor should not produce school-level churn — but it does when no matching system creates a structural school–student bond.', anchor:'Instructor-attributed churn × student count × LTV ≈ $20,000–25,000/year.' },
+  { cls:'f2', badge:'Fracture 2', name:'Standardization System', chain:'No milestone visibility. 5% portal login confirms no visible progress communicated. Students progressing invisibly → parents lose confidence → Engagement Wall at months 6–9.', anchor:'18% churn rate × 200 students × $1,200 LTV = $43,200/year.' },
+  { cls:'f3', badge:'Fracture 3', name:'Scheduling System', chain:'Instrument demand not tracked. Piano waitlist of 20 alongside 40% empty prime-time slots — misallocation, not capacity shortage. Revenue decline is a utilization failure.', anchor:'22 waitlisted students × $210 × 55% × 12 months = $30,492/year unrealized.' },
+];
+const frOpen = new Array(FRACTURES.length).fill(false);
+function renderFractures() {
+  document.getElementById('fractures').innerHTML = FRACTURES.map((f,i) => `
+    <div class="fracture-card ${f.cls}${frOpen[i]?' open':''}" onclick="toggleFr(${i})">
+      <div class="fr-header"><span class="fr-badge">${f.badge}</span><span class="fr-name">${f.name}</span><span style="font-size:11px;color:#AEAEB2">${frOpen[i]?'▲':'▼'}</span></div>
+      <div class="fr-detail${frOpen[i]?' show':''}">
+        <div class="fr-block"><div class="fr-label">Chain logic</div><div class="fr-text">${f.chain}</div></div>
+        <div class="fr-block"><div class="fr-label">Economic anchor</div><div class="fr-text">${f.anchor}</div></div>
+      </div>
+    </div>`).join('') + '<div style="background:#fff;border:0.5px solid #D1D1D6;border-radius:10px;padding:12px 16px;margin-top:6px;font-size:13px;font-weight:600;color:#1D1D1F">Total: $20–25K + $43,200 + $30,492 ≈ <span style="color:#A32D2D">$110,000/year</span> — all formula inputs stated.</div>';
+}
+function toggleFr(i){frOpen[i]=!frOpen[i];renderFractures();}
+renderFractures();
+
+// Timer
+let capSec=7200, capRun=false, capInt=null;
+function fmtCap(s){const h=Math.floor(s/3600);const m=Math.floor((s%3600)/60);const sec=s%60;return `${h}:${m<10?'0':''}${m}:${sec<10?'0':''}${sec}`;}
+function startCap(){if(!capRun){capRun=true;document.getElementById('cap-btn').textContent='Running…';capInt=setInterval(()=>{capSec--;document.getElementById('cap-timer').textContent=fmtCap(capSec);if(capSec<=600)document.getElementById('cap-timer').className='timer-d urgent';if(capSec<=0){clearInterval(capInt);capRun=false;document.getElementById('cap-btn').textContent='Time up';}},1000);}else{clearInterval(capInt);capRun=false;document.getElementById('cap-timer').textContent=fmtCap(capSec);document.getElementById('cap-timer').className='timer-d';document.getElementById('cap-btn').textContent='Start 120-min timer';}}
+function resetCap(){clearInterval(capInt);capRun=false;capSec=7200;document.getElementById('cap-timer').textContent=fmtCap(capSec);document.getElementById('cap-timer').className='timer-d';document.getElementById('cap-btn').textContent='Start 120-min timer';}
+
+// Certification
+const CERT = [
+  { name:'Fracture Identification', std:'All three systems identified without prompting: Matching, Standardization, Scheduling.' },
+  { name:'Lucidchart Maps', std:'Three separate causal chains submitted, each syntactically valid with all Module 06 rules satisfied.' },
+  { name:'Economic Anchor', std:'$110,000 figure (or defensible equivalent) derived with all formula inputs stated explicitly. No hidden math.' },
+  { name:'Adversarial Pivot', std:'Operator reframed without defensiveness. Marketing-first recommendation redirected to structural foundation first.' },
+  { name:'GC Capability Mapping', std:'All three fractures mapped to specific named GC capabilities with implementation sequence: Visibility → Core → Optimization → Automation.' },
+];
+const certState = new Array(CERT.length).fill(false);
+function renderCert() {
+  document.getElementById('cert-items').innerHTML = CERT.map((c,i) => `
+    <div class="req-card${certState[i]?' pass':''}" onclick="toggleCert(${i})">
+      <div class="checkbox${certState[i]?' checked':''}"></div>
+      <div><div class="req-name">${c.name}</div><div class="req-std">${c.std}</div></div>
+    </div>`).join('');
+  const p = certState.filter(Boolean).length;
+  const bar = document.getElementById('cert-result');
+  bar.className='result-bar'+(p===CERT.length?' pass':'');
+  bar.textContent=p===CERT.length?'✓ All 5 passed — Level 3 Certified':`${p} / ${CERT.length} passed`;
+}
+function toggleCert(i){certState[i]=!certState[i];renderCert();}
+function resetCert(){certState.fill(false);renderCert();}
+renderCert();
+
+function switchTab(t){
+  ['sim','ref','cert'].forEach(id=>{
+    document.getElementById(`panel-${id}`).classList.toggle('active',id===t);
+    const cls=id==='cert'?'act-cert':'act';
+    document.getElementById(`tab-${id}`).className='tab'+(id===t?' '+cls:'');
+  });
+}
+</script>
+</body>
+</html>

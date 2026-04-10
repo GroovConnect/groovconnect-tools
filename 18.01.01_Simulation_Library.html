@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 18 — Simulation Library</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 680px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.tier-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 13px; font-weight: 500; padding: 7px 18px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.t1 { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.tab.t2 { background: #FAEEDA; border-color: #BA7517; color: #854F0B; font-weight: 600; }
+.tab.t3 { background: #FCEBEB; border-color: #A32D2D; color: #A32D2D; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+.tier-badge { display: inline-flex; border-radius: 8px; padding: 8px 14px; margin-bottom: 14px; font-size: 13px; font-weight: 500; }
+.t1-badge { background: #E6F1FB; color: #0C447C; }
+.t2-badge { background: #FAEEDA; color: #633806; }
+.t3-badge { background: #FCEBEB; color: #791F1F; }
+.scenario-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 14px; padding: 18px 20px; margin-bottom: 10px; }
+@media (prefers-color-scheme: dark) { .scenario-card { background: #1e1e1e; border-color: #333; } }
+.sc-name { font-size: 14px; font-weight: 600; color: #1D1D1F; margin-bottom: 6px; }
+@media (prefers-color-scheme: dark) { .sc-name { color: #e8e8e8; } }
+.sc-signal { font-size: 13px; font-style: italic; color: #1D1D1F; background: #F1EFE8; border-radius: 8px; padding: 10px 14px; margin-bottom: 8px; line-height: 1.5; }
+@media (prefers-color-scheme: dark) { .sc-signal { background: #222; color: #e8e8e8; } }
+.sc-noise { font-size: 12px; color: #6E6E73; margin-bottom: 8px; }
+.sc-gold { display: none; margin-top: 10px; }
+.sc-gold.show { display: block; }
+.sg-label { font-size: 10px; font-weight: 700; color: #0F6E56; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 3px; }
+.sg-text { font-size: 13px; color: #085041; background: #E1F5EE; border-radius: 8px; padding: 8px 12px; line-height: 1.55; margin-bottom: 6px; }
+@media (prefers-color-scheme: dark) { .sg-text { background: #052e1e; color: #9FE1CB; } }
+.ks-chip { font-size: 11px; color: #A32D2D; background: #FCEBEB; border-radius: 6px; padding: 4px 10px; margin-top: 6px; line-height: 1.4; }
+@media (prefers-color-scheme: dark) { .ks-chip { background: #2a0a0a; color: #F09595; } }
+.reveal-btn { font-family: inherit; font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 7px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .reveal-btn { background: #2a2a2a; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 18 · Simulation Library</div>
+<h1>Simulation Library — tiered scenario scripts</h1>
+<p class="sub">The Firing Range. Give the trainee a messy story — make them hunt for the signal. The gap between tiers is noise density, not difficulty.</p>
+
+<div class="tier-tabs">
+  <button class="tab t1" id="tab-t1" onclick="switchTier('t1')">Tier 1 — Guided</button>
+  <button class="tab" id="tab-t2" onclick="switchTier('t2')">Tier 2 — Independent</button>
+  <button class="tab" id="tab-t3" onclick="switchTier('t3')">Tier 3 — Adversarial</button>
+</div>
+
+<!-- TIER 1 -->
+<div class="panel active" id="panel-t1">
+  <div class="tier-badge t1-badge">Tier 1 · 25 min/sim · Instructor delivers KPI signal cleanly — minimal noise</div>
+  <div class="scenario-card">
+    <div class="sc-name">1.1 — The Busy Front Desk</div>
+    <div class="sc-signal">"Trial-to-enrollment conversion dropped from 70% to 45% over 30 days."</div>
+    <div class="sc-noise">Operator narrative: "The front desk is just overwhelmed with phone calls and doesn't have time to follow up with trial families."</div>
+    <button class="reveal-btn" id="rb-t1-1" onclick="revealSim('t1-1')">Reveal hidden reality + required output</button>
+    <div class="sc-gold" id="gold-t1-1">
+      <div class="sg-label">Hidden reality</div><div class="sg-text">Lead Response System failure — no automated post-trial follow-up trigger. The follow-up is not happening because the system never generates the task, not because the front desk is too busy.</div>
+      <div class="sg-label">Required chain</div><div class="sg-text">No automated follow-up trigger → Follow-up delayed beyond 24 hours → Trial family's interest cools → Conversion drops 25 points → Annual leakage: 25 trials/month × 25% × 12 × LTV.</div>
+      <div class="sg-label">Capability match</div><div class="sg-text">Enrollment System — Automated Follow-Up Trigger.</div>
+    </div>
+  </div>
+  <div class="scenario-card">
+    <div class="sc-name">1.2 — The Missing Milestone</div>
+    <div class="sc-signal">"Student churn spikes between months 6 and 9. Before and after this window, retention is strong."</div>
+    <div class="sc-noise">Operator narrative: "Students get bored at that age — it's natural. Every school sees this."</div>
+    <button class="reveal-btn" id="rb-t1-2" onclick="revealSim('t1-2')">Reveal hidden reality + required output</button>
+    <div class="sc-gold" id="gold-t1-2">
+      <div class="sg-label">Hidden reality</div><div class="sg-text">Standardization/Progression System failure. No milestone framework. Students reach basic proficiency with no visible roadmap. The churn is structural, not developmental.</div>
+      <div class="sg-label">Required chain</div><div class="sg-text">No milestone tracking → Student reaches basic proficiency with no visible next stage → Practice motivation declines, lesson feels purposeless → Parent loses confidence in investment value → Cancellation in months 6–9 → LTV reduced 3–4 months per churned student.</div>
+      <div class="sg-label">Capability match</div><div class="sg-text">Engagement Tracking — Milestone Visibility Layer via Parent Portal.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TIER 2 -->
+<div class="panel" id="panel-t2">
+  <div class="tier-badge t2-badge">Tier 2 · 35 min/sim · Signal embedded in narrative noise — trainee must extract without guidance</div>
+  <div class="scenario-card">
+    <div class="sc-name">2.1 — The Instructor Island</div>
+    <div class="sc-signal">Churn is 22% higher for students assigned to Instructor X. Instructor X has the highest satisfaction scores in the school.</div>
+    <div class="sc-noise">Operator: "Everyone loves Instructor X. The students who leave are just moving or getting too busy. The satisfaction scores prove the lessons are great."</div>
+    <button class="reveal-btn" id="rb-t2-1" onclick="revealSim('t2-1')">Reveal gold standard</button>
+    <div class="sc-gold" id="gold-t2-1">
+      <div class="sg-label">Root cause</div><div class="sg-text">Standardization Failure. Instructor X is entertaining but not teaching toward measurable progress milestones. Satisfaction scores measure emotional experience, not retention-driving progress. Happy and progressing are not the same metric.</div>
+      <div class="sg-label">Economic anchor</div><div class="sg-text">22% churn differential × students assigned to Instructor X × LTV = annual leakage attributable to the standardization gap.</div>
+      <div class="ks-chip">Kill Switch: trainee accepts high satisfaction score as proof of quality. "The only score that determines instructor effectiveness is retention rate and LTV correlation." Required re-prompt: "What does a student who gives a 5-star rating and then cancels at month 5 tell you about lesson quality?"</div>
+    </div>
+  </div>
+  <div class="scenario-card">
+    <div class="sc-name">2.2 — The Fog of War</div>
+    <div class="sc-signal">Monthly revenue is flat despite student count growing 8% over 6 months.</div>
+    <div class="sc-noise">Operator: "My accountant says margins are fine. I think it might be the new payment system we switched to in January."</div>
+    <button class="reveal-btn" id="rb-t2-2" onclick="revealSim('t2-2')">Reveal gold standard + fog questions</button>
+    <div class="sc-gold" id="gold-t2-2">
+      <div class="sg-label">Required fog-clearing questions</div><div class="sg-text">(1) What is your current lesson delivery rate — delivered vs. scheduled? (2) Has average lessons-delivered per student changed since January? (3) What % of rescheduled lessons are completed within 30 days vs. left open?</div>
+      <div class="sg-label">Root cause</div><div class="sg-text">Utilization System failure. More students enrolled but fewer lessons delivered per student — unclosed reschedules. The payment system is noise.</div>
+      <div class="sg-label">Diagnosis</div><div class="sg-text">Revenue flat despite growth = enrollment up but delivery down. Root cause: no closed-loop reschedule system — rescheduled lessons become open tasks that are never resolved.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TIER 3 -->
+<div class="panel" id="panel-t3">
+  <div class="tier-badge t3-badge">Tier 3 · 45 min/sim · Adversarial. Instructor plays emotionally escalating operator attributing everything to external causes.</div>
+  <div class="scenario-card">
+    <div class="sc-name">3.1 — The Defensive Founder</div>
+    <div class="sc-signal">LTV down 15%. Utilization at 60%.</div>
+    <div class="sc-noise">Adversary script: "I've been running this school for 20 years. My teachers know what they're doing. These numbers are just a blip — we had a rough patch in Q3. What I really need is more students, not more dashboards."</div>
+    <button class="reveal-btn" id="rb-t3-1" onclick="revealSim('t3-1')">Reveal required response + failure modes</button>
+    <div class="sc-gold" id="gold-t3-1">
+      <div class="sg-label">Required response</div><div class="sg-text">"I understand the school's history. The 15% LTV drop is a Scheduling System signal. At 60% utilization, you have 40% of capacity sitting empty. At your revenue base, that represents approximately $[X] in annual unrealized income. Before we bring in more students, we need to ensure current capacity is being used — adding students to a leaking system accelerates the leak, it does not solve it."</div>
+      <div class="sg-label">What fails</div><div class="sg-text">Apologizing for the finding. Softening the utilization figure. Agreeing to focus on lead generation before the diagnostic is complete.</div>
+    </div>
+  </div>
+  <div class="scenario-card">
+    <div class="sc-name">Capstone — The Death Spiral</div>
+    <div class="sc-signal">Three fractures present simultaneously. Operator attributes everything to one external cause.</div>
+    <div class="sc-noise">Operator: "It's the economy. Parents are cutting back on extras. Plus my best drum teacher just left to start his own studio and I think he's poaching my students. I need a non-compete lawyer and a cheaper marketing agency to get me 50 new leads."</div>
+    <button class="reveal-btn" id="rb-t3-cs" onclick="revealSim('t3-cs')">Reveal hidden signals + 3 fractures + economic anchor</button>
+    <div class="sc-gold" id="gold-t3-cs">
+      <div class="sg-label">Hidden KPI signals</div><div class="sg-text">Retention: churn highest in 6–9 month window (Engagement Wall) · Utilization: 40% prime-time empty, piano waitlist 20 names · Communication: parent portal login rate under 5%.</div>
+      <div class="sg-label">Fracture 1 — Matching System</div><div class="sg-text">No DISC-anchored school–student relationship. Students had loyalty to the instructor, not the school. Loss of one instructor should not produce school-level churn — but it does when no matching system exists.</div>
+      <div class="sg-label">Fracture 2 — Standardization System</div><div class="sg-text">No milestone visibility. 5% portal login confirms no visible progress communicated to parents. Students progressing invisibly → parents lose confidence → Engagement Wall at months 6–9.</div>
+      <div class="sg-label">Fracture 3 — Scheduling System</div><div class="sg-text">Instrument demand not tracked. Piano waitlist of 20 alongside 40% empty prime-time slots. Revenue decline is a capacity misallocation failure — not a market condition.</div>
+      <div class="sg-label">Economic anchor (~$110,000/year)</div><div class="sg-text">Matching (~$20–25K) + Standardization ($43,200) + Scheduling ($30,492) = ~$110,000/year. All formula inputs stated explicitly.</div>
+      <div class="sg-label">Adversarial pivot</div><div class="sg-text">"Marketing for new leads will accelerate your losses. You are currently losing approximately $110,000 a year. Bringing in 50 new students without fixing the Engagement Wall means 18% of them leave at month seven — you'll spend the marketing budget to replace students you should have kept."</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function revealSim(id) { document.getElementById(`gold-${id}`).classList.add('show'); document.getElementById(`rb-${id}`).style.display='none'; }
+function switchTier(t) {
+  ['t1','t2','t3'].forEach(tier => {
+    document.getElementById(`panel-${tier}`).classList.toggle('active', tier===t);
+    document.getElementById(`tab-${tier}`).className='tab' + (tier===t ? ' '+tier : '');
+  });
+}
+</script>
+</body>
+</html>

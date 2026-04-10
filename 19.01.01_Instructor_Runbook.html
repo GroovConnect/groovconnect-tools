@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 19 — Instructor Runbook</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 680px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.view-tabs { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.act { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+.enforcer-rule { font-size: 13px; color: #791F1F; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .enforcer-rule { background: #2a0a0a; color: #F09595; } }
+.check-row { display: flex; gap: 12px; align-items: flex-start; background: #fff; border: 0.5px solid #D1D1D6; border-radius: 10px; padding: 12px 16px; margin-bottom: 6px; cursor: pointer; user-select: none; }
+@media (prefers-color-scheme: dark) { .check-row { background: #1e1e1e; border-color: #333; } }
+.check-row.done { border-left: 3px solid #0F6E56; background: #f0fdf8; }
+@media (prefers-color-scheme: dark) { .check-row.done { background: #0a1f15; } }
+.chk { width: 20px; height: 20px; border: 1.5px solid #D1D1D6; border-radius: 5px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+.chk.on { background: #0F6E56; border-color: #0F6E56; }
+.chk.on::after { content:''; display:block; width:4px; height:8px; border:2px solid #fff; border-top:none; border-left:none; transform:rotate(45deg) translate(-1px,-1px); }
+.chk-name { font-size: 13px; font-weight: 500; color: #1D1D1F; margin-bottom: 2px; }
+@media (prefers-color-scheme: dark) { .chk-name { color: #e8e8e8; } }
+.chk-req { font-size: 12px; color: #6E6E73; line-height: 1.4; }
+.step-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 10px; padding: 14px 18px; margin-bottom: 6px; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .step-card { background: #1e1e1e; border-color: #333; } }
+.step-card.open { border-left: 3px solid #185FA5; }
+.step-head { display: flex; align-items: center; gap: 10px; }
+.step-num { width: 24px; height: 24px; border-radius: 6px; background: #185FA5; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+.step-name { font-size: 14px; font-weight: 500; color: #1D1D1F; flex: 1; }
+@media (prefers-color-scheme: dark) { .step-name { color: #e8e8e8; } }
+.step-body { margin-top: 10px; font-size: 13px; color: #6E6E73; line-height: 1.6; display: none; }
+.step-body.show { display: block; }
+.ks-card { border-radius: 10px; padding: 10px 14px; margin-bottom: 5px; background: #FCEBEB; }
+@media (prefers-color-scheme: dark) { .ks-card { background: #2a0a0a; } }
+.ks-trigger { font-size: 11px; font-weight: 700; color: #A32D2D; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 3px; }
+.ks-def { font-size: 12px; color: #791F1F; line-height: 1.5; }
+@media (prefers-color-scheme: dark) { .ks-def { color: #F09595; } }
+.breath-card { background: #E6F1FB; border-radius: 10px; padding: 12px 16px; margin-bottom: 6px; }
+@media (prefers-color-scheme: dark) { .breath-card { background: #0a1f3a; } }
+.bt-system { font-size: 11px; font-weight: 700; color: #185FA5; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 5px; }
+.bt-text { font-size: 13px; color: #0C447C; line-height: 1.65; }
+@media (prefers-color-scheme: dark) { .bt-text { color: #B5D4F4; } }
+.fb-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 10px; padding: 12px 16px; margin-bottom: 6px; }
+@media (prefers-color-scheme: dark) { .fb-card { background: #1e1e1e; border-color: #333; } }
+.fb-comp { font-size: 11px; font-weight: 700; color: #185FA5; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 3px; }
+.fb-text { font-size: 13px; color: #1D1D1F; line-height: 1.5; }
+@media (prefers-color-scheme: dark) { .fb-text { color: #e8e8e8; } }
+.controls { display: flex; gap: 8px; margin-top: 4px; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 19 · Instructor Runbook</div>
+<h1>Instructor Runbook</h1>
+<p class="sub">You are the Enforcer of the OS. The system is the only authority in this room.</p>
+
+<div class="view-tabs">
+  <button class="tab act" id="tab-pre" onclick="switchTab('pre')">Pre-session checklist</button>
+  <button class="tab" id="tab-loop" onclick="switchTab('loop')">4-step session loop</button>
+  <button class="tab" id="tab-ks" onclick="switchTab('ks')">Kill Switch conditions</button>
+  <button class="tab" id="tab-fb" onclick="switchTab('fb')">Feedback model</button>
+  <button class="tab" id="tab-bt" onclick="switchTab('bt')">Breath Test library</button>
+</div>
+
+<!-- PRE-SESSION -->
+<div class="panel active" id="panel-pre">
+  <div class="enforcer-rule">The instructor is not a teacher — they are a Validator of Performance. A trainee who cannot perform the required output is returned to the module — not helped through it.</div>
+  <div class="score" style="display:inline-flex;background:#FAEEDA;border-radius:99px;padding:6px 16px;font-size:13px;font-weight:600;color:#854F0B;margin-bottom:12px" id="pre-score">0 / 5 confirmed</div>
+  <div id="pre-items"></div>
+  <div class="controls"><button class="secondary" onclick="resetPre()">Reset</button></div>
+</div>
+
+<!-- LOOP -->
+<div class="panel" id="panel-loop">
+  <div id="loop-steps"></div>
+</div>
+
+<!-- KILL SWITCHES -->
+<div class="panel" id="panel-ks">
+  <div style="font-size:13px;color:#791F1F;background:#FCEBEB;border-left:3px solid #A32D2D;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:16px;line-height:1.55">Six Kill Switches. Each is binary — there is no partial credit. All six trigger an automatic session pause.</div>
+  <div id="ks-items"></div>
+</div>
+
+<!-- FEEDBACK MODEL -->
+<div class="panel" id="panel-fb">
+  <div style="font-size:13px;color:#0C447C;background:#E6F1FB;border-left:3px solid #185FA5;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:16px;line-height:1.55">We do not use the Positive-Negative-Positive sandwich. GC Feedback Model: Identify the Gap → State the Logic → Mandate Remediation. Delivered once, clearly. Not softened.</div>
+  <div id="fb-items"></div>
+</div>
+
+<!-- BREATH TEST -->
+<div class="panel" id="panel-bt">
+  <div style="font-size:13px;color:#0C447C;background:#E6F1FB;border-left:3px solid #185FA5;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:16px;line-height:1.55">All four Breath Test examples must be internalized before any Tier 2 simulation begins. Delivered in one breath. Any pause between the five elements = reflex not installed. Return to the module and re-administer.</div>
+  <div id="bt-items"></div>
+</div>
+
+<script>
+const PRE = [
+  { name:'Knowledge Gate passed at ≥90%', req:'Confirmed before any simulation begins. No simulation proceeds without gate passage. "Almost 90%" is not 90%.' },
+  { name:'Scoring sheet active', req:'5-Axis formula confirmed calculating correctly. Composite score formula verified.' },
+  { name:'Tier 2/3 simulation recorded', req:'Recording started before the scenario is read. Storage location confirmed.' },
+  { name:'Lucidchart workspace cleared', req:'Trainee canvas is blank. No prior work visible. Color standard confirmed.' },
+  { name:'Simulation script in hand', req:'Correct tier and scenario selected. Adversarial script memorized — not read aloud.' },
+];
+const preDone = new Array(PRE.length).fill(false);
+function renderPre() {
+  const cnt = preDone.filter(Boolean).length;
+  document.getElementById('pre-score').textContent = `${cnt} / ${PRE.length} confirmed`;
+  document.getElementById('pre-items').innerHTML = PRE.map((p,i) => `
+    <div class="check-row${preDone[i]?' done':''}" onclick="togglePre(${i})">
+      <div class="chk${preDone[i]?' on':''}"></div>
+      <div><div class="chk-name">${p.name}</div><div class="chk-req">${p.req}</div></div>
+    </div>`).join('');
+}
+function togglePre(i){preDone[i]=!preDone[i];renderPre();}
+function resetPre(){preDone.fill(false);renderPre();}
+renderPre();
+
+const LOOP = [
+  { num:1, name:'Knowledge Gate', std:'Verify the trainee\'s grasp of the module\'s core theory at ≥90%. No simulation begins until this gate is passed. "Almost 90%" is not 90%.' },
+  { num:2, name:'Simulation Delivery', std:'State the KPI Signal and Operator Narrative exactly as written in Module 18. Then go silent. Do not answer "How should I approach this?" questions. Observe only.' },
+  { num:3, name:'Clinical Observation', std:'Record every logic gap, hesitation, filler word, Kill Switch condition, and narrative bite. Timestamp each event. Do not intervene during the simulation.' },
+  { num:4, name:'Scoring & Reveal', std:'Score across all 5 axes. Only then show the Gold Standard from Module 17. The Gold Standard is revealed after scoring — not during or before.' },
+];
+const loopOpen = new Array(LOOP.length).fill(false);
+function renderLoop() {
+  document.getElementById('loop-steps').innerHTML = LOOP.map((s,i) => `
+    <div class="step-card${loopOpen[i]?' open':''}" onclick="toggleLoop(${i})">
+      <div class="step-head"><div class="step-num">${s.num}</div><div class="step-name">${s.name}</div></div>
+      <div class="step-body${loopOpen[i]?' show':''}">${s.std}</div>
+    </div>`).join('');
+}
+function toggleLoop(i){loopOpen[i]=!loopOpen[i];renderLoop();}
+renderLoop();
+
+const KS_ITEMS = [
+  { trigger:'Human Attribution', def:'Trainee blames a person before auditing all system layers.' },
+  { trigger:'Hidden Math', def:'Economic impact stated without showing formula derivation and explicitly stated assumptions.' },
+  { trigger:'Narrative Surrender', def:'Trainee accepts the operator\'s external attribution or emotional narrative as a valid diagnostic conclusion.' },
+  { trigger:'Premature Solutioning', def:'Solution named before propagation chain is complete and economic anchor is calculated.' },
+  { trigger:'Approval Seeking', def:'Trainee adjusts or softens a diagnosis because the operator reacted negatively.' },
+  { trigger:'Feature Pitching', def:'GC capability presented before the failure is diagnosed and the system gap is named.' },
+];
+document.getElementById('ks-items').innerHTML = KS_ITEMS.map(k => `
+  <div class="ks-card"><div class="ks-trigger">${k.trigger}</div><div class="ks-def">${k.def}</div></div>`).join('');
+
+const FB_ITEMS = [
+  { comp:'Identify the Gap', text:'"Your map suggests the problem is the Sales Team. That is a Surface Symptom."' },
+  { comp:'State the Logic', text:'"The data shows conversion is high but 30-day retention is low. That is an Expectation System Failure — not a sales failure."' },
+  { comp:'Mandate Remediation', text:'"Re-run the simulation. Start the chain at the Enrollment System onboarding layer, not at the sales interaction."' },
+];
+document.getElementById('fb-items').innerHTML = FB_ITEMS.map(f => `
+  <div class="fb-card"><div class="fb-comp">${f.comp}</div><div class="fb-text">${f.text}</div></div>`).join('');
+
+const BT_ITEMS = [
+  { system:'Scheduling System', text:'"The retention drop is a Scheduling System failure where an open-ended rollover policy (Failure) causes administrative backlog (Behavior), leading to inconsistent lesson delivery (Experience degradation), which produces the 15% churn (KPI), representing approximately $44,000 in annual leakage."' },
+  { system:'Matching System', text:'"The churn spike is a Matching System failure where no DISC-based compatibility screen (Failure) causes incompatible student/instructor assignment (Behavior), producing lesson disengagement and relationship breakdown (Experience degradation), which produces the 22% churn differential (KPI), representing approximately $44,000 in annual leakage."' },
+  { system:'Standardization System', text:'"The 6–9 month churn wall is a Standardization System failure where no milestone tracking framework (Failure) leaves students without visible progress markers (Behavior), producing parent loss of confidence in the investment value (Experience degradation), which produces the 18% cancellation rate in months 6–9 (KPI), representing approximately $43,200 in annual leakage."' },
+  { system:'Communication System', text:'"The portal non-engagement is a Communication System failure where no automated lesson note delivery (Failure) leaves parents without progress visibility (Behavior), producing enrollment re-evaluation when monthly tuition becomes the most salient data point (Experience degradation), which produces the 5% portal login rate and associated retention underperformance (KPI), representing approximately $20,000 in recoverable annual leakage."' },
+];
+document.getElementById('bt-items').innerHTML = BT_ITEMS.map(b => `
+  <div class="breath-card"><div class="bt-system">${b.system}</div><div class="bt-text">${b.text}</div></div>`).join('');
+
+function switchTab(t) {
+  ['pre','loop','ks','fb','bt'].forEach(id => {
+    document.getElementById(`panel-${id}`).classList.toggle('active', id===t);
+    document.getElementById(`tab-${id}`).className='tab'+(id===t?' act':'');
+  });
+}
+</script>
+</body>
+</html>

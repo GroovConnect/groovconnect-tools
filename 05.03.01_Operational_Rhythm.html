@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 05 — Operational Rhythm Design</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #fff; color: #1D1D1F; padding: 40px 28px; max-width: 680px; margin: 0 auto; }
+@media (prefers-color-scheme: dark) { body { background: #1a1a1a; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 5px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 3px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.drift-rule { font-size: 13px; color: #633806; background: #FAEEDA; border-left: 3px solid #BA7517; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 20px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .drift-rule { background: #2a1a00; color: #FAC775; } }
+.rhythm-card { border-radius: 14px; padding: 18px 20px; margin-bottom: 8px; }
+.rh { display: flex; align-items: flex-start; gap: 14px; }
+.rh-badge { flex-shrink: 0; border-radius: 99px; padding: 4px 14px; font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; margin-top: 2px; white-space: nowrap; }
+.rh-body { flex: 1; }
+.rh-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.rh-cadence { font-size: 12px; margin-bottom: 8px; }
+.rh-focus { font-size: 13px; line-height: 1.55; margin-bottom: 6px; }
+.rh-duration { font-size: 12px; font-style: italic; }
+.rh-drift { font-size: 12px; margin-top: 8px; padding: 8px 12px; border-radius: 8px; line-height: 1.5; }
+
+.daily { background: #E6F1FB; }
+.daily .rh-badge { background: #185FA5; color: #fff; }
+.daily .rh-title { color: #0C447C; }
+.daily .rh-cadence { color: #185FA5; }
+.daily .rh-focus { color: #0C447C; }
+.daily .rh-duration { color: #185FA5; }
+.daily .rh-drift { background: #B5D4F4; color: #042C53; }
+
+.weekly { background: #FAEEDA; }
+.weekly .rh-badge { background: #BA7517; color: #fff; }
+.weekly .rh-title { color: #633806; }
+.weekly .rh-cadence { color: #854F0B; }
+.weekly .rh-focus { color: #633806; }
+.weekly .rh-duration { color: #854F0B; }
+.weekly .rh-drift { background: #FAC775; color: #412402; }
+
+.monthly { background: #E1F5EE; }
+.monthly .rh-badge { background: #0F6E56; color: #fff; }
+.monthly .rh-title { color: #085041; }
+.monthly .rh-cadence { color: #0F6E56; }
+.monthly .rh-focus { color: #085041; }
+.monthly .rh-duration { color: #0F6E56; }
+.monthly .rh-drift { background: #9FE1CB; color: #04342C; }
+
+@media (prefers-color-scheme: dark) {
+  .daily { background: #0a1f3a; } .daily .rh-title { color: #B5D4F4; } .daily .rh-focus { color: #85B7EB; } .daily .rh-drift { background: #0C447C; color: #B5D4F4; }
+  .weekly { background: #2a1a00; } .weekly .rh-title { color: #FAC775; } .weekly .rh-focus { color: #EF9F27; } .weekly .rh-drift { background: #412402; color: #FAC775; }
+  .monthly { background: #052e1e; } .monthly .rh-title { color: #9FE1CB; } .monthly .rh-focus { color: #5DCAA5; } .monthly .rh-drift { background: #085041; color: #9FE1CB; }
+}
+.caption { margin-top: 20px; font-size: 12px; color: #8E8E93; border-top: 0.5px solid #D1D1D6; padding-top: 12px; line-height: 1.6; }
+@media (prefers-color-scheme: dark) { .caption { border-top-color: #2a2a2a; } }
+@media print { body { padding: 20px; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 05, Section 3 · Reference Card</div>
+<h1>Operational Rhythm Design — three cadences</h1>
+<p class="sub">Every system recommendation must include a review rhythm as a non-negotiable component. A system design without a rhythm is an incomplete design.</p>
+<div class="drift-rule">The 30-day drift threshold is observed behavior across every operational context. Systems without review rhythms consistently lose compliance within one month. The question is never whether they will drift — only when.</div>
+
+<div class="rhythm-card daily">
+  <div class="rh">
+    <span class="rh-badge">Daily</span>
+    <div class="rh-body">
+      <div class="rh-title">Execute</div>
+      <div class="rh-cadence">Every business day · Same time · ≤15 minutes</div>
+      <div class="rh-focus">Task completion audit · Real-time alerts · Immediate issue resolution · Open flag review</div>
+      <div class="rh-duration">15 minutes maximum. Longer daily reviews signal the system is under-designed — too many exceptions requiring human judgment.</div>
+      <div class="rh-drift">Drift signal: daily review consistently exceeds 15 minutes → rebuild the process to reduce exception volume.</div>
+    </div>
+  </div>
+</div>
+
+<div class="rhythm-card weekly">
+  <div class="rh">
+    <span class="rh-badge">Weekly</span>
+    <div class="rh-body">
+      <div class="rh-title">Improve</div>
+      <div class="rh-cadence">Same day and time each week · 45–60 minutes</div>
+      <div class="rh-focus">KPI review vs. baseline · System adjustment · Team alignment · Execution consistency check · Catch drift before it becomes failure</div>
+      <div class="rh-duration">45–60 minutes. The weekly rhythm is where drift is caught before it becomes a failure. This is the primary catch layer.</div>
+      <div class="rh-drift">Drift rule: if this rhythm slips even once, the system will drift within 30 days. It is non-negotiable.</div>
+    </div>
+  </div>
+</div>
+
+<div class="rhythm-card monthly">
+  <div class="rh">
+    <span class="rh-badge">Monthly</span>
+    <div class="rh-body">
+      <div class="rh-title">Rethink</div>
+      <div class="rh-cadence">Last business day of each month · 90–120 minutes</div>
+      <div class="rh-focus">Trend analysis across all three primary KPIs · MSOI score review · Structural redesign decisions · Capacity planning</div>
+      <div class="rh-duration">90–120 minutes. The monthly rhythm is where structural decisions are made — not during daily or weekly reviews.</div>
+      <div class="rh-drift">Structural decisions made outside the monthly rhythm are reactive — they interrupt daily and weekly execution without the data context to justify them.</div>
+    </div>
+  </div>
+</div>
+
+<div class="caption">GroovConnect OAS™ · Module 05 · Printable reference — every system recommendation exits with all three rhythms specified.</div>
+</body>
+</html>

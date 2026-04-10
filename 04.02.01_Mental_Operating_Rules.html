@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 04 — Mental Operating Rules</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 640px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.mem-note { font-size: 13px; color: #534AB7; background: #EEEDFE; border-left: 3px solid #534AB7; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 20px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .mem-note { background: #1a1730; color: #CECBF6; } }
+.rule-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 12px; padding: 16px 18px; margin-bottom: 8px; cursor: pointer; transition: background .12s; }
+@media (prefers-color-scheme: dark) { .rule-card { background: #1e1e1e; border-color: #333; } }
+.rule-card:hover { background: #fafafa; }
+@media (prefers-color-scheme: dark) { .rule-card:hover { background: #252525; } }
+.rule-card.revealed { border-left: 3px solid #534AB7; }
+.rule-top { display: flex; align-items: center; gap: 12px; }
+.rule-num { width: 28px; height: 28px; border-radius: 8px; background: #EEEDFE; color: #534AB7; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+@media (prefers-color-scheme: dark) { .rule-num { background: #1a1730; color: #CECBF6; } }
+.rule-principle { font-size: 15px; font-weight: 500; color: #1D1D1F; flex: 1; line-height: 1.4; }
+@media (prefers-color-scheme: dark) { .rule-principle { color: #e8e8e8; } }
+.rule-tap { font-size: 11px; color: #AEAEB2; }
+.rule-detail { margin-top: 10px; display: none; }
+.rule-detail.show { display: block; }
+.trigger-block { background: #FAEEDA; border-radius: 8px; padding: 10px 14px; margin-bottom: 6px; }
+.trigger-label { font-size: 10px; font-weight: 700; color: #854F0B; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 4px; }
+.trigger-text { font-size: 13px; color: #633806; line-height: 1.5; }
+@media (prefers-color-scheme: dark) { .trigger-block { background: #2a1a00; } .trigger-text { color: #FAC775; } }
+.response-block { background: #E1F5EE; border-radius: 8px; padding: 10px 14px; }
+.response-label { font-size: 10px; font-weight: 700; color: #0F6E56; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 4px; }
+.response-text { font-size: 13px; color: #085041; line-height: 1.5; }
+@media (prefers-color-scheme: dark) { .response-block { background: #052e1e; } .response-text { color: #9FE1CB; } }
+.controls { display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 04, Section 2 · Reference & Drill</div>
+<h1>Mental Operating Rules — 4 rules</h1>
+<p class="sub">Memorized in sequence. Recited before every simulation block. Tap each rule to see its trigger condition and required response.</p>
+<div class="mem-note">These are not principles to aspire to — they are decision rules that activate automatically when the trigger condition appears. The goal is not to remember them from a card but to run them without thinking.</div>
+
+<div id="rules"></div>
+<div class="controls">
+  <button class="primary" onclick="revealAll()">Reveal all</button>
+  <button class="secondary" onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+const RULES = [
+  {
+    principle: 'Urgency is not importance.',
+    trigger: 'The operator\'s most urgent complaint lands first. You feel the pull to address it immediately.',
+    response: 'Identify the highest-impact KPI signal first, regardless of how the operator presents the problem. The Master Sequence determines sequence — not urgency.',
+  },
+  {
+    principle: 'Confusion is a signal to slow down, not speed up.',
+    trigger: 'The diagnostic chain becomes unclear. You feel pressure to produce a recommendation quickly.',
+    response: 'Return to the KPI. Confusion that produces rushed recommendations is diagnostic failure — not productivity. There is no speed premium on a wrong answer.',
+  },
+  {
+    principle: 'Your job is not to be right. Your job is to improve outcomes.',
+    trigger: 'You have the correct diagnosis but the operator is resisting it. You feel like accuracy should be sufficient.',
+    response: 'Accuracy is necessary but not sufficient. A correct diagnosis delivered badly is a failed engagement. Communication quality is also required — but "quality" means clarity, not softening.',
+  },
+  {
+    principle: 'The operator\'s narrative is data about their psychology, not about the system.',
+    trigger: 'The operator tells a compelling story about why the problem exists. It sounds plausible.',
+    response: 'Process the narrative as a signal about where operator resistance is — not as a diagnosis. It tells you where to look. It does not tell you what is broken.',
+  },
+];
+
+const revealed = new Array(RULES.length).fill(false);
+
+function render() {
+  document.getElementById('rules').innerHTML = RULES.map((r, i) => `
+    <div class="rule-card${revealed[i] ? ' revealed' : ''}" onclick="toggle(${i})">
+      <div class="rule-top">
+        <div class="rule-num">${i + 1}</div>
+        <div class="rule-principle">${r.principle}</div>
+        <span class="rule-tap">${revealed[i] ? '' : 'tap'}</span>
+      </div>
+      <div class="rule-detail${revealed[i] ? ' show' : ''}">
+        <div class="trigger-block">
+          <div class="trigger-label">Trigger condition</div>
+          <div class="trigger-text">${r.trigger}</div>
+        </div>
+        <div class="response-block">
+          <div class="response-label">Required response</div>
+          <div class="response-text">${r.response}</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function toggle(i) { revealed[i] = !revealed[i]; render(); }
+function revealAll() { revealed.fill(true); render(); }
+function resetAll() { revealed.fill(false); render(); }
+render();
+</script>
+</body>
+</html>

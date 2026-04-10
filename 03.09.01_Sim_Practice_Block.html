@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 03 — Practice Block: Sims 3.1–3.4</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.sim-tabs { display: flex; gap: 5px; margin-bottom: 16px; flex-wrap: wrap; }
+.tab { font-family: inherit; font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.act { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.tab.act-comb { background: #FCEBEB; border-color: #A32D2D; color: #A32D2D; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+.scenario-card { background: #fff; border: 0.5px solid #D1D1D6; border-top: 3px solid #888780; border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { .scenario-card { background: #1e1e1e; border-color: #333; } }
+.sc-label { font-size: 11px; font-weight: 700; color: #8E8E93; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 8px; }
+.sc-text { font-size: 15px; font-weight: 500; color: #1D1D1F; line-height: 1.5; margin-bottom: 6px; }
+@media (prefers-color-scheme: dark) { .sc-text { color: #e8e8e8; } }
+.sc-data { font-size: 13px; color: #6E6E73; line-height: 1.5; }
+.gold-block { display: none; margin-top: 12px; }
+.gold-block.show { display: block; }
+.gold-section { margin-bottom: 8px; }
+.gold-label { font-size: 11px; font-weight: 700; color: #0F6E56; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 4px; }
+.gold-text { font-size: 13px; color: #085041; background: #E1F5EE; border-radius: 8px; padding: 8px 12px; line-height: 1.55; font-family: "SFMono-Regular", Menlo, monospace; }
+@media (prefers-color-scheme: dark) { .gold-text { background: #052e1e; color: #9FE1CB; } }
+.adv-note { background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 12px 16px; font-size: 13px; color: #791F1F; line-height: 1.6; margin-top: 10px; display: none; }
+.adv-note.show { display: block; }
+.adv-note strong { font-weight: 600; display: block; margin-bottom: 4px; }
+@media (prefers-color-scheme: dark) { .adv-note { background: #2a0a0a; color: #F09595; } }
+.reveal-btn { font-family: inherit; font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: 8px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; margin-top: 10px; }
+@media (prefers-color-scheme: dark) { .reveal-btn { background: #2a2a2a; border-color: #444; color: #e8e8e8; } }
+.ks-note { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; line-height: 1.55; margin-top: 12px; }
+@media (prefers-color-scheme: dark) { .ks-note { background: #2a0a0a; color: #F09595; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 03, Section 9 · Practice Block</div>
+<h1>Practice Block — Simulations 3.1–3.4</h1>
+<p class="sub">All four must be completed before the Certification Gate. 3.1–3.3 assess individual formula proficiency. 3.4 assesses combined diagnosis under adversarial pressure.</p>
+
+<div class="sim-tabs">
+  <button class="tab act" id="tab-31" onclick="switchSim('31')">Sim 3.1 — LTV</button>
+  <button class="tab" id="tab-32" onclick="switchSim('32')">Sim 3.2 — Conversion</button>
+  <button class="tab" id="tab-33" onclick="switchSim('33')">Sim 3.3 — Utilization</button>
+  <button class="tab" id="tab-34" onclick="switchSim('34')">Sim 3.4 — Combined</button>
+</div>
+
+<!-- SIM 3.1 -->
+<div class="panel active" id="panel-31">
+  <div class="scenario-card">
+    <div class="sc-label">Sim 3.1 · LTV Loss</div>
+    <div class="sc-text">School: 140 students · $185 tuition · 51% gross margin. Retention dropped from 86% to 71% over 60 days. Calculate annual leakage.</div>
+    <div class="sc-data">No spreadsheet. State all assumptions before calculating. Grade assumption completeness first, then numeric accuracy.</div>
+    <button class="reveal-btn" id="rb-31" onclick="reveal('31')">Reveal gold standard derivation</button>
+    <div class="gold-block" id="gold-31">
+      <div class="gold-section"><div class="gold-label">Monthly profit per student</div><div class="gold-text">$185 × 51% = $94.35</div></div>
+      <div class="gold-section"><div class="gold-label">Students affected</div><div class="gold-text">140 × (86% − 71%) = 140 × 15% = 21 students</div></div>
+      <div class="gold-section"><div class="gold-label">LTV delta (3-month tenure loss)</div><div class="gold-text">Baseline LTV: $94.35 × 10 mo = $943.50<br>Failure-state LTV: $94.35 × 7 mo = $660.45<br>Loss per student: $943.50 − $660.45 = $283.05</div></div>
+      <div class="gold-section"><div class="gold-label">Annual leakage</div><div class="gold-text">$283.05 × 21 students = $5,944 → rounded: $5,900<br>Note: if operator uses 11-month baseline, recalculate live.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SIM 3.2 -->
+<div class="panel" id="panel-32">
+  <div class="scenario-card">
+    <div class="sc-label">Sim 3.2 · Conversion Loss</div>
+    <div class="sc-text">School: 42 trials/month · $920 LTV. Conversion dropped from 73% to 54% over 45 days. Calculate annual leakage.</div>
+    <div class="sc-data">State the formula and all inputs before calculating. The error drill: after the trainee calculates, ask the room to spot the error when a trainee deliberately produces the wrong calculation.</div>
+    <button class="reveal-btn" id="rb-32" onclick="reveal('32')">Reveal gold standard derivation</button>
+    <div class="gold-block" id="gold-32">
+      <div class="gold-section"><div class="gold-label">Conversion gap</div><div class="gold-text">73% − 54% = 19 percentage points</div></div>
+      <div class="gold-section"><div class="gold-label">Lost conversions per month</div><div class="gold-text">42 × 19% = 7.98 ≈ 8 students/month</div></div>
+      <div class="gold-section"><div class="gold-label">Monthly revenue loss</div><div class="gold-text">8 × $920 = $7,360/month</div></div>
+      <div class="gold-section"><div class="gold-label">Annual conversion loss</div><div class="gold-text">$7,360 × 12 = $88,320/year</div></div>
+    </div>
+  </div>
+  <div class="ks-note">Most common error: 19% × $920 = $174.80 × 12 = $2,097. Trainee multiplied rate × LTV without accounting for trial volume. Correct sequence: gap% × monthly trials = lost students; lost students × LTV = monthly loss; × 12 = annual.</div>
+</div>
+
+<!-- SIM 3.3 -->
+<div class="panel" id="panel-33">
+  <div class="scenario-card">
+    <div class="sc-label">Sim 3.3 · Utilization Loss</div>
+    <div class="sc-text">School: 240 lessons scheduled/week · 191 delivered. Average lesson value: $48. Calculate annual leakage.</div>
+    <div class="sc-data">Identify undelivered lessons as the driver, not instructor count. Annualize by multiplying by 52.</div>
+    <button class="reveal-btn" id="rb-33" onclick="reveal('33')">Reveal gold standard derivation</button>
+    <div class="gold-block" id="gold-33">
+      <div class="gold-section"><div class="gold-label">Undelivered lessons per week</div><div class="gold-text">240 − 191 = 49 lessons/week</div></div>
+      <div class="gold-section"><div class="gold-label">Weekly revenue loss</div><div class="gold-text">49 × $48 = $2,352/week</div></div>
+      <div class="gold-section"><div class="gold-label">Annual utilization loss</div><div class="gold-text">$2,352 × 52 = $122,304/year</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SIM 3.4 -->
+<div class="panel" id="panel-34">
+  <div class="scenario-card">
+    <div class="sc-label">Sim 3.4 · Combined — adversarial</div>
+    <div class="sc-text">All three failures are present simultaneously in the same school. Calculate total annual leakage using all three formulas. Produce a combined Priority Score and sequencing justification.</div>
+    <div class="sc-data">Instructor plays the operator. After the trainee delivers the combined figure, challenge: "That number is completely wrong. Our margins are better than 50%. And there's no way our LTV is only $900."</div>
+    <button class="reveal-btn" id="rb-34" onclick="reveal('34')">Reveal gold standard & adversarial sequence</button>
+    <div class="gold-block" id="gold-34">
+      <div class="gold-section"><div class="gold-label">Combined leakage</div><div class="gold-text">LTV Loss:         $5,900<br>Conversion Loss:  $88,320<br>Utilization Loss: $122,304<br>─────────────────────────<br>Total:            $216,524</div></div>
+      <div class="gold-section"><div class="gold-label">Priority sequencing</div><div class="gold-text">Lead with Utilization (highest dollar + likely highest propagation depth).<br>Sequence: Utilization → Conversion → LTV</div></div>
+    </div>
+    <div class="adv-note" id="adv-34">
+      <strong>Adversarial sequence — deliver in order, not all at once</strong>
+      (1) When trainee names conversion rate: "That's just a blip — the new school is taking our students. You can't compete on price."<br><br>
+      (2) When they present utilization data: "Our scheduling has always been fine. You're looking at the wrong metric."<br><br>
+      (3) When they calculate the combined figure: "That number is completely wrong. Our margins are better than 50%."<br><br>
+      Correct trainee response: "That is exactly the right challenge. Let me re-run it with your numbers. What is your actual gross margin?" Recalculate live with operator-supplied inputs. If trainee reduces the figure without receiving corrected inputs — Kill Switch.
+    </div>
+  </div>
+  <div class="ks-note">Kill Switch: trainee presents combined figure and, when challenged, either (a) reduces the figure without receiving specific corrected inputs, or (b) abandons the diagnosis and asks what the operator thinks the problem is. Name the specific moment of capitulation: "You just reduced the figure from $216,000 to $150,000 without a single input change. What data changed?"</div>
+</div>
+
+<script>
+const TAB_CLS = { '31':'act','32':'act','33':'act','34':'act-comb' };
+function switchSim(id) {
+  ['31','32','33','34'].forEach(s => {
+    document.getElementById(`panel-${s}`).classList.toggle('active', s === id);
+    document.getElementById(`tab-${s}`).className = 'tab' + (s === id ? ' ' + TAB_CLS[s] : '');
+  });
+}
+function reveal(id) {
+  document.getElementById(`gold-${id}`).classList.add('show');
+  document.getElementById(`rb-${id}`).style.display = 'none';
+  const adv = document.getElementById(`adv-${id}`);
+  if (adv) adv.classList.add('show');
+}
+</script>
+</body>
+</html>

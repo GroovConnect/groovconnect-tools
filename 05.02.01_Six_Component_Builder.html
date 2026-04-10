@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 05 — Six-Component Execution System Builder</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.view-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 13px; font-weight: 500; padding: 7px 18px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.active-ref { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.tab.active-example { background: #E1F5EE; border-color: #0F6E56; color: #0F6E56; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+.drift-rule { font-size: 13px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .drift-rule { background: #2a0a0a; color: #F09595; } }
+.comp-row { display: grid; grid-template-columns: 36px 1fr; gap: 0; margin-bottom: 4px; }
+.comp-num { display: flex; align-items: flex-start; justify-content: center; padding-top: 13px; font-size: 12px; font-weight: 700; color: #fff; border-radius: 8px 0 0 8px; flex-shrink: 0; }
+.comp-body { border-radius: 0 8px 8px 0; padding: 12px 16px; cursor: pointer; transition: opacity .12s; }
+.comp-body:hover { opacity: .9; }
+.comp-name { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+.comp-def { font-size: 12px; line-height: 1.55; }
+.comp-std { font-size: 12px; margin-top: 6px; font-style: italic; display: none; }
+.comp-std.show { display: block; }
+.tap-hint { font-size: 11px; color: #AEAEB2; margin-top: 4px; }
+.c1 .comp-num { background: #185FA5; } .c1 .comp-body { background: #E6F1FB; } .c1 .comp-name { color: #0C447C; } .c1 .comp-def { color: #185FA5; } .c1 .comp-std { color: #0C447C; }
+.c2 .comp-num { background: #378ADD; } .c2 .comp-body { background: #ddeef9; } .c2 .comp-name { color: #0C447C; } .c2 .comp-def { color: #185FA5; } .c2 .comp-std { color: #0C447C; }
+.c3 .comp-num { background: #A32D2D; } .c3 .comp-body { background: #FCEBEB; } .c3 .comp-name { color: #791F1F; } .c3 .comp-def { color: #A32D2D; } .c3 .comp-std { color: #791F1F; }
+.c4 .comp-num { background: #BA7517; } .c4 .comp-body { background: #FAEEDA; } .c4 .comp-name { color: #633806; } .c4 .comp-def { color: #854F0B; } .c4 .comp-std { color: #633806; }
+.c5 .comp-num { background: #534AB7; } .c5 .comp-body { background: #EEEDFE; } .c5 .comp-name { color: #26215C; } .c5 .comp-def { color: #534AB7; } .c5 .comp-std { color: #26215C; }
+.c6 .comp-num { background: #1D9E75; } .c6 .comp-body { background: #E1F5EE; } .c6 .comp-name { color: #085041; } .c6 .comp-def { color: #0F6E56; } .c6 .comp-std { color: #085041; }
+@media (prefers-color-scheme: dark) {
+  .c1 .comp-body { background: #0a1f3a; } .c1 .comp-def { color: #85B7EB; } .c1 .comp-name { color: #B5D4F4; }
+  .c2 .comp-body { background: #0a1525; } .c2 .comp-def { color: #85B7EB; } .c2 .comp-name { color: #B5D4F4; }
+  .c3 .comp-body { background: #2a0a0a; } .c3 .comp-def { color: #F09595; } .c3 .comp-name { color: #F7C1C1; }
+  .c4 .comp-body { background: #2a1a00; } .c4 .comp-def { color: #EF9F27; } .c4 .comp-name { color: #FAC775; }
+  .c5 .comp-body { background: #1a1730; } .c5 .comp-def { color: #AFA9EC; } .c5 .comp-name { color: #CECBF6; }
+  .c6 .comp-body { background: #052e1e; } .c6 .comp-def { color: #5DCAA5; } .c6 .comp-name { color: #9FE1CB; }
+}
+.ks-note { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .ks-note { background: #2a0a0a; color: #F09595; } }
+.example-grid { display: grid; grid-template-columns: 1fr; gap: 6px; }
+.ex-row { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 10px; padding: 12px 16px; }
+@media (prefers-color-scheme: dark) { .ex-row { background: #1e1e1e; border-color: #333; } }
+.ex-comp { font-size: 11px; font-weight: 700; color: #185FA5; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 4px; }
+.ex-standard { font-size: 13px; color: #1D1D1F; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .ex-standard { color: #e8e8e8; } }
+.controls { display: flex; gap: 8px; margin-top: 4px; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 05, Section 2 · Reference & Worked Example</div>
+<h1>Six-Component Execution System</h1>
+<p class="sub">Tap each component to reveal its standard. Switch to the worked example for the gold standard Trial Follow-Up System.</p>
+
+<div class="view-tabs">
+  <button class="tab active-ref" id="tab-ref" onclick="switchView('ref')">Components</button>
+  <button class="tab" id="tab-ex" onclick="switchView('ex')">Worked example</button>
+</div>
+
+<!-- COMPONENTS -->
+<div class="panel active" id="panel-ref">
+  <div class="drift-rule">No system exists until all six components are defined. A system missing any single component will drift toward failure within 30 days.</div>
+  <div id="comps"></div>
+  <div class="ks-note">Kill Switch: trainee assigns ownership to "The Front Desk," "The Teachers," or any group. Two owners is zero owners. "Name one person — the specific position title that, if absent tomorrow, would cause this process to fail." That is the owner.</div>
+  <div class="controls" style="margin-top:12px">
+    <button class="primary" onclick="revealAll()">Reveal all standards</button>
+    <button class="secondary" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<!-- WORKED EXAMPLE -->
+<div class="panel" id="panel-ex">
+  <div style="font-size:13px;color:#0F6E56;background:#E1F5EE;border-left:3px solid #0F6E56;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:16px;line-height:1.55">Gold standard: Trial Follow-Up System. Every field is concrete. Every field is verifiable without conversation. This is the standard every system design must reach.</div>
+  <div class="example-grid" id="example-grid"></div>
+</div>
+
+<script>
+const COMPS = [
+  { cls:'c1', name:'1. Defined Outcome', def:'Specific, measurable success criteria stated in advance.', std:'"Achieve 95% trial follow-up within 24 hours" — not "improve follow-up." If the outcome cannot be stated as a number, it cannot be measured.' },
+  { cls:'c2', name:'2. Process Steps', def:'Documented, repeatable sequence of actions. Visualized in a process map.', std:'If it is not mapped, it is not a process — it is a habit. No ambiguity about sequence. Every step leads unambiguously to the next.' },
+  { cls:'c3', name:'3. Single Ownership', def:'Exactly one named role is responsible.', std:'"Front Desk Coordinator" is an owner. "The Team" is not. "The Front Desk" is not. Two owners is zero owners.' },
+  { cls:'c4', name:'4. Timing', def:'Precisely when the process executes.', std:'"Every Monday at 9am" — not "regularly." Vague timing produces vague compliance. The time must be specific and enforced by the system, not by memory.' },
+  { cls:'c5', name:'5. Measurement', def:'The specific metric and threshold that confirms success.', std:'How the system is verified without asking the owner. If verification requires a conversation, the measurement mechanism is missing.' },
+  { cls:'c6', name:'6. Feedback Loop', def:'The mechanism by which the system signals its own performance and triggers improvement when it drifts.', std:'Automated alert or scheduled review that fires when the threshold is breached — before the failure becomes a performance problem.' },
+];
+
+const EXAMPLE = [
+  { comp: 'Defined Outcome', std: '95% of trial students receive a structured phone follow-up within 24 hours of their trial lesson completion.' },
+  { comp: 'Process Steps', std: 'Trial ends → Instructor submits feedback form (within 2 hours) → System auto-triggers call task → Front Desk calls parent with specific feedback → Outcome logged in CRM.' },
+  { comp: 'Single Ownership', std: 'Front Desk Coordinator (named role, not "Front Desk staff").' },
+  { comp: 'Timing', std: 'Call placed within 24 hours of trial lesson completion. Task auto-generated upon feedback form submission.' },
+  { comp: 'Measurement', std: 'Weekly report: % of trials with completed follow-up call within 24 hours. Threshold: ≥95%.' },
+  { comp: 'Feedback Loop', std: 'If weekly rate drops below 90%, automated alert to Operations Manager. Root cause review within 48 hours.' },
+];
+
+const revealed = new Array(COMPS.length).fill(false);
+
+function renderComps() {
+  document.getElementById('comps').innerHTML = COMPS.map((c, i) => `
+    <div class="comp-row ${c.cls}" onclick="toggle(${i})">
+      <div class="comp-num">${i+1}</div>
+      <div class="comp-body">
+        <div class="comp-name">${c.name}</div>
+        <div class="comp-def">${c.def}</div>
+        <div class="comp-std${revealed[i] ? ' show' : ''}">${c.std}</div>
+        <div class="tap-hint">${revealed[i] ? '' : 'tap for standard'}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderExample() {
+  document.getElementById('example-grid').innerHTML = EXAMPLE.map(e => `
+    <div class="ex-row">
+      <div class="ex-comp">${e.comp}</div>
+      <div class="ex-standard">${e.std}</div>
+    </div>`).join('');
+}
+
+function toggle(i) { revealed[i] = !revealed[i]; renderComps(); }
+function revealAll() { revealed.fill(true); renderComps(); }
+function resetAll() { revealed.fill(false); renderComps(); }
+
+function switchView(v) {
+  document.getElementById('panel-ref').classList.toggle('active', v === 'ref');
+  document.getElementById('panel-ex').classList.toggle('active', v === 'ex');
+  document.getElementById('tab-ref').className = 'tab' + (v==='ref' ? ' active-ref' : '');
+  document.getElementById('tab-ex').className = 'tab' + (v==='ex' ? ' active-example' : '');
+}
+
+renderComps();
+renderExample();
+</script>
+</body>
+</html>

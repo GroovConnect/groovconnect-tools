@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 05 — Execution Breakdown Taxonomy</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.seq-rule { font-size: 13px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .seq-rule { background: #2a0a0a; color: #F09595; } }
+.mode-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 12px; padding: 0; margin-bottom: 6px; overflow: hidden; cursor: pointer; transition: opacity .12s; }
+@media (prefers-color-scheme: dark) { .mode-card { background: #1e1e1e; border-color: #333; } }
+.mode-card:hover { opacity: .93; }
+.mode-header { display: flex; align-items: center; gap: 12px; padding: 14px 18px; }
+.mode-num { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; color: #fff; }
+.mode-name { font-size: 14px; font-weight: 600; color: #1D1D1F; flex: 1; }
+@media (prefers-color-scheme: dark) { .mode-name { color: #e8e8e8; } }
+.mode-def { font-size: 12px; color: #6E6E73; line-height: 1.45; }
+.mode-expand { font-size: 11px; color: #AEAEB2; }
+.mode-detail { padding: 0 18px 14px; display: none; }
+.mode-detail.show { display: block; }
+.dq-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.dq-block { border-radius: 8px; padding: 8px 12px; }
+.dq-label { font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 3px; }
+.dq-text { font-size: 12px; line-height: 1.5; }
+.m1 .mode-num { background: #185FA5; } .m1 .dq-block { background: #E6F1FB; } .m1 .dq-label { color: #185FA5; } .m1 .dq-text { color: #0C447C; }
+.m2 .mode-num { background: #993C1D; } .m2 .dq-block { background: #FAECE7; } .m2 .dq-label { color: #993C1D; } .m2 .dq-text { color: #712B13; }
+.m3 .mode-num { background: #BA7517; } .m3 .dq-block { background: #FAEEDA; } .m3 .dq-label { color: #BA7517; } .m3 .dq-text { color: #633806; }
+.m4 .mode-num { background: #534AB7; } .m4 .dq-block { background: #EEEDFE; } .m4 .dq-label { color: #534AB7; } .m4 .dq-text { color: #26215C; }
+.m5 .mode-num { background: #5F5E5A; } .m5 .dq-block { background: #F1EFE8; } .m5 .dq-label { color: #5F5E5A; } .m5 .dq-text { color: #2C2C2A; }
+@media (prefers-color-scheme: dark) {
+  .m1 .dq-block { background: #0a1f3a; } .m1 .dq-text { color: #85B7EB; }
+  .m2 .dq-block { background: #2a1208; } .m2 .dq-text { color: #F5C4B3; }
+  .m3 .dq-block { background: #2a1a00; } .m3 .dq-text { color: #FAC775; }
+  .m4 .dq-block { background: #1a1730; } .m4 .dq-text { color: #CECBF6; }
+  .m5 .dq-block { background: #222; } .m5 .dq-text { color: #D3D1C7; }
+}
+.ks-note { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .ks-note { background: #2a0a0a; color: #F09595; } }
+.controls { display: flex; gap: 8px; margin-top: 4px; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 05, Section 5 · Reference & Drill</div>
+<h1>Execution Breakdown Taxonomy — 5 modes</h1>
+<p class="sub">Audit in sequence. Tap each mode to reveal its diagnostic question and structural response.</p>
+<div class="seq-rule">The sequence is mandatory. Motivation Failure can only be diagnosed after modes 1–4 have been fully audited and cleared. Skipping the sequence produces expensive non-solutions.</div>
+
+<div id="modes"></div>
+<div class="ks-note">Kill Switch: trainee identifies Motivation Failure without first auditing Clarity, Ownership, System, and Capacity. Stop. "Walk me through modes 1–4. What does the process documentation say? Who is the named owner?" Only after each is audited and cleared can motivation be considered.</div>
+<div class="controls" style="margin-top:12px">
+  <button class="primary" onclick="revealAll()">Reveal all</button>
+  <button class="secondary" onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+const MODES = [
+  { cls:'m1', name:'1. Clarity Failure', def:'The task or outcome was not defined precisely enough for the person to execute it correctly.', dq:'Could a new employee execute this process from the documentation alone on their first day?', response:'Rewrite the process definition. Add explicit completion criteria, timing, and a worked example.' },
+  { cls:'m2', name:'2. Ownership Failure', def:'No specific individual felt responsible for the outcome.', dq:'Is there a single named role attached to this task with an explicit accountability mechanism?', response:'Assign a named owner. Remove shared or team-based ownership structures.' },
+  { cls:'m3', name:'3. System Failure', def:'The process itself was logically flawed or missing a critical component.', dq:'Does the process have all six components? Does the process map pass the logic validation test?', response:'Redesign the mechanism. Identify the missing component. Build the enforcement gate.' },
+  { cls:'m4', name:'4. Capacity Failure', def:'The workload exceeded available time and resources.', dq:'What is the actual time requirement of this process vs. the time allocated?', response:'Audit the time requirement. Either reduce scope or increase capacity — do not ignore the gap.' },
+  { cls:'m5', name:'5. Motivation Failure', def:'Engagement or incentive alignment is genuinely misaligned.', dq:'Has this diagnosis been reached only after modes 1–4 have been fully audited and cleared?', response:'Diagnose only after structural explanations are exhausted. Addressing motivation before structure is an expensive non-solution.' },
+];
+
+const open = new Array(MODES.length).fill(false);
+function render() {
+  document.getElementById('modes').innerHTML = MODES.map((m, i) => `
+    <div class="mode-card ${m.cls}" onclick="toggle(${i})">
+      <div class="mode-header">
+        <div class="mode-num">${i+1}</div>
+        <div style="flex:1">
+          <div class="mode-name">${m.name}</div>
+          <div class="mode-def">${m.def}</div>
+        </div>
+        <span class="mode-expand">${open[i] ? '▲' : '▼'}</span>
+      </div>
+      <div class="mode-detail${open[i] ? ' show' : ''}">
+        <div class="dq-row">
+          <div class="dq-block"><div class="dq-label">Diagnostic question</div><div class="dq-text">${m.dq}</div></div>
+          <div class="dq-block"><div class="dq-label">Structural response</div><div class="dq-text">${m.response}</div></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function toggle(i) { open[i] = !open[i]; render(); }
+function revealAll() { open.fill(true); render(); }
+function resetAll() { open.fill(false); render(); }
+render();
+</script>
+</body>
+</html>

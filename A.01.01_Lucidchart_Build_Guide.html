@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module A-1 — Lucidchart: Complete Hands-On Build Guide</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 680px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.view-tabs { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.act { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ── COLOR STANDARD ── */
+.color-rule { font-size: 13px; color: #0C447C; background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .color-rule { background: #0a1f3a; color: #B5D4F4; } }
+.node-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.node-demo { border-radius: 10px; padding: 14px 16px; }
+.nd-hex { font-size: 11px; font-weight: 700; font-family: "SFMono-Regular", Menlo, monospace; margin-bottom: 4px; }
+.nd-label { font-size: 12px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 6px; }
+.nd-rect { border-radius: 6px; padding: 10px 14px; font-size: 12px; line-height: 1.4; display: flex; align-items: center; justify-content: center; text-align: center; min-height: 52px; }
+.nd-example { font-size: 11px; margin-top: 6px; color: #8E8E93; }
+.n-root { background: #FCEBEB; } .n-root .nd-hex { color: #A32D2D; } .n-root .nd-label { color: #A32D2D; } .n-root .nd-rect { background: #C0392B; color: #fff; font-weight: 600; }
+.n-sys { background: #F1EFE8; } .n-sys .nd-hex { color: #5F5E5A; } .n-sys .nd-label { color: #5F5E5A; } .n-sys .nd-rect { background: #555555; color: #fff; }
+.n-beh { background: #F5F5F7; } .n-beh .nd-hex { color: #6E6E73; } .n-beh .nd-label { color: #6E6E73; } .n-beh .nd-rect { background: #F2F3F4; color: #1D1D1F; border: 1px solid #D1D1D6; }
+.n-kpi { background: #E6F1FB; } .n-kpi .nd-hex { color: #185FA5; } .n-kpi .nd-label { color: #0C447C; } .n-kpi .nd-rect { background: #1B2A4A; color: #fff; font-weight: 600; }
+@media (prefers-color-scheme: dark) {
+  .n-root{background:#2a0a0a} .n-sys{background:#222} .n-beh{background:#1a1a1a}.n-beh .nd-rect{background:#2a2a2a;color:#e8e8e8;border-color:#444} .n-kpi{background:#0a1f3a}
+}
+
+/* ── CHAIN DEMO ── */
+.chain-canvas { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 14px; padding: 24px 20px; margin-bottom: 12px; position: relative; }
+@media (prefers-color-scheme: dark) { .chain-canvas { background: #1e1e1e; border-color: #333; } }
+.chain-node { border-radius: 8px; padding: 10px 14px; margin: 0 auto 0; width: 88%; display: flex; align-items: center; justify-content: center; text-align: center; min-height: 48px; cursor: pointer; transition: opacity .15s; }
+.chain-node:hover { opacity: .88; }
+.cn-root { background: #C0392B; color: #fff; font-size: 12px; font-weight: 600; }
+.cn-sys { background: #555555; color: #fff; font-size: 12px; }
+.cn-beh { background: #F2F3F4; color: #1D1D1F; font-size: 12px; border: 1px solid #D1D1D6; }
+.cn-kpi { background: #1B2A4A; color: #fff; font-size: 12px; font-weight: 600; }
+@media (prefers-color-scheme: dark) { .cn-beh { background: #2a2a2a; color: #e8e8e8; border-color: #444; } }
+.chain-arrow { text-align: center; padding: 2px 0; position: relative; }
+.arrow-line { width: 2px; height: 16px; background: #1D1D1F; margin: 0 auto; }
+@media (prefers-color-scheme: dark) { .arrow-line { background: #e8e8e8; } }
+.arrow-head { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid #1D1D1F; margin: 0 auto; }
+@media (prefers-color-scheme: dark) { .arrow-head { border-top-color: #e8e8e8; } }
+.arrow-label { font-size: 10px; color: #555555; font-style: italic; text-align: center; margin: 0 auto; max-width: 260px; padding: 1px 0; line-height: 1.3; }
+@media (prefers-color-scheme: dark) { .arrow-label { color: #9a9a9a; } }
+.node-tooltip { font-size: 11px; color: #185FA5; background: #E6F1FB; border-radius: 6px; padding: 4px 10px; margin-top: 6px; text-align: center; display: none; }
+.node-tooltip.show { display: block; }
+@media (prefers-color-scheme: dark) { .node-tooltip { background: #0a1f3a; color: #85B7EB; } }
+
+/* ── RULES ── */
+.rule-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 10px; padding: 12px 16px; margin-bottom: 6px; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .rule-card { background: #1e1e1e; border-color: #333; } }
+.rule-card.open { border-left: 3px solid #185FA5; }
+.rule-head { display: flex; align-items: center; gap: 10px; }
+.rule-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; background: #E6F1FB; color: #185FA5; flex-shrink: 0; }
+.rule-name { font-size: 13px; font-weight: 500; color: #1D1D1F; flex: 1; }
+@media (prefers-color-scheme: dark) { .rule-name { color: #e8e8e8; } }
+.rule-body { margin-top: 8px; display: none; }
+.rule-body.show { display: block; }
+.rule-do { background: #E1F5EE; border-radius: 8px; padding: 8px 12px; font-size: 12px; color: #085041; line-height: 1.55; margin-bottom: 5px; }
+.rule-dont { background: #FCEBEB; border-radius: 8px; padding: 8px 12px; font-size: 12px; color: #791F1F; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .rule-do{background:#052e1e;color:#9FE1CB} .rule-dont{background:#2a0a0a;color:#F09595} }
+
+/* ── SETUP CHECKLIST ── */
+.setup-row { display: flex; gap: 10px; align-items: flex-start; background: #fff; border: 0.5px solid #D1D1D6; border-radius: 9px; padding: 10px 14px; margin-bottom: 5px; cursor: pointer; user-select: none; }
+@media (prefers-color-scheme: dark) { .setup-row { background: #1e1e1e; border-color: #333; } }
+.setup-row.done { border-left: 3px solid #0F6E56; background: #f0fdf8; }
+@media (prefers-color-scheme: dark) { .setup-row.done { background: #0a1f15; } }
+.schk { width: 18px; height: 18px; border: 1.5px solid #D1D1D6; border-radius: 5px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+.schk.on { background: #0F6E56; border-color: #0F6E56; }
+.schk.on::after { content:''; display:block; width:4px; height:7px; border:2px solid #fff; border-top:none; border-left:none; transform:rotate(45deg) translate(-1px,-1px); }
+.saction { font-size: 13px; color: #1D1D1F; flex: 1; }
+@media (prefers-color-scheme: dark) { .saction { color: #e8e8e8; } }
+.sverify { font-size: 11px; color: #6E6E73; }
+
+/* ── RUBRIC ── */
+.rubric-table { width: 100%; border-collapse: collapse; }
+.rubric-table th { font-size: 11px; font-weight: 700; color: #8E8E93; letter-spacing: .4px; text-transform: uppercase; padding: 6px 10px; border-bottom: 1.5px solid #D1D1D6; text-align: left; }
+@media (prefers-color-scheme: dark) { .rubric-table th { border-bottom-color: #333; } }
+.rubric-table td { font-size: 12px; padding: 8px 10px; border-bottom: 0.5px solid #F1EFE8; vertical-align: top; color: #1D1D1F; line-height: 1.45; }
+@media (prefers-color-scheme: dark) { .rubric-table td { border-bottom-color: #222; color: #e8e8e8; } }
+.rubric-table tr:last-child td { border-bottom: none; }
+.score-chip { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
+.sc-pass { background: #E1F5EE; color: #085041; }
+.sc-min { background: #FAEEDA; color: #633806; }
+.sc-fail { background: #FCEBEB; color: #791F1F; }
+.controls { display: flex; gap: 8px; margin-top: 4px; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module A-1 · Lucidchart Hands-On Build Guide</div>
+<h1>Lucidchart — Complete Build Guide</h1>
+<p class="sub">This is a screen-by-screen construction guide. Lucidchart open on one monitor, this guide on the other. Every step is a build action — no reading without building.</p>
+
+<div class="view-tabs">
+  <button class="tab act" id="tab-color" onclick="switchTab('color')">Color standard</button>
+  <button class="tab" id="tab-chain" onclick="switchTab('chain')">Chain anatomy</button>
+  <button class="tab" id="tab-rules" onclick="switchTab('rules')">Arrow rules</button>
+  <button class="tab" id="tab-setup" onclick="switchTab('setup')">Workspace setup</button>
+  <button class="tab" id="tab-rubric" onclick="switchTab('rubric')">Scoring rubric</button>
+</div>
+
+<!-- COLOR STANDARD -->
+<div class="panel active" id="panel-color">
+  <div class="color-rule">Four node types. Four distinct colors. Every GC causal chain uses exactly this color standard — no exceptions. A miscolored Root Cause scores 1/5 on the Color Standard criterion.</div>
+  <div class="node-grid">
+    <div class="node-demo n-root">
+      <div class="nd-hex">#C0392B</div>
+      <div class="nd-label">Root Cause</div>
+      <div class="nd-rect">No automated post-trial follow-up trigger in enrollment system</div>
+      <div class="nd-example">White text · Bold · Top-center of canvas · Always the starting node</div>
+    </div>
+    <div class="node-demo n-sys">
+      <div class="nd-hex">#555555</div>
+      <div class="nd-label">System Layer</div>
+      <div class="nd-rect">Enrollment workflow has no task auto-generation after trial completion</div>
+      <div class="nd-example">White text · Describes the structural absence</div>
+    </div>
+    <div class="node-demo n-beh">
+      <div class="nd-hex">#F2F3F4</div>
+      <div class="nd-label">Behavior Step</div>
+      <div class="nd-rect">Front desk calls trial family 36–48 hours after trial — too late</div>
+      <div class="nd-example">Black text · One or two behavior steps between system and KPI</div>
+    </div>
+    <div class="node-demo n-kpi">
+      <div class="nd-hex">#1B2A4A</div>
+      <div class="nd-label">KPI Outcome</div>
+      <div class="nd-rect">Trial conversion drops from 70% to 52% → $58,320 annual leakage</div>
+      <div class="nd-example">White text · Bold · Named KPI + dollar figure · Always the terminal node</div>
+    </div>
+  </div>
+  <div style="font-size:12px;color:#A32D2D;background:#FCEBEB;border-radius:8px;padding:8px 12px;line-height:1.5">A chain that ends at a Behavior Step (white/gray node) and does not reach the KPI (navy node) scores 2/5 maximum on Chain Completeness. Every chain must end at navy.</div>
+</div>
+
+<!-- CHAIN ANATOMY -->
+<div class="panel" id="panel-chain">
+  <div style="font-size:13px;color:#633806;background:#FAEEDA;border-left:3px solid #BA7517;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:16px;line-height:1.55">Tap each node to see what it represents. The Trial Follow-Up Chain is your calibration build — build this one exactly before attempting any other.</div>
+  <div class="chain-canvas">
+    <div id="chain-nodes"></div>
+  </div>
+  <div id="chain-tooltip" style="font-size:12px;color:#6E6E73;text-align:center;min-height:18px"></div>
+</div>
+
+<!-- ARROW RULES -->
+<div class="panel" id="panel-rules">
+  <div id="arrow-rules"></div>
+</div>
+
+<!-- WORKSPACE SETUP -->
+<div class="panel" id="panel-setup">
+  <div style="font-size:13px;color:#791F1F;background:#FCEBEB;border-left:3px solid #A32D2D;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:14px;line-height:1.55">Complete all seven setup steps before beginning any chain construction. Skipping setup produces crossing lines, inconsistent font sizes, and incorrectly sized nodes.</div>
+  <div class="score-bar" style="display:inline-flex;background:#FAEEDA;border-radius:99px;padding:6px 16px;font-size:13px;font-weight:600;color:#854F0B;margin-bottom:12px" id="setup-score">0 / 7 confirmed</div>
+  <div id="setup-items"></div>
+  <div class="controls"><button class="secondary" onclick="resetSetup()">Reset</button></div>
+</div>
+
+<!-- SCORING RUBRIC -->
+<div class="panel" id="panel-rubric">
+  <div style="font-size:13px;color:#0C447C;background:#E6F1FB;border-left:3px solid #185FA5;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:16px;line-height:1.55">Five criteria, 5 points each — 25 points total. Score ≥18 required for any certification. Score ≥22 for Level 3 (Architect).</div>
+  <table class="rubric-table">
+    <thead><tr><th>Criterion</th><th>Max</th><th>Pass (5)</th><th>Minimum (3)</th><th>Fail (0–2)</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Verb-Noun Syntax</strong></td><td>5</td><td>All nodes: verb-noun phrase</td><td>1 standalone noun box</td><td>Multiple noun-only boxes (e.g., "Communication")</td></tr>
+      <tr><td><strong>Color Standard</strong></td><td>5</td><td>All 4 colors correct</td><td>1–2 color errors</td><td>Pattern breaks or Root Cause miscolored</td></tr>
+      <tr><td><strong>Arrow Labels</strong></td><td>5</td><td>All arrows: causal mechanism label</td><td>1–2 unlabeled arrows</td><td>"Leads to" / directional only / no labels</td></tr>
+      <tr><td><strong>Chain Completeness</strong></td><td>5</td><td>Root → System → Behavior(s) → KPI</td><td>Minor gap; all node types present</td><td>Chain ends before KPI node</td></tr>
+      <tr><td><strong>No Crossing Lines</strong></td><td>5</td><td>Zero crossings</td><td>1 near-miss</td><td>Any true crossing = automatic 0</td></tr>
+    </tbody>
+  </table>
+  <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+    <span class="score-chip sc-pass">22–25: Level 3</span>
+    <span class="score-chip sc-min">18–21: Minimum passing</span>
+    <span class="score-chip sc-fail">Below 18: Resubmit</span>
+  </div>
+  <div style="font-size:12px;color:#633806;background:#FAEEDA;border-radius:8px;padding:8px 12px;margin-top:10px;line-height:1.5">Timed Rebuild Test signal: "Admin labor hours increased 25% over 6 months while student count stayed flat." Time limit: 15 minutes. Gold standard: Root Cause (no closed-loop reschedule policy) → System → 2 Behavior Steps → KPI with dollar figure.</div>
+</div>
+
+<script>
+const CHAIN_NODES = [
+  { type:'root', text:'No automated post-trial follow-up trigger in enrollment system.', tip:'Root Cause node — Red #C0392B. White text, bold. Always positioned at top-center. This is the structural absence that drives everything below.' },
+  { label:'Leaves follow-up on manual memory', type:'sys', text:'Enrollment workflow has no task auto-generation after trial completion.', tip:'System Layer node — Gray #555555. White text. Describes the structural architecture failure — what the system does (or fails to do) as a result of the root cause.' },
+  { label:'Delays first contact past engagement window', type:'beh', text:'Front desk staff calls trial family 36–48 hours after trial lesson.', tip:'Behavior Step — Light gray #F2F3F4. Black text. Human behavior that changes because of the system failure. One or two of these before the KPI.' },
+  { label:'Cools enrollment intent before contact', type:'beh', text:'Trial family has already researched competing schools and lost initial excitement.', tip:'Behavior Step — same color as above. This second behavior step shows the downstream consequence of the first behavioral change.' },
+  { label:'Reduces conversion rate 18 points', type:'kpi', text:'Trial conversion drops from 70% to 52% → $58,320 annual leakage.', tip:'KPI Outcome node — Navy #1B2A4A. White text, bold. Named KPI + dollar figure. This is always the terminal node. A chain that ends here has earned full Chain Completeness points.' },
+];
+const tooltips = new Array(CHAIN_NODES.length).fill(false);
+
+function renderChain() {
+  const c = document.getElementById('chain-nodes');
+  c.innerHTML = CHAIN_NODES.map((n, i) => {
+    const cls = {root:'cn-root',sys:'cn-sys',beh:'cn-beh',kpi:'cn-kpi'}[n.type];
+    const arrow = i > 0 ? `<div class="chain-arrow"><div class="arrow-line"></div><div class="arrow-label">${CHAIN_NODES[i].label || ''}</div><div class="arrow-head"></div></div>` : '';
+    const tt = `<div class="node-tooltip${tooltips[i]?' show':''}">Tap again to dismiss</div>`;
+    return `${arrow}<div class="chain-node ${cls}" onclick="toggleTip(${i})" title="${n.tip}">${n.text}</div>${tt}`;
+  }).join('');
+}
+function toggleTip(i) {
+  tooltips[i] = !tooltips[i];
+  document.getElementById('chain-tooltip').textContent = tooltips[i] ? CHAIN_NODES[i].tip : '';
+  renderChain();
+}
+renderChain();
+
+const RULES = [
+  { badge:'Rule 1', name:'Edge-to-edge connections — not center-to-center', do:'Hover the source node edge until a blue dot appears. Click-drag to the destination node edge. Arrow snaps between edges.', dont:'"Center-to-center" connections drift when nodes are moved — arrows detach, crossing lines appear.' },
+  { badge:'Rule 2', name:'Every arrow carries a causal label — never directional', do:'Double-click the arrow line. Type a 3–8 word phrase describing the mechanism: "Cools enrollment intent before contact." Press Escape.', dont:'"Leads to" scores 2/5. "Causes" scores 2/5. "→" with no label scores 0. Labels must name how Node A produces the change in Node B.' },
+  { badge:'Rule 3', name:'No crossing lines — automatic 0 if present', do:'Click the arrow to select it. Click-drag its midpoint waypoint to route around any crossing.', dont:'Crossing lines signal unresolved causal ambiguity. Any true crossing = automatic 0 on No Crossing Lines criterion. Use waypoints to route arrows before submitting.' },
+  { badge:'Rule 4', name:'Label styling — Arial 9pt, #555555, not bold', do:'Select the label text. Set: Arial 9pt, color #555555 (mid-gray). Press Escape to confirm.', dont:'Bold labels compete visually with node text. Large labels obscure the chain structure. Labels must be subordinate to node content.' },
+  { badge:'Rule 5', name:'Verb-noun syntax on every node', do:'Every node text is a verb-noun phrase: "No automated follow-up trigger" · "Front desk delays initial contact" · "Trial conversion drops 18 points."', dont:'Standalone nouns ("Communication," "Sales") score 0 on Verb-Noun Syntax. The verb describes what is happening — not just what category it belongs to.' },
+];
+const ruleOpen = new Array(RULES.length).fill(false);
+function renderRules() {
+  document.getElementById('arrow-rules').innerHTML = RULES.map((r, i) => `
+    <div class="rule-card${ruleOpen[i]?' open':''}" onclick="toggleRule(${i})">
+      <div class="rule-head"><span class="rule-badge">${r.badge}</span><span class="rule-name">${r.name}</span><span style="font-size:11px;color:#AEAEB2">${ruleOpen[i]?'▲':'▼'}</span></div>
+      <div class="rule-body${ruleOpen[i]?' show':''}">
+        <div class="rule-do"><strong>Do:</strong> ${r.do}</div>
+        <div class="rule-dont"><strong>Don't:</strong> ${r.dont}</div>
+      </div>
+    </div>`).join('');
+}
+function toggleRule(i){ruleOpen[i]=!ruleOpen[i];renderRules();}
+renderRules();
+
+const SETUP = [
+  { action:'lucidchart.com → sign up with work email → confirm email → log in', verify:'Active account confirmed.' },
+  { action:'New Document → rename: "GC Causal Chain — [Your Name] — Module 6"', verify:'Document title visible in the browser tab. Naming discipline starts day one.' },
+  { action:'Shapes panel → "+" → Search "Flowchart" → Add', verify:'Flowchart library visible in the panel. Not "Shapes" — specifically the Flowchart library.' },
+  { action:'View → Grid → Snap to Grid. Both settings active.', verify:'Both active. These prevent crossing lines — the most visible syntax violation.' },
+  { action:'Set default font: Arial 11pt. Default shape size: 180 × 60px.', verify:'Consistent sizing enables the density check against the calibration reference.' },
+  { action:'Drag a Rectangle → Right-click → Set as default shape', verify:'All subsequent shapes default to rectangles without reselecting.' },
+  { action:'File → Auto-save → Every 2 minutes', verify:'Confirmed active. Prevents loss of chain work during timed drills.' },
+];
+const setupDone = new Array(SETUP.length).fill(false);
+function renderSetup() {
+  const cnt = setupDone.filter(Boolean).length;
+  document.getElementById('setup-score').textContent = `${cnt} / ${SETUP.length} confirmed`;
+  document.getElementById('setup-items').innerHTML = SETUP.map((s, i) => `
+    <div class="setup-row${setupDone[i]?' done':''}" onclick="toggleSetup(${i})">
+      <div class="schk${setupDone[i]?' on':''}"></div>
+      <div><div class="saction"><strong>Step ${i+1}:</strong> ${s.action}</div><div class="sverify">${s.verify}</div></div>
+    </div>`).join('');
+}
+function toggleSetup(i){setupDone[i]=!setupDone[i];renderSetup();}
+function resetSetup(){setupDone.fill(false);renderSetup();}
+renderSetup();
+
+function switchTab(t) {
+  ['color','chain','rules','setup','rubric'].forEach(id => {
+    document.getElementById(`panel-${id}`).classList.toggle('active', id===t);
+    document.getElementById(`tab-${id}`).className='tab'+(id===t?' act':'');
+  });
+}
+</script>
+</body>
+</html>

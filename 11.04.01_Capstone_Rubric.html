@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 11 — Level 3 Capstone Rubric</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #fff; color: #1D1D1F; padding: 40px 28px; max-width: 700px; margin: 0 auto; }
+@media (prefers-color-scheme: dark) { body { background: #1a1a1a; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 5px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 3px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.terminal-gate { font-size: 13px; color: #791F1F; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 20px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .terminal-gate { background: #2a0a0a; color: #F09595; } }
+.trainee-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.trainee-row label { font-size: 13px; color: #6E6E73; white-space: nowrap; }
+.trainee-row input { font-family: inherit; font-size: 14px; padding: 8px 12px; border: 0.5px solid #AEAEB2; border-radius: 8px; background: #fff; color: #1D1D1F; flex: 1; }
+@media (prefers-color-scheme: dark) { .trainee-row input { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+.dim-card { background: #f5f5f7; border-radius: 12px; padding: 14px 18px; margin-bottom: 8px; }
+@media (prefers-color-scheme: dark) { .dim-card { background: #1e1e1e; } }
+.dim-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.dim-name { font-size: 14px; font-weight: 600; color: #1D1D1F; flex: 1; }
+@media (prefers-color-scheme: dark) { .dim-name { color: #e8e8e8; } }
+.dim-weight { font-size: 12px; font-weight: 700; color: #185FA5; }
+.dim-score-display { font-size: 22px; font-weight: 500; color: #1D1D1F; min-width: 40px; text-align: right; }
+@media (prefers-color-scheme: dark) { .dim-score-display { color: #e8e8e8; } }
+.dim-criteria { font-size: 12px; color: #6E6E73; margin-bottom: 10px; line-height: 1.5; }
+.score-btns { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
+.sb { width: 36px; height: 36px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; font-size: 12px; font-weight: 500; color: #888780; cursor: pointer; font-family: inherit; transition: all .12s; }
+@media (prefers-color-scheme: dark) { .sb { background: #2a2a2a; border-color: #444; color: #6E6E73; } }
+.sb.sel { background: #185FA5; border-color: #185FA5; color: #fff; }
+.sb.sel.fail { background: #A32D2D; border-color: #A32D2D; }
+.result-card { border-radius: 14px; padding: 18px 22px; margin-bottom: 14px; text-align: center; background: #E6F1FB; }
+@media (prefers-color-scheme: dark) { .result-card { background: #0a1f3a; } }
+.rc-label { font-size: 12px; color: #185FA5; margin-bottom: 4px; font-weight: 600; }
+.rc-score { font-size: 36px; font-weight: 500; color: #0C447C; font-variant-numeric: tabular-nums; }
+@media (prefers-color-scheme: dark) { .rc-score { color: #85B7EB; } }
+.rc-verdict { font-size: 14px; font-weight: 600; margin-top: 4px; }
+.rc-note { font-size: 12px; color: #185FA5; margin-top: 4px; }
+@media (prefers-color-scheme: dark) { .rc-note { color: #B5D4F4; } }
+.controls { display: flex; gap: 8px; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+@media print { body { padding: 20px; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 11, Section 4 · Level 3 Capstone Rubric</div>
+<h1>Level 3 Capstone Rubric — 5 dimensions</h1>
+<p class="sub">Score each dimension 1–5. All five must score ≥4.0 for Level 3 certification. No rounding. No exceptions.</p>
+<div class="terminal-gate">The Capstone is the terminal gate. No partial credit. A trainee who scores 4.8 on four dimensions but 3.2 on Scaling Architecture does not receive Level 3 certification. All five are required.</div>
+
+<div class="trainee-row">
+  <label>Trainee</label>
+  <input type="text" id="cap-trainee" placeholder="Enter trainee name">
+</div>
+
+<div class="result-card">
+  <div class="rc-label">Capstone composite</div>
+  <div class="rc-score" id="cap-score">—</div>
+  <div class="rc-verdict" id="cap-verdict"></div>
+  <div class="rc-note" id="cap-note"></div>
+</div>
+
+<div id="cap-dims"></div>
+<div class="controls">
+  <button class="secondary" onclick="resetCap()">Reset</button>
+  <button class="secondary" onclick="window.print()">Print</button>
+</div>
+
+<script>
+const DIMS = [
+  { name:'Multi-System Diagnosis', criteria:'All fractured systems identified. No symptom-level fixes. All Lucidchart chains valid, complete, submitted.' },
+  { name:'Economic Precision', criteria:'Total leakage calculated with visible formula derivation. All assumptions stated before the figure. Rounded defensibly. Within ±$10,000 of Gold Standard.' },
+  { name:'Solution Mapping', criteria:'Every failure mapped to a specific GC capability derived from the chain. Sequence follows Visibility → Core → Optimization → Automation.' },
+  { name:'Communication & Commitment', criteria:'Findings delivered in under 60 seconds. All four resistance types handled without defensiveness. Documented commitment with named owner and date.' },
+  { name:'Scaling Architecture', criteria:'Flywheel designed with ≥5 nodes and data feedback loops. Drift detection built into Phase 3. Passes Autonomy Test.' },
+];
+const SCORE_VALS = [1,1.5,2,2.5,3,3.5,4,4.5,5];
+const scores = new Array(DIMS.length).fill(null);
+
+function calcCap() {
+  const filled = scores.filter(s => s !== null);
+  if (filled.length === 0) { document.getElementById('cap-score').textContent='—'; document.getElementById('cap-verdict').textContent=''; document.getElementById('cap-note').textContent=''; return; }
+  const comp = filled.reduce((s,v)=>s+v,0)/DIMS.length;
+  const min = filled.length===DIMS.length ? Math.min(...scores) : null;
+  let verdict='', color='', note='';
+  if (filled.length===DIMS.length) {
+    if (min >= 4.0 && comp >= 4.0) { verdict='✓ Level 3 Certified'; color='#085041'; note='All five dimensions ≥4.0. Capstone passed.'; }
+    else { verdict='✗ Not certified'; color='#A32D2D'; const failDims = DIMS.map((d,i)=>scores[i]!==null&&scores[i]<4.0?d.name:null).filter(Boolean); note=`Remediation required: ${failDims.join(', ')}`; }
+  }
+  document.getElementById('cap-score').textContent = comp.toFixed(2);
+  document.getElementById('cap-verdict').textContent = verdict;
+  document.getElementById('cap-verdict').style.color = color;
+  document.getElementById('cap-note').textContent = note;
+  document.getElementById('cap-note').style.color = color;
+}
+
+function renderDims() {
+  document.getElementById('cap-dims').innerHTML = DIMS.map((d,i) => `
+    <div class="dim-card">
+      <div class="dim-header">
+        <div style="flex:1"><div class="dim-name">${d.name}</div><div class="dim-weight">20% weight</div></div>
+        <div class="dim-score-display${scores[i]!==null&&scores[i]<4?' fail':''}" style="${scores[i]!==null&&scores[i]<4?'color:#A32D2D':''}"> ${scores[i]!==null?scores[i]:'—'}</div>
+      </div>
+      <div class="dim-criteria">${d.criteria}</div>
+      <div class="score-btns">${SCORE_VALS.map(v=>{const sel=scores[i]===v;const cls=sel?(' sel'+(v<4?' fail':'')):'';return `<button class="sb${cls}" onclick="scoreAxis(${i},${v})">${v}</button>`; }).join('')}</div>
+    </div>`).join('');
+  calcCap();
+}
+
+function scoreAxis(i,v){scores[i]=v;renderDims();}
+function resetCap(){scores.fill(null);document.getElementById('cap-trainee').value='';renderDims();}
+renderDims();
+</script>
+</body>
+</html>

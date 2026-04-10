@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 04 — Cognitive Bias Control System</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.view-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 13px; font-weight: 500; padding: 7px 18px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.active-ref { background: #EEEDFE; border-color: #534AB7; color: #534AB7; font-weight: 600; }
+.tab.active-drill { background: #FAEEDA; border-color: #BA7517; color: #854F0B; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* Reference panel */
+.bias-row { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 10px; padding: 14px 18px; margin-bottom: 6px; cursor: pointer; transition: background .12s; }
+@media (prefers-color-scheme: dark) { .bias-row { background: #1e1e1e; border-color: #333; } }
+.bias-row:hover { background: #fafafa; }
+.bias-row.open { border-left: 3px solid #534AB7; }
+.bias-top { display: flex; align-items: center; gap: 10px; }
+.bias-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px; background: #EEEDFE; color: #534AB7; white-space: nowrap; flex-shrink: 0; }
+@media (prefers-color-scheme: dark) { .bias-badge { background: #1a1730; color: #CECBF6; } }
+.bias-desc { font-size: 13px; color: #1D1D1F; flex: 1; line-height: 1.4; }
+@media (prefers-color-scheme: dark) { .bias-desc { color: #e8e8e8; } }
+.bias-correction { margin-top: 10px; background: #E1F5EE; border-radius: 8px; padding: 10px 14px; display: none; }
+.bias-correction.show { display: block; }
+.corr-label { font-size: 10px; font-weight: 700; color: #0F6E56; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 4px; }
+.corr-text { font-size: 13px; color: #085041; line-height: 1.5; }
+@media (prefers-color-scheme: dark) { .bias-correction { background: #052e1e; } .corr-text { color: #9FE1CB; } }
+
+/* Drill panel */
+.timer-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+.timer-d { font-size: 36px; font-weight: 500; font-variant-numeric: tabular-nums; color: #1D1D1F; letter-spacing: -1px; transition: color .3s; }
+@media (prefers-color-scheme: dark) { .timer-d { color: #e8e8e8; } }
+.timer-d.urgent { color: #C0392B; }
+.prog-txt { font-size: 13px; color: #8E8E93; }
+.statement-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 14px; padding: 20px 22px; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { .statement-card { background: #1e1e1e; border-color: #333; } }
+.stmt-label { font-size: 11px; font-weight: 700; color: #8E8E93; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 8px; }
+.stmt-text { font-size: 17px; font-weight: 500; font-style: italic; color: #1D1D1F; line-height: 1.45; margin-bottom: 14px; }
+@media (prefers-color-scheme: dark) { .stmt-text { color: #e8e8e8; } }
+.reveal-btn { font-family: inherit; font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: 8px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .reveal-btn { background: #2a2a2a; border-color: #444; color: #e8e8e8; } }
+.answer-block { margin-top: 12px; display: none; }
+.answer-block.show { display: block; }
+.ans-bias { background: #EEEDFE; border-radius: 8px; padding: 8px 14px; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: #3C3489; }
+@media (prefers-color-scheme: dark) { .ans-bias { background: #1a1730; color: #CECBF6; } }
+.ans-correction { background: #E1F5EE; border-radius: 8px; padding: 8px 14px; font-size: 13px; color: #085041; line-height: 1.5; }
+@media (prefers-color-scheme: dark) { .ans-correction { background: #052e1e; color: #9FE1CB; } }
+.ks-note { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .ks-note { background: #2a0a0a; color: #F09595; } }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 04, Section 3 · Reference & Drill</div>
+<h1>Cognitive Bias Control System — 6 biases</h1>
+<p class="sub">Reference: tap each bias to see its field correction. Drill: 10-second window to name the bias and correction.</p>
+
+<div class="view-tabs">
+  <button class="tab active-ref" id="tab-ref" onclick="switchView('ref')">Reference</button>
+  <button class="tab" id="tab-drill" onclick="switchView('drill')">10-second drill</button>
+</div>
+
+<!-- REFERENCE -->
+<div class="panel active" id="panel-ref">
+  <div id="bias-rows"></div>
+  <div class="ks-note" style="margin-top:12px">Kill Switch: trainee adjusts or softens their diagnosis because the operator "got upset." Stop. "The data produced the number. You delivered the number. If the operator disputes it, ask which input is wrong and recalculate. You do not reduce the figure to make the conversation easier."</div>
+</div>
+
+<!-- DRILL -->
+<div class="panel" id="panel-drill">
+  <div class="timer-row">
+    <div class="timer-d" id="timer">10</div>
+    <div class="prog-txt" id="prog">Statement 1 of 6</div>
+  </div>
+  <div id="drill-card"></div>
+  <div class="controls">
+    <button class="primary" id="main-btn" onclick="mainAction()">Start timer</button>
+    <button class="secondary" onclick="nextStmt()">Next</button>
+    <button class="secondary" onclick="resetDrill()">Reset</button>
+  </div>
+</div>
+
+<script>
+const BIASES = [
+  { name: 'Confirmation Bias', desc: 'Favoring data that supports an existing assumption — rejecting disconfirming evidence.', correction: 'Ask: "What data would prove me wrong?" Require at least one disconfirming data point before accepting the hypothesis.' },
+  { name: 'Recency Bias', desc: 'Overweighting the most recent events as representative of the trend.', correction: 'Always compare against 7/30/90-day averages before drawing conclusions. One data point is noise.' },
+  { name: 'Authority Bias', desc: 'Deferring to the school owner\'s interpretation without data validation.', correction: 'Separate idea quality from speaker status. The owner\'s tenure is not a KPI. Request the data that supports the claim.' },
+  { name: 'Action Bias', desc: 'Compulsion to recommend a fix before the diagnosis is complete.', correction: 'Ask: "What happens if we wait 24 hours and pull the full data?" Premature action is diagnostic failure, not decisiveness.' },
+  { name: 'Loss Aversion', desc: 'Recommending a safe sub-optimal solution to avoid operator discomfort.', correction: 'Evaluate every recommendation on expected value, not on how the operator will react. Comfort is not a criterion.' },
+  { name: 'Data Seduction', desc: 'Accepting a positive metric as proof of system health.', correction: 'One positive metric does not clear a diagnostic. Require the full KPI set before confirming system health.' },
+];
+
+const DRILL = [
+  { stmt: '"We just had our worst month ever. Everything is broken."', bias: 'Recency Bias', correction: 'Pull 7/30/90-day averages. One bad month is noise until confirmed by trend.' },
+  { stmt: '"The owner has 15 years of experience. If she says the matching process works, it works."', bias: 'Authority Bias', correction: 'Request the KPI data that proves the matching process produces retention outcomes. Tenure is not evidence.' },
+  { stmt: '"I know retention is probably the root cause, but the owner wants to talk about scheduling first."', bias: 'Approval Seeking', correction: 'The Master Sequence is non-negotiable. Operator preference does not reorder the diagnostic.' },
+  { stmt: '"Our retention is 78%. I\'ve seen schools at 60%, so we\'re fine."', bias: 'Confirmation Bias', correction: 'Network average is 85%. 78% is a 7-point deficit, not a success. Require the correct benchmark.' },
+  { stmt: '"We lost three students this week so let\'s immediately redesign the onboarding system."', bias: 'Action Bias', correction: 'Pull the 30-day trend before recommending action. Three students may be statistical noise.' },
+  { stmt: '"Our showcase last month went great — parents loved it. Numbers must be fine."', bias: 'Data Seduction', correction: 'One positive event does not clear a diagnostic. Pull the full KPI set: retention, conversion, and delivery rate.' },
+];
+
+// Reference
+const biasOpen = new Array(BIASES.length).fill(false);
+function renderBiases() {
+  document.getElementById('bias-rows').innerHTML = BIASES.map((b, i) => `
+    <div class="bias-row${biasOpen[i] ? ' open' : ''}" onclick="toggleBias(${i})">
+      <div class="bias-top">
+        <span class="bias-badge">${b.name}</span>
+        <span class="bias-desc">${b.desc}</span>
+      </div>
+      <div class="bias-correction${biasOpen[i] ? ' show' : ''}">
+        <div class="corr-label">Field correction</div>
+        <div class="corr-text">${b.correction}</div>
+      </div>
+    </div>`).join('');
+}
+function toggleBias(i) { biasOpen[i] = !biasOpen[i]; renderBiases(); }
+renderBiases();
+
+// Drill
+let cur = 0, seconds = 10, running = false, timedOut = false, timerInterval = null;
+
+function switchView(v) {
+  document.getElementById('panel-ref').classList.toggle('active', v === 'ref');
+  document.getElementById('panel-drill').classList.toggle('active', v === 'drill');
+  document.getElementById('tab-ref').className = 'tab' + (v === 'ref' ? ' active-ref' : '');
+  document.getElementById('tab-drill').className = 'tab' + (v === 'drill' ? ' active-drill' : '');
+}
+
+function renderDrill() {
+  const mb = document.getElementById('main-btn');
+  if (cur >= DRILL.length) {
+    document.getElementById('drill-card').innerHTML = '<div style="text-align:center;padding:32px 0"><p style="font-size:16px;font-weight:500">All 6 complete.</p></div>';
+    mb.style.display = 'none'; return;
+  }
+  mb.style.display = '';
+  document.getElementById('prog').textContent = `Statement ${cur + 1} of ${DRILL.length}`;
+  const d = DRILL[cur];
+  document.getElementById('drill-card').innerHTML = `
+    <div class="statement-card">
+      <div class="stmt-label">Operator statement</div>
+      <div class="stmt-text">${d.stmt}</div>
+      <button class="reveal-btn" onclick="reveal()">Reveal bias + correction</button>
+      <div class="answer-block" id="ans-block">
+        <div class="ans-bias">${d.bias}</div>
+        <div class="ans-correction">${d.correction}</div>
+      </div>
+    </div>`;
+  resetTimer();
+}
+
+function reveal() {
+  clearInterval(timerInterval); running = false; timedOut = true;
+  document.getElementById('ans-block').classList.add('show');
+  document.querySelector('.reveal-btn').style.display = 'none';
+  document.getElementById('main-btn').textContent = 'Reset timer';
+  document.getElementById('timer').style.color = '#0F6E56';
+}
+
+function resetTimer() {
+  clearInterval(timerInterval); running = false; timedOut = false; seconds = 10;
+  const el = document.getElementById('timer');
+  el.textContent = '10'; el.className = 'timer-d'; el.style.color = '';
+  document.getElementById('main-btn').textContent = 'Start timer';
+}
+
+function mainAction() {
+  if (!running && !timedOut) {
+    running = true; document.getElementById('main-btn').textContent = 'Running…';
+    timerInterval = setInterval(() => {
+      seconds--;
+      const el = document.getElementById('timer');
+      el.textContent = seconds;
+      if (seconds <= 3) el.className = 'timer-d urgent';
+      if (seconds <= 0) { clearInterval(timerInterval); running = false; timedOut = true; document.getElementById('main-btn').textContent = 'Reset timer'; reveal(); }
+    }, 1000);
+  } else if (timedOut) { resetTimer(); }
+}
+function nextStmt() { clearInterval(timerInterval); cur++; renderDrill(); }
+function resetDrill() { clearInterval(timerInterval); cur = 0; document.getElementById('main-btn').style.display = ''; renderDrill(); }
+renderDrill();
+</script>
+</body>
+</html>

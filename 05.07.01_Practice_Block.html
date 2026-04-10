@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 05 — Practice Block</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.sim-tabs { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.act { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+.scenario-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { .scenario-card { background: #1e1e1e; border-color: #333; } }
+.sc-label { font-size: 11px; font-weight: 700; color: #8E8E93; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 8px; }
+.sc-text { font-size: 15px; font-weight: 500; color: #1D1D1F; line-height: 1.5; margin-bottom: 6px; }
+@media (prefers-color-scheme: dark) { .sc-text { color: #e8e8e8; } }
+.gold-block { display: none; margin-top: 12px; }
+.gold-block.show { display: block; }
+.gold-section { margin-bottom: 8px; }
+.gold-label { font-size: 10px; font-weight: 700; color: #0F6E56; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 4px; }
+.gold-text { font-size: 13px; color: #085041; background: #E1F5EE; border-radius: 8px; padding: 8px 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .gold-text { background: #052e1e; color: #9FE1CB; } }
+.reveal-btn { font-family: inherit; font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: 8px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; margin-top: 10px; }
+@media (prefers-color-scheme: dark) { .reveal-btn { background: #2a2a2a; border-color: #444; color: #e8e8e8; } }
+.ks-note { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .ks-note { background: #2a0a0a; color: #F09595; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 05, Section 7 · Practice Block</div>
+<h1>Practice Block — Simulations 1–4</h1>
+<p class="sub">All four must complete before the certification gate. Score and debrief each immediately.</p>
+
+<div class="sim-tabs">
+  <button class="tab act" id="tab-s1" onclick="switchSim('s1')">Sim 1 — System Design</button>
+  <button class="tab" id="tab-s2" onclick="switchSim('s2')">Sim 2 — Rhythm</button>
+  <button class="tab" id="tab-s3" onclick="switchSim('s3')">Sim 3 — Breakdown</button>
+  <button class="tab" id="tab-s4" onclick="switchSim('s4')">Sim 4 — Accountability</button>
+</div>
+
+<!-- SIM 1 -->
+<div class="panel active" id="panel-s1">
+  <div class="scenario-card">
+    <div class="sc-label">Sim 1 · Six-Component System Design</div>
+    <div class="sc-text">"The school's trial gift bag process has no defined owner, no timing standard, and no completion tracking." Build a complete 6-component execution system.</div>
+    <button class="reveal-btn" id="rb-s1" onclick="reveal('s1')">Reveal gold standard</button>
+    <div class="gold-block" id="gold-s1">
+      <div class="gold-section"><div class="gold-label">Defined Outcome</div><div class="gold-text">100% of trial students receive a gift bag at lesson completion.</div></div>
+      <div class="gold-section"><div class="gold-label">Process Steps</div><div class="gold-text">Trial ends → Front Desk retrieves pre-prepared gift bag → Bag delivered before parent departs → Delivery logged in CRM.</div></div>
+      <div class="gold-section"><div class="gold-label">Single Ownership</div><div class="gold-text">Front Desk Coordinator (named role — not "Front Desk staff").</div></div>
+      <div class="gold-section"><div class="gold-label">Timing</div><div class="gold-text">Delivered within 5 minutes of lesson completion.</div></div>
+      <div class="gold-section"><div class="gold-label">Measurement</div><div class="gold-text">Weekly CRM audit — % of trial records with "Gift Bag Delivered" field marked. Threshold: ≥95%.</div></div>
+      <div class="gold-section"><div class="gold-label">Feedback Loop</div><div class="gold-text">Automated flag if audit rate drops below 95% in any week.</div></div>
+    </div>
+  </div>
+  <div class="ks-note">Trainee must produce all six components independently. If they pause on any component and wait for a prompt — they have not passed. Return to Section 2 and run the worked example drill until all six can be produced cold in under 4 minutes.</div>
+</div>
+
+<!-- SIM 2 -->
+<div class="panel" id="panel-s2">
+  <div class="scenario-card">
+    <div class="sc-label">Sim 2 · Rhythm Construction</div>
+    <div class="sc-text">Design a complete Daily/Weekly/Monthly review structure for a 120-student school with one full-time admin and four part-time instructors.</div>
+    <button class="reveal-btn" id="rb-s2" onclick="reveal('s2')">Reveal gold standard</button>
+    <div class="gold-block" id="gold-s2">
+      <div class="gold-section"><div class="gold-label">Daily (15 min) — Execute</div><div class="gold-text">CRM task completion audit · Trial follow-up verification · Open flag review · Immediate issue resolution.</div></div>
+      <div class="gold-section"><div class="gold-label">Weekly (50 min) — Improve</div><div class="gold-text">KPI vs. baseline review (retention, conversion, utilization) · System adjustment decisions · Instructor accountability check · Execution consistency audit.</div></div>
+      <div class="gold-section"><div class="gold-label">Monthly (100 min) — Rethink</div><div class="gold-text">Trend analysis across all three primary KPIs · MSOI score review · Structural decision on any KPI showing 3+ week drift · Capacity planning.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SIM 3 -->
+<div class="panel" id="panel-s3">
+  <div class="scenario-card">
+    <div class="sc-label">Sim 3 · Breakdown Diagnosis</div>
+    <div class="sc-text">A school's trial follow-up rate has been below 80% for six consecutive weeks despite three verbal reminders from the owner. Identify the breakdown mode.</div>
+    <button class="reveal-btn" id="rb-s3" onclick="reveal('s3')">Reveal gold standard</button>
+    <div class="gold-block" id="gold-s3">
+      <div class="gold-section"><div class="gold-label">Breakdown mode</div><div class="gold-text">Ownership + Clarity Failure — not Motivation Failure. The verbal reminders are behavioral interventions applied to a structural gap.</div></div>
+      <div class="gold-section"><div class="gold-label">Evidence</div><div class="gold-text">No named single owner. No completion standard stated numerically. No automated task generation. No measurement mechanism. Three reminders produced no change — this is a structural signal, not a motivation signal.</div></div>
+      <div class="gold-section"><div class="gold-label">Structural response</div><div class="gold-text">Name a single owner. Define completion standard numerically (≥90% within 24 hours). Install automated task generation. Establish a measurement mechanism with a weekly report. Stop the verbal reminders — they are treating a system failure as a motivation failure.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SIM 4 -->
+<div class="panel" id="panel-s4">
+  <div class="scenario-card">
+    <div class="sc-label">Sim 4 · Accountability Mapping</div>
+    <div class="sc-text">A follow-up process has three people involved: the instructor who completes the lesson, the front desk who makes the call, and the manager who reviews weekly. Identify every missing accountability mechanism.</div>
+    <button class="reveal-btn" id="rb-s4" onclick="reveal('s4')">Reveal gold standard</button>
+    <div class="gold-block" id="gold-s4">
+      <div class="gold-section"><div class="gold-label">Missing: System accountability</div><div class="gold-text">No automated task trigger — the front desk call depends entirely on memory. If the CRM doesn't generate the task, nothing happens.</div></div>
+      <div class="gold-section"><div class="gold-label">Missing: Completion receipt</div><div class="gold-text">No CRM log field — verification requires asking someone. If proof of completion requires a conversation, the system layer is absent.</div></div>
+      <div class="gold-section"><div class="gold-label">Missing: Self-accountability for instructor</div><div class="gold-text">No submission gate — the feedback form is discretionary. Without a gate, the instructor can skip it with no system consequence.</div></div>
+      <div class="gold-section"><div class="gold-label">Missing: Feedback loop timing</div><div class="gold-text">The weekly review catches problems a week late. Required: a daily completion threshold alert so drift is visible within 24 hours, not 7 days.</div></div>
+      <div class="gold-section"><div class="gold-label">Required additions</div><div class="gold-text">CRM auto-trigger · Instructor submission gate · Completion log field · Daily completion threshold alert at ≥90%.</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function reveal(id) {
+  document.getElementById(`gold-${id}`).classList.add('show');
+  document.getElementById(`rb-${id}`).style.display = 'none';
+}
+function switchSim(id) {
+  ['s1','s2','s3','s4'].forEach(s => {
+    document.getElementById(`panel-${s}`).classList.toggle('active', s === id);
+    document.getElementById(`tab-${s}`).className = 'tab' + (s === id ? ' act' : '');
+  });
+}
+</script>
+</body>
+</html>

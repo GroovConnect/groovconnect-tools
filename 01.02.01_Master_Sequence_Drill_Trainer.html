@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Master Sequence — Drill Trainer</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: #f5f5f7;
+    color: #1D1D1F;
+    padding: 32px 24px;
+    max-width: 680px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body { background: #111; color: #e8e8e8; }
+  }
+
+  .header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 16px;
+  }
+
+  .header-text h1 {
+    font-size: 17px;
+    font-weight: 500;
+    color: #1D1D1F;
+  }
+  @media (prefers-color-scheme: dark) { .header-text h1 { color: #e8e8e8; } }
+
+  .header-text p {
+    font-size: 12px;
+    color: #6E6E73;
+    margin-top: 3px;
+  }
+
+  .timer {
+    font-size: 32px;
+    font-weight: 500;
+    color: #1D1D1F;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    letter-spacing: -0.5px;
+  }
+  @media (prefers-color-scheme: dark) { .timer { color: #e8e8e8; } }
+  .timer.urgent { color: #C0392B; }
+
+  .step-card {
+    background: #fff;
+    border: 0.5px solid #D1D1D6;
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+    margin-bottom: 6px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .step-card { background: #1e1e1e; border-color: #333; }
+    .step-card:hover { background: #252525; }
+    .step-card.revealed { background: #1e1e1e; }
+  }
+
+  .step-card:hover { background: #f9f9fb; }
+  .step-card.revealed { background: #fff; border-color: #AEAEB2; }
+  @media (prefers-color-scheme: dark) {
+    .step-card.revealed { background: #1e1e1e; border-color: #555; }
+  }
+
+  .step-card.discovery { border-left: 3px solid #BA7517; }
+
+  .step-num {
+    font-size: 11px;
+    font-weight: 600;
+    color: #8E8E93;
+    min-width: 48px;
+    letter-spacing: 0.3px;
+  }
+
+  .step-content { flex: 1; }
+
+  .step-label {
+    font-size: 15px;
+    font-weight: 500;
+    color: #1D1D1F;
+    transition: color 0.15s;
+  }
+  @media (prefers-color-scheme: dark) { .step-label { color: #e8e8e8; } }
+
+  .step-label.hidden {
+    color: transparent;
+    background: #E5E5EA;
+    border-radius: 4px;
+    display: inline-block;
+    min-width: 160px;
+    min-height: 20px;
+    user-select: none;
+  }
+  @media (prefers-color-scheme: dark) {
+    .step-label.hidden { background: #333; }
+  }
+
+  .step-sub {
+    font-size: 12px;
+    color: #6E6E73;
+    margin-top: 3px;
+    line-height: 1.5;
+  }
+
+  .badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 99px;
+    background: #FAEEDA;
+    color: #854F0B;
+    white-space: nowrap;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+
+  .tap-hint {
+    font-size: 11px;
+    color: #AEAEB2;
+    white-space: nowrap;
+  }
+
+  .controls {
+    display: flex;
+    gap: 8px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+
+  button {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 0.5px solid #AEAEB2;
+    background: #fff;
+    color: #1D1D1F;
+    cursor: pointer;
+    transition: background 0.12s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  @media (prefers-color-scheme: dark) {
+    button { background: #1e1e1e; border-color: #444; color: #e8e8e8; }
+    button:hover { background: #2a2a2a; }
+  }
+  button:hover { background: #f2f2f7; }
+  button:active { transform: scale(0.97); }
+
+  button.primary {
+    background: #1D1D1F;
+    color: #fff;
+    border-color: #1D1D1F;
+  }
+  @media (prefers-color-scheme: dark) {
+    button.primary { background: #e8e8e8; color: #111; border-color: #e8e8e8; }
+  }
+  button.primary:hover { background: #3a3a3c; }
+
+  .progress {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+  .pip {
+    height: 3px;
+    flex: 1;
+    border-radius: 2px;
+    background: #E5E5EA;
+    transition: background 0.2s;
+  }
+  @media (prefers-color-scheme: dark) { .pip { background: #333; } }
+  .pip.done { background: #185FA5; }
+  .pip.discovery-pip.done { background: #BA7517; }
+
+  .score-bar {
+    font-size: 12px;
+    color: #6E6E73;
+    margin-bottom: 12px;
+  }
+  .score-bar span { font-weight: 600; color: #185FA5; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-text">
+    <h1>Master Sequence — priming drill</h1>
+    <p>Tap each step to reveal it. Use the timer for the 5-minute sequencing drill.</p>
+  </div>
+  <div id="timer" class="timer">5:00</div>
+</div>
+
+<div class="progress" id="progress"></div>
+<div class="score-bar" id="score-bar">0 of 7 revealed</div>
+<div id="steps"></div>
+
+<div class="controls">
+  <button onclick="revealAll()">Reveal all</button>
+  <button onclick="resetAll()">Reset</button>
+  <button id="timer-btn" class="primary" onclick="toggleTimer()">Start timer</button>
+</div>
+
+<script>
+const STEPS = [
+  { n: "Step 1", label: "KPI Signal",            sub: "What metric is broken? Quantify it before anything else.",              discovery: false },
+  { n: "Step 2", label: "System Identification", sub: "Which operational system owns this KPI?",                               discovery: false },
+  { n: "Step 3", label: "Failure Localization",  sub: "Pinpoint the mechanism — not the category.",                           discovery: false },
+  { n: "Step 4", label: "Propagation Mapping",   sub: "Trace the 4-link chain: failure → behavior → experience → KPI.",       discovery: false },
+  { n: "Step 5", label: "Economic Impact",       sub: "Quantify the dollar cost. Use the correct formula. State every assumption.", discovery: true  },
+  { n: "Step 6", label: "Priority Scoring",      sub: "Magnitude × Frequency × Propagation Depth.",                           discovery: false },
+  { n: "Step 7", label: "Capability Output",     sub: "Map the root cause to the specific GroovConnect capability.",           discovery: false },
+];
+
+const revealed = new Array(STEPS.length).fill(false);
+
+function countRevealed() { return revealed.filter(Boolean).length; }
+
+function renderProgress() {
+  const prog = document.getElementById('progress');
+  prog.innerHTML = STEPS.map((s, i) =>
+    `<div class="pip${s.discovery ? ' discovery-pip' : ''}${revealed[i] ? ' done' : ''}"></div>`
+  ).join('');
+}
+
+function renderScore() {
+  const n = countRevealed();
+  document.getElementById('score-bar').innerHTML =
+    `<span>${n}</span> of 7 revealed${n === 7 ? ' &nbsp;·&nbsp; full sequence installed' : ''}`;
+}
+
+function renderSteps() {
+  const container = document.getElementById('steps');
+  container.innerHTML = STEPS.map((s, i) => {
+    const isRev = revealed[i];
+    return `<div class="step-card${isRev ? ' revealed' : ''}${s.discovery ? ' discovery' : ''}"
+                 onclick="toggle(${i})" role="button" tabindex="0"
+                 onkeydown="if(event.key==='Enter'||event.key===' ')toggle(${i})">
+      <span class="step-num">${s.n}</span>
+      <div class="step-content">
+        <div class="step-label${isRev ? '' : ' hidden'}">${isRev ? s.label : ''}</div>
+        ${isRev ? `<div class="step-sub">${s.sub}</div>` : ''}
+      </div>
+      ${s.discovery && isRev ? '<span class="badge">discovery</span>' : ''}
+      <span class="tap-hint">${isRev ? 'tap to hide' : 'tap to reveal'}</span>
+    </div>`;
+  }).join('');
+  renderProgress();
+  renderScore();
+}
+
+function toggle(i) {
+  revealed[i] = !revealed[i];
+  renderSteps();
+}
+
+function revealAll() {
+  revealed.fill(true);
+  renderSteps();
+}
+
+function resetAll() {
+  revealed.fill(false);
+  renderSteps();
+  if (running) { clearInterval(timerInterval); running = false; }
+  seconds = 300;
+  updateTimerDisplay();
+  document.getElementById('timer-btn').textContent = 'Start timer';
+  timerMode = 'start';
+}
+
+// ── Timer ──
+let seconds = 300;
+let running = false;
+let timerInterval = null;
+let timerMode = 'start'; // 'start' | 'pause' | 'reset'
+
+function fmt(s) {
+  return Math.floor(s / 60) + ':' + (s % 60 < 10 ? '0' : '') + s % 60;
+}
+
+function updateTimerDisplay() {
+  const el = document.getElementById('timer');
+  el.textContent = fmt(seconds);
+  el.classList.toggle('urgent', seconds <= 60 && seconds > 0);
+}
+
+function toggleTimer() {
+  const btn = document.getElementById('timer-btn');
+  if (timerMode === 'start' || timerMode === 'resume') {
+    running = true;
+    timerMode = 'pause';
+    btn.textContent = 'Pause';
+    timerInterval = setInterval(() => {
+      if (seconds > 0) {
+        seconds--;
+        updateTimerDisplay();
+      }
+      if (seconds <= 0) {
+        clearInterval(timerInterval);
+        running = false;
+        timerMode = 'reset';
+        btn.textContent = 'Reset timer';
+        document.getElementById('timer').textContent = '0:00';
+      }
+    }, 1000);
+  } else if (timerMode === 'pause') {
+    clearInterval(timerInterval);
+    running = false;
+    timerMode = 'resume';
+    btn.textContent = 'Resume';
+  } else if (timerMode === 'reset') {
+    seconds = 300;
+    updateTimerDisplay();
+    timerMode = 'start';
+    btn.textContent = 'Start timer';
+  }
+}
+
+// Init
+renderSteps();
+</script>
+</body>
+</html>

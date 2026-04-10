@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 01 — The Most Common Error</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  background: #f5f5f7;
+  color: #1D1D1F;
+  padding: 40px 28px;
+  max-width: 680px;
+  margin: 0 auto;
+}
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 5px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 3px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 28px; }
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.section-label.correct { color: #0F6E56; }
+.section-label.wrong { color: #A32D2D; }
+
+/* Step strip */
+.step-strip {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+.step {
+  flex: 1;
+  border-radius: 8px;
+  padding: 10px 8px;
+  text-align: center;
+  min-width: 0;
+}
+.step-num {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  margin-bottom: 4px;
+}
+.step-name {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+/* Correct = blue for steps 1-3, amber for 4-5, teal for 6-7 */
+.s-blue { background: #E6F1FB; }
+.s-blue .step-num { color: #185FA5; }
+.s-blue .step-name { color: #0C447C; }
+
+.s-amber { background: #FAEEDA; border: 1.5px solid #BA7517; }
+.s-amber .step-num { color: #BA7517; }
+.s-amber .step-name { color: #633806; }
+
+.s-teal { background: #E1F5EE; }
+.s-teal .step-num { color: #0F6E56; }
+.s-teal .step-name { color: #085041; }
+
+/* Skipped = faded */
+.s-skip { background: #F1EFE8; opacity: 0.4; }
+.s-skip .step-num { color: #888780; }
+.s-skip .step-name { color: #888780; }
+
+/* Wrong end = red */
+.s-red { background: #FCEBEB; border: 1.5px solid #A32D2D; }
+.s-red .step-num { color: #A32D2D; }
+.s-red .step-name { color: #791F1F; }
+
+.amber-note {
+  font-size: 12px;
+  color: #854F0B;
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 6px 0;
+}
+@media (prefers-color-scheme: dark) { .amber-note { color: #FAC775; } }
+
+/* Skip arrow */
+.skip-row {
+  position: relative;
+  height: 36px;
+  margin-bottom: 6px;
+}
+.skip-arrow-svg {
+  width: 100%;
+  height: 36px;
+  display: block;
+  overflow: visible;
+}
+
+/* Consequence box */
+.consequence {
+  background: #FCEBEB;
+  border: 1px solid #A32D2D;
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 6px;
+}
+.consequence-head {
+  font-size: 14px;
+  font-weight: 600;
+  color: #791F1F;
+  margin-bottom: 6px;
+  text-align: center;
+}
+.consequence-body {
+  font-size: 13px;
+  color: #A32D2D;
+  text-align: center;
+  line-height: 1.55;
+}
+@media (prefers-color-scheme: dark) {
+  .consequence { background: #2a0a0a; border-color: #A32D2D; }
+  .consequence-head { color: #F7C1C1; }
+  .consequence-body { color: #F09595; }
+  .s-blue { background: #0a1f3a; }
+  .s-blue .step-num { color: #85B7EB; }
+  .s-blue .step-name { color: #B5D4F4; }
+  .s-amber { background: #2a1a00; border-color: #BA7517; }
+  .s-amber .step-num { color: #EF9F27; }
+  .s-amber .step-name { color: #FAC775; }
+  .s-teal { background: #052e1e; }
+  .s-teal .step-num { color: #5DCAA5; }
+  .s-teal .step-name { color: #9FE1CB; }
+  .s-red { background: #2a0a0a; border-color: #A32D2D; }
+  .s-red .step-num { color: #F09595; }
+  .s-red .step-name { color: #F7C1C1; }
+}
+
+.rule {
+  font-size: 13px;
+  color: #6E6E73;
+  background: #E1F5EE;
+  border-left: 3px solid #0F6E56;
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+  margin-top: 20px;
+  line-height: 1.6;
+}
+@media (prefers-color-scheme: dark) { .rule { background: #052e1e; color: #9FE1CB; } }
+@media print { body { background: #fff; padding: 20px; } }
+</style>
+</head>
+<body>
+
+<div class="meta">GroovConnect OAS™ · Module 01, Section 2 · Instructor Reference</div>
+<h1>The most common error — the 1→7 skip</h1>
+<p class="sub">Trainees with strong business intuition are most at risk. Speed is the danger.</p>
+
+<!-- CORRECT -->
+<div class="section-label correct">Correct sequence</div>
+<div class="step-strip">
+  <div class="step s-blue"><div class="step-num">S1</div><div class="step-name">KPI Signal</div></div>
+  <div class="step s-blue"><div class="step-num">S2</div><div class="step-name">System ID</div></div>
+  <div class="step s-blue"><div class="step-num">S3</div><div class="step-name">Failure</div></div>
+  <div class="step s-amber"><div class="step-num">S4</div><div class="step-name">Propagation</div></div>
+  <div class="step s-amber"><div class="step-num">S5</div><div class="step-name">Economics</div></div>
+  <div class="step s-teal"><div class="step-num">S6</div><div class="step-name">Priority</div></div>
+  <div class="step s-teal"><div class="step-num">S7</div><div class="step-name">Capability</div></div>
+</div>
+<div class="amber-note">Steps 4 and 5 must be completed before any capability is named</div>
+
+<!-- WRONG -->
+<div class="section-label wrong">Common error — the 1→7 skip</div>
+<div class="step-strip">
+  <div class="step s-blue"><div class="step-num">S1</div><div class="step-name">KPI Signal</div></div>
+  <div class="step s-skip"><div class="step-num">S2</div><div class="step-name">skipped</div></div>
+  <div class="step s-skip"><div class="step-num">S3</div><div class="step-name">skipped</div></div>
+  <div class="step s-skip"><div class="step-num">S4</div><div class="step-name">skipped</div></div>
+  <div class="step s-skip"><div class="step-num">S5</div><div class="step-name">skipped</div></div>
+  <div class="step s-skip"><div class="step-num">S6</div><div class="step-name">skipped</div></div>
+  <div class="step s-red"><div class="step-num">S7</div><div class="step-name">Capability</div></div>
+</div>
+
+<!-- Skip arrow visual -->
+<div class="skip-row">
+  <svg class="skip-arrow-svg" viewBox="0 0 620 36" preserveAspectRatio="none">
+    <defs>
+      <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M2 1L8 5L2 9" fill="none" stroke="#A32D2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+    </defs>
+    <path d="M44 4 C44 4, 310 4, 576 4 L576 32" fill="none" stroke="#A32D2D" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#ar)"/>
+    <text x="310" y="17" font-family="-apple-system,sans-serif" font-size="11" fill="#A32D2D" text-anchor="middle" font-style="italic">intuition jumps here</text>
+  </svg>
+</div>
+
+<!-- Consequence -->
+<div class="consequence">
+  <div class="consequence-head">Result: a guess dressed as analysis</div>
+  <div class="consequence-body">No verified root cause &nbsp;·&nbsp; no quantified economic stake &nbsp;·&nbsp; no causal chain &nbsp;·&nbsp; operator will sense the gap</div>
+</div>
+
+<div class="rule">Rule: no mention of GroovConnect, no mention of any solution, until the economic impact is calculated and stated. If a trainee mentions a capability before the math is settled — reset from Step 1, every time, without exception.</div>
+
+</body>
+</html>

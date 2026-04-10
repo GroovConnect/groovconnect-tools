@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 04 — Operator Pattern Reference</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #fff; color: #1D1D1F; padding: 40px 28px; max-width: 700px; margin: 0 auto; }
+@media (prefers-color-scheme: dark) { body { background: #1a1a1a; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 5px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 3px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.routing-rule { font-size: 13px; color: #534AB7; background: #EEEDFE; border-left: 3px solid #534AB7; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 20px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .routing-rule { background: #1a1730; color: #CECBF6; } }
+.pattern-card { border-radius: 12px; padding: 14px 18px; margin-bottom: 6px; cursor: pointer; border: 0.5px solid transparent; transition: opacity .12s; }
+.pattern-card:hover { opacity: .9; }
+.pattern-card.open { border-width: 1px; }
+.pattern-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.pattern-name { font-size: 14px; font-weight: 600; flex: 1; }
+.pattern-bias-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+.pattern-behavior { font-size: 12px; line-height: 1.5; margin-bottom: 8px; }
+.pattern-detail { display: none; }
+.pattern-detail.show { display: block; }
+.protocol-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.protocol-block { border-radius: 8px; padding: 8px 12px; }
+.protocol-label { font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 3px; }
+.protocol-text { font-size: 12px; line-height: 1.5; font-style: italic; }
+.ks-block { margin-top: 6px; border-radius: 8px; padding: 8px 12px; }
+.ks-label { font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 3px; color: #A32D2D; }
+.ks-text { font-size: 12px; color: #A32D2D; line-height: 1.5; }
+
+.p1 { background: #EEEDFE; border-color: #AFA9EC; }
+.p1 .pattern-name { color: #26215C; }
+.p1 .pattern-bias-badge { background: #AFA9EC; color: #26215C; }
+.p1 .pattern-behavior { color: #534AB7; }
+.p1 .protocol-block { background: #CECBF6; }
+.p1 .protocol-label { color: #3C3489; }
+.p1 .protocol-text { color: #26215C; }
+.p1 .ks-block { background: #FCEBEB; }
+
+.p2 { background: #E1F5EE; border-color: #5DCAA5; }
+.p2 .pattern-name { color: #04342C; }
+.p2 .pattern-bias-badge { background: #5DCAA5; color: #04342C; }
+.p2 .pattern-behavior { color: #0F6E56; }
+.p2 .protocol-block { background: #9FE1CB; }
+.p2 .protocol-label { color: #085041; }
+.p2 .protocol-text { color: #04342C; }
+.p2 .ks-block { background: #FCEBEB; }
+
+.p3 { background: #FAEEDA; border-color: #FAC775; }
+.p3 .pattern-name { color: #412402; }
+.p3 .pattern-bias-badge { background: #FAC775; color: #412402; }
+.p3 .pattern-behavior { color: #854F0B; }
+.p3 .protocol-block { background: #FAC775; }
+.p3 .protocol-label { color: #633806; }
+.p3 .protocol-text { color: #412402; }
+.p3 .ks-block { background: #FCEBEB; }
+
+.p4 { background: #E6F1FB; border-color: #85B7EB; }
+.p4 .pattern-name { color: #042C53; }
+.p4 .pattern-bias-badge { background: #85B7EB; color: #042C53; }
+.p4 .pattern-behavior { color: #185FA5; }
+.p4 .protocol-block { background: #B5D4F4; }
+.p4 .protocol-label { color: #0C447C; }
+.p4 .protocol-text { color: #042C53; }
+.p4 .ks-block { background: #FCEBEB; }
+
+.p5 { background: #FCEBEB; border-color: #F09595; }
+.p5 .pattern-name { color: #501313; }
+.p5 .pattern-bias-badge { background: #F09595; color: #501313; }
+.p5 .pattern-behavior { color: #A32D2D; }
+.p5 .protocol-block { background: #F7C1C1; }
+.p5 .protocol-label { color: #791F1F; }
+.p5 .protocol-text { color: #501313; }
+.p5 .ks-block { background: #FCEBEB; }
+
+@media (prefers-color-scheme: dark) {
+  .p1 { background: #1a1730; } .p1 .pattern-name { color: #CECBF6; } .p1 .pattern-behavior { color: #AFA9EC; } .p1 .protocol-block { background: #26215C; } .p1 .protocol-text { color: #CECBF6; }
+  .p2 { background: #052e1e; } .p2 .pattern-name { color: #9FE1CB; } .p2 .pattern-behavior { color: #5DCAA5; } .p2 .protocol-block { background: #085041; } .p2 .protocol-text { color: #9FE1CB; }
+  .p3 { background: #2a1a00; } .p3 .pattern-name { color: #FAC775; } .p3 .pattern-behavior { color: #EF9F27; } .p3 .protocol-block { background: #412402; } .p3 .protocol-text { color: #FAC775; }
+  .p4 { background: #0a1f3a; } .p4 .pattern-name { color: #B5D4F4; } .p4 .pattern-behavior { color: #85B7EB; } .p4 .protocol-block { background: #0C447C; } .p4 .protocol-text { color: #B5D4F4; }
+  .p5 { background: #2a0a0a; } .p5 .pattern-name { color: #F7C1C1; } .p5 .pattern-behavior { color: #F09595; } .p5 .protocol-block { background: #791F1F; } .p5 .protocol-text { color: #F7C1C1; }
+  .ks-block { background: #2a0a0a !important; } .ks-text { color: #F09595; }
+}
+.caption { margin-top: 20px; font-size: 12px; color: #8E8E93; border-top: 0.5px solid #D1D1D6; padding-top: 12px; line-height: 1.6; }
+@media (prefers-color-scheme: dark) { .caption { border-top-color: #2a2a2a; } }
+@media print { body { padding: 20px; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 04, Section 6 · Reference Card</div>
+<h1>Operator Pattern Reference — 5 archetypes</h1>
+<p class="sub">Tap each pattern to see the response protocol and Kill Switch condition. These are system signals — not personality judgments.</p>
+<div class="routing-rule">Operator behavior patterns inform the analyst's routing — which system to probe next — without influencing the diagnosis itself. Avoidance is the loudest signal in the room. It points at the primary failure zone.</div>
+
+<div id="patterns"></div>
+<div class="caption">GroovConnect OAS™ · Module 04 · Printable reference — use during simulation debrief to name the pattern the operator was running.</div>
+
+<script>
+const PATTERNS = [
+  { cls: 'p1', name: 'The Defensive Founder', bias: 'Overconfidence bias', behavior: 'Dismisses data immediately. References years of experience as a substitute for evidence.', protocol: '"Your 20 years built this school — the data reflects what the school has outgrown."', ks: 'None — standard resistance. Fail only if analyst abandons the diagnostic chain.' },
+  { cls: 'p2', name: 'The Yes-Sayer', bias: 'Social harmony', behavior: 'Agrees with every finding. Commits to nothing. Avoidance disguised as agreement.', protocol: '"You\'ve agreed with every finding. The next step is a specific action with a specific date."', ks: 'Approval Seeking if analyst accepts the agreement without requiring a structural commitment.' },
+  { cls: 'p3', name: 'The Feature Buyer', bias: 'Availability bias', behavior: 'Jumps to product questions before the diagnosis is complete. Solution-first thinking avoids diagnostic pain.', protocol: '"Those are implementation questions we\'ll answer once we\'ve identified exactly what we\'re solving."', ks: 'Feature Pitching if analyst answers feature questions before the propagation chain is complete.' },
+  { cls: 'p4', name: 'The Data Skeptic', bias: 'Confirmation bias', behavior: 'Disputes every KPI figure. "Your numbers are off." Contradicts data that threatens current beliefs.', protocol: '"Let\'s use your numbers. What is your retention rate? What was it 12 months ago?"', ks: 'Hidden Math if analyst accepts disputed figures without re-deriving the economic anchor.' },
+  { cls: 'p5', name: 'The External Attributor', bias: 'Attribution error (inverted)', behavior: 'Attributes every failure to economy, competition, or demographics. External causes explain internal failures.', protocol: '"Which of your systems makes you more vulnerable when the context changes?"', ks: 'Narrative Surrender if analyst accepts the external attribution as a diagnostic conclusion.' },
+];
+
+const open = new Array(PATTERNS.length).fill(false);
+
+function render() {
+  document.getElementById('patterns').innerHTML = PATTERNS.map((p, i) => `
+    <div class="pattern-card ${p.cls}${open[i] ? ' open' : ''}" onclick="toggle(${i})">
+      <div class="pattern-header">
+        <span class="pattern-name">${p.name}</span>
+        <span class="pattern-bias-badge">${p.bias}</span>
+      </div>
+      <div class="pattern-behavior">${p.behavior}</div>
+      <div class="pattern-detail${open[i] ? ' show' : ''}">
+        <div class="protocol-row">
+          <div class="protocol-block">
+            <div class="protocol-label">Response protocol</div>
+            <div class="protocol-text">${p.protocol}</div>
+          </div>
+          <div class="ks-block">
+            <div class="ks-label">Kill Switch condition</div>
+            <div class="ks-text">${p.ks}</div>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function toggle(i) { open[i] = !open[i]; render(); }
+render();
+</script>
+</body>
+</html>

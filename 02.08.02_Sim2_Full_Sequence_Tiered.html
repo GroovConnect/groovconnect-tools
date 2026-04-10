@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 02 — Sim 2: Full Sequence (Tiered)</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.tier-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 13px; font-weight: 500; padding: 7px 18px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; transition: all .15s; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.active-guided { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.tab.active-independent { background: #FAEEDA; border-color: #BA7517; color: #854F0B; font-weight: 600; }
+.tab.active-adversarial { background: #FCEBEB; border-color: #A32D2D; color: #A32D2D; font-weight: 600; }
+.timer-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; }
+.timer-d { font-size: 36px; font-weight: 500; font-variant-numeric: tabular-nums; color: #1D1D1F; letter-spacing: -1px; transition: color .3s; }
+@media (prefers-color-scheme: dark) { .timer-d { color: #e8e8e8; } }
+.timer-d.urgent { color: #C0392B; }
+.timer-label { font-size: 12px; color: #8E8E93; }
+.scenario-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { .scenario-card { background: #1e1e1e; border-color: #333; } }
+.tier-badge { font-size: 11px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 8px; }
+.tb-guided { color: #185FA5; }
+.tb-independent { color: #854F0B; }
+.tb-adversarial { color: #A32D2D; }
+.scenario-text { font-size: 15px; font-weight: 500; color: #1D1D1F; line-height: 1.5; margin-bottom: 6px; }
+@media (prefers-color-scheme: dark) { .scenario-text { color: #e8e8e8; } }
+.scenario-data { font-size: 13px; color: #6E6E73; line-height: 1.5; }
+.reveal-btn { font-family: inherit; font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: 8px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; margin-top: 12px; }
+@media (prefers-color-scheme: dark) { .reveal-btn { background: #2a2a2a; border-color: #444; color: #e8e8e8; } }
+.gold-block { margin-top: 12px; display: none; }
+.gold-block.show { display: block; }
+.gold-section { margin-bottom: 8px; }
+.gold-label { font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 4px; color: #0F6E56; }
+.gold-text { font-size: 13px; color: #085041; background: #E1F5EE; border-radius: 8px; padding: 8px 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .gold-text { background: #052e1e; color: #9FE1CB; } }
+.adv-note { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 10px; line-height: 1.55; display: none; }
+.adv-note.show { display: block; }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 02, Section 8 · Simulation 2</div>
+<h1>Sim 2 — Full sequence execution (tiered)</h1>
+<p class="sub">3 tiers · 12-minute target each · Complete 7-step output + Breath Test + Logic Gate on every recommendation.</p>
+
+<div class="tier-tabs">
+  <button class="tab active-guided" id="tab-0" onclick="switchTier(0)">Guided</button>
+  <button class="tab" id="tab-1" onclick="switchTier(1)">Independent</button>
+  <button class="tab" id="tab-2" onclick="switchTier(2)">Adversarial</button>
+</div>
+
+<div class="timer-row">
+  <div class="timer-d" id="timer">12:00</div>
+  <div class="timer-label">12-minute target</div>
+</div>
+
+<div id="scenario-area"></div>
+
+<div class="controls">
+  <button class="primary" id="main-btn" onclick="mainAction()">Start timer</button>
+  <button class="secondary" onclick="revealGold()">Reveal gold standard</button>
+  <button class="secondary" onclick="resetTimer()">Reset timer</button>
+</div>
+
+<script>
+const TIERS = [
+  {
+    tier: 'Guided', cls: 'tb-guided',
+    text: 'Retention dropped from 84% to 68% over 90 days.',
+    data: 'School has 160 students · $185 tuition · 54% gross margin · No lesson note gate in place · Instructor note submission rate: 41%',
+    gold: [
+      { label: 'Primary system', text: 'Engagement System.' },
+      { label: 'Failure', text: 'No lesson note submission gate — notes are optional, not enforced by the system.' },
+      { label: 'Propagation chain', text: 'No gate → instructors skip notes → parents receive no progress update → perceived value drops → churn at 6–9 months.' },
+      { label: 'Economic impact', text: '(84%−68%) × 160 × $185 × 54% × 10 months = $25,574/year.' },
+    ],
+    adversarial: null,
+  },
+  {
+    tier: 'Independent', cls: 'tb-independent',
+    text: 'Revenue flat for 6 months despite student count growing 11%. Three new instructors hired in Q2. Prime-time utilization: 58%.',
+    data: 'Owner: "New instructors are still finding their footing."',
+    gold: [
+      { label: 'Primary system', text: 'Utilization System.' },
+      { label: 'Kill Switch condition', text: '"Finding their footing" is Human Attribution — stop the simulation and name the condition if the trainee accepts this framing.' },
+      { label: 'Failure', text: 'New instructor capacity not matched to demand — prime-time slots not allocated to high-demand windows.' },
+      { label: 'Propagation chain', text: 'Misallocation → lessons not scheduled in high-demand windows → revenue per student drops → aggregate revenue flat despite headcount growth.' },
+    ],
+    adversarial: null,
+  },
+  {
+    tier: 'Adversarial', cls: 'tb-adversarial',
+    text: 'Trial conversion dropped from 74% to 51% over 60 days. 38 trials/month. $940 LTV.',
+    data: 'Owner: "A new school opened nearby. They\'re cheaper. You can\'t compete on price."',
+    gold: [
+      { label: 'Primary system', text: 'Enrollment System.' },
+      { label: 'Competitor framing', text: 'Competitor is context, not cause. A competitor\'s presence makes a broken conversion system more expensive — it does not create it.' },
+      { label: 'Failure', text: 'Follow-up trigger absent or broken — conversion window is being lost, not stolen.' },
+      { label: 'Economic impact', text: '(74%−51%) × 38 × $940 × 12 = $98,654/year.' },
+    ],
+    adversarial: 'Adversarial sequence: (1) When trainee names conversion rate → "That\'s just a blip — the new school is taking our students." (2) When they present follow-up data → "Our follow-up has always been fine. Wrong metric." (3) When they calculate the figure → "That number seems very high." Each tests a different resilience. If trainee accepts any intervention and modifies the diagnosis — Approval Seeking Kill Switch.',
+  },
+];
+
+let cur = 0;
+let seconds = 720;
+let running = false;
+let timedOut = false;
+let timerInterval = null;
+const tabCls = ['active-guided', 'active-independent', 'active-adversarial'];
+
+function fmt(s) { return Math.floor(s/60) + ':' + (s%60 < 10 ? '0' : '') + s%60; }
+
+function switchTier(i) {
+  clearInterval(timerInterval); running = false; timedOut = false; cur = i;
+  [0,1,2].forEach(j => { document.getElementById(`tab-${j}`).className = 'tab' + (j===i ? ' ' + tabCls[j] : ''); });
+  seconds = 720;
+  const el = document.getElementById('timer');
+  el.textContent = fmt(seconds); el.className = 'timer-d'; el.style.color = '';
+  document.getElementById('main-btn').textContent = 'Start timer';
+  renderScenario();
+}
+
+function renderScenario() {
+  const t = TIERS[cur];
+  document.getElementById('scenario-area').innerHTML = `
+    <div class="scenario-card">
+      <div class="tier-badge ${t.cls}">${t.tier} scenario</div>
+      <div class="scenario-text">${t.text}</div>
+      <div class="scenario-data">${t.data}</div>
+      <button class="reveal-btn" id="rev-btn" onclick="revealGold()">Reveal gold standard</button>
+      <div class="gold-block" id="gold">
+        ${t.gold.map(g => `<div class="gold-section"><div class="gold-label">${g.label}</div><div class="gold-text">${g.text}</div></div>`).join('')}
+      </div>
+      ${t.adversarial ? `<div class="adv-note" id="adv-note">${t.adversarial}</div>` : ''}
+    </div>`;
+}
+
+function revealGold() {
+  const g = document.getElementById('gold');
+  const rb = document.getElementById('rev-btn');
+  if (g) g.classList.add('show');
+  if (rb) rb.style.display = 'none';
+  const an = document.getElementById('adv-note');
+  if (an) an.classList.add('show');
+}
+
+function mainAction() {
+  if (!running && !timedOut) {
+    running = true; document.getElementById('main-btn').textContent = 'Running…';
+    timerInterval = setInterval(() => {
+      seconds--;
+      const el = document.getElementById('timer');
+      el.textContent = fmt(seconds);
+      if (seconds <= 120) el.className = 'timer-d urgent';
+      if (seconds <= 0) { clearInterval(timerInterval); running = false; timedOut = true; document.getElementById('main-btn').textContent = 'Reset timer'; }
+    }, 1000);
+  } else if (timedOut) { resetTimer(); }
+}
+
+function resetTimer() {
+  clearInterval(timerInterval); running = false; timedOut = false; seconds = 720;
+  const el = document.getElementById('timer');
+  el.textContent = fmt(seconds); el.className = 'timer-d'; el.style.color = '';
+  document.getElementById('main-btn').textContent = 'Start timer';
+}
+
+switchTier(0);
+</script>
+</body>
+</html>

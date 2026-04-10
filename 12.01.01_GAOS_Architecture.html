@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 12 — GAOS Architecture & Data Objects</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 680px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.view-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 13px; font-weight: 500; padding: 7px 18px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.act-arch { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.tab.act-obj { background: #FAEEDA; border-color: #BA7517; color: #854F0B; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+.integrity-rule { font-size: 13px; color: #791F1F; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .integrity-rule { background: #2a0a0a; color: #F09595; } }
+.layer-row { display: grid; grid-template-columns: 32px 1fr; gap: 0; margin-bottom: 4px; cursor: pointer; transition: opacity .12s; }
+.layer-row:hover { opacity: .93; }
+.layer-num { display: flex; align-items: flex-start; justify-content: center; padding-top: 13px; font-size: 11px; font-weight: 700; color: #fff; border-radius: 8px 0 0 8px; flex-shrink: 0; }
+.layer-body { border-radius: 0 8px 8px 0; padding: 12px 16px; }
+.layer-name { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+.layer-function { font-size: 12px; line-height: 1.45; }
+.layer-break { font-size: 12px; margin-top: 6px; padding: 6px 10px; border-radius: 6px; line-height: 1.5; display: none; }
+.layer-break.show { display: block; }
+.la1 .layer-num{background:#185FA5}.la1 .layer-body{background:#E6F1FB}.la1 .layer-name{color:#0C447C}.la1 .layer-function{color:#185FA5}.la1 .layer-break{background:#B5D4F4;color:#042C53}
+.la2 .layer-num{background:#BA7517}.la2 .layer-body{background:#FAEEDA}.la2 .layer-name{color:#633806}.la2 .layer-function{color:#854F0B}.la2 .layer-break{background:#FAC775;color:#412402}
+.la3 .layer-num{background:#534AB7}.la3 .layer-body{background:#EEEDFE}.la3 .layer-name{color:#26215C}.la3 .layer-function{color:#534AB7}.la3 .layer-break{background:#CECBF6;color:#26215C}
+.la4 .layer-num{background:#0F6E56}.la4 .layer-body{background:#E1F5EE}.la4 .layer-name{color:#085041}.la4 .layer-function{color:#0F6E56}.la4 .layer-break{background:#9FE1CB;color:#04342C}
+.la5 .layer-num{background:#A32D2D}.la5 .layer-body{background:#FCEBEB}.la5 .layer-name{color:#791F1F}.la5 .layer-function{color:#A32D2D}.la5 .layer-break{background:#F7C1C1;color:#501313}
+@media (prefers-color-scheme: dark) {
+  .la1 .layer-body{background:#0a1f3a}.la1 .layer-function{color:#85B7EB}.la1 .layer-break{background:#0C447C;color:#B5D4F4}
+  .la2 .layer-body{background:#2a1a00}.la2 .layer-function{color:#EF9F27}.la2 .layer-break{background:#412402;color:#FAC775}
+  .la3 .layer-body{background:#1a1730}.la3 .layer-function{color:#AFA9EC}.la3 .layer-break{background:#26215C;color:#CECBF6}
+  .la4 .layer-body{background:#052e1e}.la4 .layer-function{color:#5DCAA5}.la4 .layer-break{background:#085041;color:#9FE1CB}
+  .la5 .layer-body{background:#2a0a0a}.la5 .layer-function{color:#F09595}.la5 .layer-break{background:#3a1010;color:#F7C1C1}
+}
+/* Data Objects */
+.obj-card { border-radius: 12px; padding: 14px 18px; margin-bottom: 6px; cursor: pointer; transition: opacity .12s; }
+.obj-card:hover { opacity: .93; }
+.obj-header { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.obj-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px; white-space: nowrap; flex-shrink: 0; }
+.obj-name { font-size: 14px; font-weight: 600; flex: 1; }
+.obj-q { font-size: 12px; font-style: italic; }
+.obj-detail { margin-top: 8px; display: none; }
+.obj-detail.show { display: block; }
+.obj-fields { font-size: 12px; margin-bottom: 6px; padding: 6px 10px; border-radius: 6px; }
+.obj-diag { font-size: 12px; padding: 6px 10px; border-radius: 6px; line-height: 1.5; }
+
+.o1{background:#E6F1FB}.o1 .obj-badge{background:#185FA5;color:#fff}.o1 .obj-name{color:#0C447C}.o1 .obj-q{color:#185FA5}.o1 .obj-fields{background:#B5D4F4;color:#042C53}.o1 .obj-diag{background:#ddeef9;color:#0C447C}
+.o2{background:#FAEEDA}.o2 .obj-badge{background:#BA7517;color:#fff}.o2 .obj-name{color:#633806}.o2 .obj-q{color:#854F0B}.o2 .obj-fields{background:#FAC775;color:#412402}.o2 .obj-diag{background:#FAF0DA;color:#633806}
+.o3{background:#EEEDFE}.o3 .obj-badge{background:#534AB7;color:#fff}.o3 .obj-name{color:#26215C}.o3 .obj-q{color:#534AB7}.o3 .obj-fields{background:#CECBF6;color:#26215C}.o3 .obj-diag{background:#F1F0FD;color:#3C3489}
+.o4{background:#FCEBEB}.o4 .obj-badge{background:#A32D2D;color:#fff}.o4 .obj-name{color:#791F1F}.o4 .obj-q{color:#A32D2D}.o4 .obj-fields{background:#F7C1C1;color:#501313}.o4 .obj-diag{background:#FDF2F2;color:#791F1F}
+.o5{background:#E1F5EE}.o5 .obj-badge{background:#0F6E56;color:#fff}.o5 .obj-name{color:#085041}.o5 .obj-q{color:#0F6E56}.o5 .obj-fields{background:#9FE1CB;color:#04342C}.o5 .obj-diag{background:#F0FBF7;color:#085041}
+@media (prefers-color-scheme: dark) {
+  .o1{background:#0a1f3a}.o1 .obj-q{color:#85B7EB}.o1 .obj-fields{background:#0C447C;color:#B5D4F4}.o1 .obj-diag{background:#0a1f3a;color:#85B7EB}
+  .o2{background:#2a1a00}.o2 .obj-q{color:#EF9F27}.o2 .obj-fields{background:#412402;color:#FAC775}.o2 .obj-diag{background:#2a1a00;color:#EF9F27}
+  .o3{background:#1a1730}.o3 .obj-q{color:#AFA9EC}.o3 .obj-fields{background:#26215C;color:#CECBF6}.o3 .obj-diag{background:#1a1730;color:#AFA9EC}
+  .o4{background:#2a0a0a}.o4 .obj-q{color:#F09595}.o4 .obj-fields{background:#3a1010;color:#F7C1C1}.o4 .obj-diag{background:#2a0a0a;color:#F09595}
+  .o5{background:#052e1e}.o5 .obj-q{color:#5DCAA5}.o5 .obj-fields{background:#085041;color:#9FE1CB}.o5 .obj-diag{background:#052e1e;color:#5DCAA5}
+}
+.ks-note { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-top: 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .ks-note { background: #2a0a0a; color: #F09595; } }
+.controls { display: flex; gap: 8px; margin-top: 4px; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 12, Sections 1–2 · Architecture & Data Objects</div>
+<h1>GAOS — Five-Layer Architecture & Data Objects</h1>
+<p class="sub">Tap each layer or object to reveal function/output and diagnostic use.</p>
+
+<div class="view-tabs">
+  <button class="tab act-arch" id="tab-arch" onclick="switchView('arch')">5-Layer architecture</button>
+  <button class="tab" id="tab-obj" onclick="switchView('obj')">5 Data objects</button>
+</div>
+
+<!-- ARCHITECTURE -->
+<div class="panel active" id="panel-arch">
+  <div class="integrity-rule">Integrity Rule: data quality is the prerequisite for system intelligence. An MSOI score calculated from incomplete lesson records is not a lower score — it is an invalid score.</div>
+  <div id="layers"></div>
+  <div class="controls" style="margin-top:12px">
+    <button class="primary" onclick="revealAllLayers()">Reveal all</button>
+    <button class="secondary" onclick="resetLayers()">Reset</button>
+  </div>
+</div>
+
+<!-- DATA OBJECTS -->
+<div class="panel" id="panel-obj">
+  <div id="objects"></div>
+  <div class="ks-note">Kill Switch: analyst diagnoses a retention issue using only Student records without referencing Match Score and Lesson data. A retention analysis without Match Score is structurally incomplete — it diagnosed an outcome without the mechanism that produces it. Require: Retention → Student + Lesson + Match Score.</div>
+  <div class="controls" style="margin-top:12px">
+    <button class="primary" onclick="revealAllObj()">Reveal all</button>
+    <button class="secondary" onclick="resetObj()">Reset</button>
+  </div>
+</div>
+
+<script>
+const LAYERS = [
+  { cls:'la1', name:'1 — Training Layer', fn:'Modules 01–22 with locked-progression gates. Each module unlocks only upon passing its Knowledge Gate.', breakText:'Analysts advance without demonstrated capability. Field deployments fail within the first operator challenge.' },
+  { cls:'la2', name:'2 — Evaluation Layer', fn:'5-Axis scoring engine with simulation records, score history, and certification status tracking.', breakText:'Certification becomes subjective. Charisma Bias operates unchecked.' },
+  { cls:'la3', name:'3 — Operational Layer', fn:'Live diagnostic workspace: MSODA input, Lucidchart integration, root cause map storage.', breakText:'Diagnostics exist only in memory. No audit trail. No benchmark contribution.' },
+  { cls:'la4', name:'4 — Intelligence Layer', fn:'MSOI dashboard, KPI trend tracking, network benchmark comparisons, at-risk alerts.', breakText:'The analyst cannot see the school\'s position relative to the network. The urgency anchor is unavailable.' },
+  { cls:'la5', name:'5 — Feedback Layer', fn:'Implementation tracking, adoption rate monitoring, post-deployment KPI movement, remediation triggers.', breakText:'The analyst has no mechanism to detect whether their solutions are holding. Drift is invisible until it becomes failure.' },
+];
+const OBJECTS = [
+  { cls:'o1', badge:'Student', name:'Student', q:'"Which students are at risk of cancelling in the next 30 days?"', fields:'ID, enrollment date, instrument, DISC profile, instructor ID, attendance rate, churn date.', diag:'Cross-reference with Lesson (engagement signals) and Match Score (compatibility) to identify churn predictors.' },
+  { cls:'o2', badge:'Instructor', name:'Instructor', q:'"Which instructor configuration maximizes long-term retention?"', fields:'ID, instruments, DISC profile, note submission rate, student roster, performance score.', diag:'Cross-reference with Match Score and Lesson to identify instructor-specific retention correlations.' },
+  { cls:'o3', badge:'Lesson', name:'Lesson', q:'"Which lessons produced engagement signals that predict retention?"', fields:'ID, student ID, instructor ID, date, delivered flag, note submitted, engagement signal (1–5).', diag:'Aggregated by student for Engagement Index; cross-referenced with Match Score to identify patterns.' },
+  { cls:'o4', badge:'Match Score', name:'Match Score', q:'"Does DISC compatibility predict 90-day retention outcomes?"', fields:'Student ID, instructor ID, DISC compatibility score (0–100), date matched, 90-day retention flag.', diag:'The junction object. Every retention diagnostic must include Match Score — this is the causal mechanism.' },
+  { cls:'o5', badge:'School', name:'School', q:'"How does this school\'s operational health compare to the network?"', fields:'ID, location, student count, MSOI score, benchmark tier, assigned analyst ID.', diag:'Parent entity. MSOI is calculated at the School object level and compared against the network benchmark.' },
+];
+
+const layerOpen = new Array(LAYERS.length).fill(false);
+const objOpen = new Array(OBJECTS.length).fill(false);
+
+function renderLayers() {
+  document.getElementById('layers').innerHTML = LAYERS.map((l, i) => `
+    <div class="layer-row ${l.cls}" onclick="toggleLayer(${i})">
+      <div class="layer-num">${i+1}</div>
+      <div class="layer-body">
+        <div class="layer-name">${l.name}</div>
+        <div class="layer-function">${l.fn}</div>
+        <div class="layer-break${layerOpen[i]?' show':''}">What breaks if absent: ${l.breakText}</div>
+      </div>
+    </div>`).join('');
+}
+function toggleLayer(i){layerOpen[i]=!layerOpen[i];renderLayers();}
+function revealAllLayers(){layerOpen.fill(true);renderLayers();}
+function resetLayers(){layerOpen.fill(false);renderLayers();}
+renderLayers();
+
+function renderObjects() {
+  document.getElementById('objects').innerHTML = OBJECTS.map((o, i) => `
+    <div class="obj-card ${o.cls}${objOpen[i]?' open':''}" onclick="toggleObj(${i})">
+      <div class="obj-header"><span class="obj-badge">${o.badge}</span><span class="obj-name">${o.name}</span></div>
+      <div class="obj-q">${o.q}</div>
+      <div class="obj-detail${objOpen[i]?' show':''}">
+        <div class="obj-fields">${o.fields}</div>
+        <div class="obj-diag">${o.diag}</div>
+      </div>
+    </div>`).join('');
+}
+function toggleObj(i){objOpen[i]=!objOpen[i];renderObjects();}
+function revealAllObj(){objOpen.fill(true);renderObjects();}
+function resetObj(){objOpen.fill(false);renderObjects();}
+renderObjects();
+
+function switchView(v){
+  document.getElementById('panel-arch').classList.toggle('active',v==='arch');
+  document.getElementById('panel-obj').classList.toggle('active',v==='obj');
+  document.getElementById('tab-arch').className='tab'+(v==='arch'?' act-arch':'');
+  document.getElementById('tab-obj').className='tab'+(v==='obj'?' act-obj':'');
+}
+</script>
+</body>
+</html>

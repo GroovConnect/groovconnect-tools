@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 03 — Revenue Waterfall</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.reveal-note { font-size: 13px; color: #633806; background: #FAEEDA; border-left: 3px solid #BA7517; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 20px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .reveal-note { background: #2a1a00; color: #FAC775; } }
+.waterfall { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
+.wf-row { display: flex; align-items: stretch; gap: 0; border-radius: 10px; overflow: hidden; cursor: pointer; transition: opacity .12s; }
+.wf-row:hover { opacity: .9; }
+.wf-bar { display: flex; align-items: center; padding: 14px 16px; transition: width .4s ease; }
+.wf-label-col { width: 160px; flex-shrink: 0; padding: 14px 16px; display: flex; flex-direction: column; justify-content: center; }
+.wf-name { font-size: 14px; font-weight: 600; }
+.wf-pct { font-size: 22px; font-weight: 500; font-variant-numeric: tabular-nums; margin-top: 2px; }
+.wf-gap-col { flex: 1; display: flex; align-items: center; padding: 10px 14px; }
+.wf-gap-text { font-size: 12px; line-height: 1.5; display: none; }
+.wf-gap-text.show { display: block; }
+.wf-tap { font-size: 11px; color: #AEAEB2; font-style: italic; }
+
+.gross { background: #E6F1FB; }
+.gross .wf-name { color: #0C447C; }
+.gross .wf-pct { color: #185FA5; }
+.gross .wf-gap-col { background: #E6F1FB; }
+.gross .wf-gap-text { color: #185FA5; }
+
+.conversion { background: #FAC775; }
+.conversion .wf-label-col { background: #FAC775; }
+.conversion .wf-name { color: #412402; }
+.conversion .wf-pct { color: #633806; }
+.conversion .wf-gap-col { background: #FAEEDA; }
+.conversion .wf-gap-text { color: #633806; }
+
+.utilization { background: #F5C4B3; }
+.utilization .wf-label-col { background: #F5C4B3; }
+.utilization .wf-name { color: #4A1B0C; }
+.utilization .wf-pct { color: #712B13; }
+.utilization .wf-gap-col { background: #FAECE7; }
+.utilization .wf-gap-text { color: #712B13; }
+
+.retention { background: #F09595; }
+.retention .wf-label-col { background: #F09595; }
+.retention .wf-name { color: #501313; }
+.retention .wf-pct { color: #791F1F; }
+.retention .wf-gap-col { background: #FCEBEB; }
+.retention .wf-gap-text { color: #791F1F; }
+
+.net { background: #1D9E75; }
+.net .wf-label-col { background: #1D9E75; }
+.net .wf-name { color: #fff; }
+.net .wf-pct { color: #E1F5EE; }
+.net .wf-gap-col { background: #E1F5EE; }
+.net .wf-gap-text { color: #085041; }
+
+@media (prefers-color-scheme: dark) {
+  .gross { background: #0a1f3a; } .gross .wf-gap-col { background: #0a1f3a; } .gross .wf-gap-text { color: #85B7EB; } .gross .wf-name { color: #B5D4F4; } .gross .wf-pct { color: #85B7EB; }
+  .conversion { background: #2a1a00; } .conversion .wf-label-col { background: #2a1a00; } .conversion .wf-gap-col { background: #2a1a00; } .conversion .wf-gap-text { color: #FAC775; } .conversion .wf-name { color: #FAC775; } .conversion .wf-pct { color: #EF9F27; }
+  .utilization { background: #2a1208; } .utilization .wf-label-col { background: #2a1208; } .utilization .wf-gap-col { background: #2a1208; } .utilization .wf-gap-text { color: #F5C4B3; } .utilization .wf-name { color: #F5C4B3; } .utilization .wf-pct { color: #F0997B; }
+  .retention { background: #2a0a0a; } .retention .wf-label-col { background: #2a0a0a; } .retention .wf-gap-col { background: #2a0a0a; } .retention .wf-gap-text { color: #F7C1C1; } .retention .wf-name { color: #F7C1C1; } .retention .wf-pct { color: #F09595; }
+  .net { background: #052e1e; } .net .wf-label-col { background: #052e1e; } .net .wf-gap-col { background: #052e1e; } .net .wf-gap-text { color: #9FE1CB; } .net .wf-name { color: #9FE1CB; } .net .wf-pct { color: #5DCAA5; }
+}
+.total-note { font-size: 13px; color: #0F6E56; background: #E1F5EE; border-left: 3px solid #0F6E56; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 12px; line-height: 1.55; display: none; }
+.total-note.show { display: block; }
+@media (prefers-color-scheme: dark) { .total-note { background: #052e1e; color: #9FE1CB; } }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 03, Section 2 · Interactive Diagram</div>
+<h1>Revenue Waterfall — four leakage stages</h1>
+<p class="sub">Present blank first. Ask the room to estimate what the average school collects. Then reveal stage by stage.</p>
+<div class="reveal-note">Instructor: project blank — no percentages, no labels on gap columns. Let 2–3 people estimate. Then tap to reveal each stage. The moment of impact comes when trainees see the average school collects roughly half its theoretical maximum.</div>
+
+<div class="waterfall" id="waterfall"></div>
+<div class="total-note" id="total-note">Every gap between bars is a diagnosed, structural, addressable system failure — not bad luck. Not a hard market. A broken process with a specific dollar amount attached. The analyst's job: fill in the system, the chain, and the dollar figure for each gap.</div>
+
+<div class="controls">
+  <button class="primary" id="reveal-btn" onclick="revealNext()">Reveal next stage</button>
+  <button class="secondary" onclick="revealAll()">Reveal all</button>
+  <button class="secondary" onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+const STAGES = [
+  { cls: 'gross', name: 'Gross potential', pct: '100%', gap: 'The theoretical ceiling — all capacity enrolled, every lesson delivered, every student at full LTV. No school reaches this. Every gap below is quantifiable leakage.' },
+  { cls: 'conversion', name: 'After conversion loss', pct: '~85%', gap: 'Conversion Loss (~15%): students who trialed but did not enroll × LTV. Enrollment System and Communication System failures live here.' },
+  { cls: 'utilization', name: 'After utilization loss', pct: '~73%', gap: 'Utilization Loss (~12%): lessons scheduled but not delivered — rescheduled without resolution, cancelled without rebooking, or capacity misallocated. Scheduling System failures.' },
+  { cls: 'retention', name: 'After retention loss', pct: '~51%', gap: 'Retention Loss (~22%): students who enrolled but left before reaching full LTV. Engagement, Standardization, and Matching System failures live here.' },
+  { cls: 'net', name: 'Net revenue collected', pct: '~51%', gap: 'What the school actually collects. Every percentage point below 100% is a diagnosed, quantifiable system failure with a formula, a chain, and a dollar figure.' },
+];
+
+let revealed = 0;
+
+function render() {
+  document.getElementById('waterfall').innerHTML = STAGES.map((s, i) => {
+    const show = i < revealed;
+    const widths = [100, 85, 73, 51, 51];
+    return `<div class="wf-row ${s.cls}" onclick="revealIndex(${i})">
+      <div class="wf-label-col">
+        <div class="wf-name">${show ? s.name : '—'}</div>
+        <div class="wf-pct">${show ? s.pct : '?'}</div>
+      </div>
+      <div class="wf-gap-col">
+        <div class="wf-gap-text${show ? ' show' : ''}">${s.gap}</div>
+        ${!show ? '<span class="wf-tap">tap to reveal</span>' : ''}
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('total-note').classList.toggle('show', revealed >= STAGES.length);
+  document.getElementById('reveal-btn').textContent = revealed >= STAGES.length ? 'All revealed' : 'Reveal next stage';
+  document.getElementById('reveal-btn').disabled = revealed >= STAGES.length;
+}
+
+function revealIndex(i) { if (i >= revealed) { revealed = i + 1; render(); } }
+function revealNext() { if (revealed < STAGES.length) { revealed++; render(); } }
+function revealAll() { revealed = STAGES.length; render(); }
+function resetAll() { revealed = 0; render(); }
+render();
+</script>
+</body>
+</html>

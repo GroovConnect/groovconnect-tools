@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module A-2 — Process Mapping: Complete Walkthrough Library</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 720px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.rebuild-rule { font-size: 13px; color: #791F1F; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .rebuild-rule { background: #2a0a0a; color: #F09595; } }
+.map-tabs { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 16px; }
+.mtab { font-family: inherit; font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .mtab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.mtab.act { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.mpanel { display: none; }
+.mpanel.active { display: block; }
+/* swimlane */
+.swimlane-wrap { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 14px; overflow: hidden; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { .swimlane-wrap { background: #1e1e1e; border-color: #333; } }
+.sl-header { display: grid; font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; }
+.sl-owner-head { background: #E6F1FB; color: #185FA5; padding: 7px 12px; border-right: 0.5px solid #D1D1D6; }
+.sl-timing-head { background: #FAEEDA; color: #BA7517; padding: 7px 12px; border-right: 0.5px solid #D1D1D6; }
+.sl-action-head { background: #E1F5EE; color: #0F6E56; padding: 7px 12px; border-right: 0.5px solid #D1D1D6; }
+.sl-mech-head { background: #F1EFE8; color: #5F5E5A; padding: 7px 12px; }
+@media (prefers-color-scheme: dark) { .sl-owner-head{background:#0a1f3a}.sl-timing-head{background:#2a1a00}.sl-action-head{background:#052e1e}.sl-mech-head{background:#222} }
+.sl-row { display: grid; border-top: 0.5px solid #F1EFE8; }
+@media (prefers-color-scheme: dark) { .sl-row { border-top-color: #2a2a2a; } }
+.sl-row:hover { background: rgba(0,0,0,.02); }
+.sl-cell { padding: 9px 12px; font-size: 12px; line-height: 1.5; border-right: 0.5px solid #F1EFE8; }
+@media (prefers-color-scheme: dark) { .sl-cell { border-right-color: #2a2a2a; } }
+.sl-cell:last-child { border-right: none; }
+.owner-chip { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
+.oc-inst { background: #E6F1FB; color: #0C447C; }
+.oc-sys { background: #F1EFE8; color: #5F5E5A; }
+.oc-fd { background: #FAEEDA; color: #633806; }
+.oc-mgr { background: #E1F5EE; color: #085041; }
+.oc-parent { background: #EEEDFE; color: #26215C; }
+.timing-val { color: #854F0B; font-size: 11px; font-weight: 500; }
+.action-val { color: #1D1D1F; font-weight: 500; }
+@media (prefers-color-scheme: dark) { .action-val { color: #e8e8e8; } }
+.mech-val { color: #6E6E73; font-size: 11px; }
+.gate-chip { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 5px; background: #FCEBEB; color: #A32D2D; margin-top: 3px; }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module A-2 · Process Mapping Library</div>
+<h1>Process Mapping — 6 system maps</h1>
+<p class="sub">Study one map → close this tool → draw from memory in Lucidchart → compare → identify gaps → repeat. The rebuild is the learning event.</p>
+<div class="rebuild-rule">Trainees must be able to redraw any of the six maps from memory in Lucidchart within 15 minutes. The instructor selects which map is drawn — without notice. Test at least two different maps before granting certification.</div>
+
+<div class="map-tabs">
+  <button class="mtab act" id="mt-1" onclick="switchMap(1)">1 — Trial Enrollment</button>
+  <button class="mtab" id="mt-2" onclick="switchMap(2)">2 — Reschedule Loop</button>
+  <button class="mtab" id="mt-3" onclick="switchMap(3)">3 — Lesson Notes</button>
+  <button class="mtab" id="mt-4" onclick="switchMap(4)">4 — DISC Matching</button>
+  <button class="mtab" id="mt-5" onclick="switchMap(5)">5 — At-Risk Detection</button>
+  <button class="mtab" id="mt-6" onclick="switchMap(6)">6 — Operational Rhythm</button>
+</div>
+
+<div id="map-container"></div>
+
+<script>
+const MAPS = {
+  1: { title:'Trial-to-Enrollment System', cols:['owner','timing','action','mechanism'],
+    rows:[
+      { owner:'Inst', timing:'Within 2 hrs of lesson end', action:'Submit trial feedback form', mech:'GC sends auto-reminder at lesson end. Form has 7 fields.', gate:'Hard-gated — no other system update until submitted' },
+      { owner:'Sys', timing:'Immediately upon submission', action:'Auto-generate follow-up call task', mech:'CRM task assigned to Front Desk Coordinator with 24-hour deadline.' },
+      { owner:'FD', timing:'Within 24 hrs of lesson', action:'Call parent with specific feedback', mech:'Call uses submitted feedback as talking points. Outcome logged: Enrolled / Not Enrolled / Follow-Up Scheduled.' },
+      { owner:'Sys', timing:'Every Monday', action:'Generate conversion report', mech:'Weekly conversion rate auto-report. Alert fires if rate falls below 65%.' },
+    ]},
+  2: { title:'Closed-Loop Reschedule System', cols:['owner','timing','action','mechanism'],
+    rows:[
+      { owner:'Sys', timing:'Auto: lesson missed, no check-in', action:'Mark No Show + send reschedule link', mech:'Parent receives automated reschedule link within 15 minutes of missed lesson.' },
+      { owner:'Parent/Sys', timing:'Within 24 hrs', action:'Parent selects reschedule slot', mech:'Self-service via GC portal. Limited to available slots within 14 days. No back-and-forth.' },
+      { owner:'Sys', timing:'Immediately upon selection', action:'Confirm instructor + block slot', mech:'Instructor receives automated notification. Slot reserved in scheduling system.' },
+      { owner:'Sys', timing:'If no selection after 24 hrs', action:'Escalate to Front Desk', mech:'Front Desk receives escalation task. Manual outreach required. Outcome logged.', gate:'Target: ≥90% automated resolution' },
+      { owner:'Mgr', timing:'Every Monday', action:'Weekly reschedule audit', mech:'% resolved within 24 hrs, % manual escalations, % cancelled.' },
+    ]},
+  3: { title:'Lesson Note Submission System', cols:['owner','timing','action','mechanism'],
+    rows:[
+      { owner:'Inst', timing:'Within 2 hrs of lesson end', action:'Submit note via GC (7-field form)', mech:'Fields: engagement signal (1–5), progress, next lesson focus, parent message, practice recommendation, DISC flag, attendance flag.' },
+      { owner:'Sys', timing:'Within 30 min of submission', action:'Generate parent portal update', mech:'"[Student] worked on [X] today and will focus on [Y] next lesson." Auto-formatted.' },
+      { owner:'Sys', timing:'2 hrs after lesson if no note', action:'Send non-submission alert to instructor', mech:'If unresolved within 4 hrs: escalation to Operations Manager.' },
+      { owner:'Sys', timing:'Nightly', action:'Process engagement signal', mech:'Student engagement trend updated. 3 consecutive lessons ≤2 signal: at-risk flag activated.' },
+      { owner:'Mgr', timing:'Every Monday', action:'Review weekly compliance report', mech:'Instructor-level note submission rates. Red flag: any instructor below 90%.' },
+    ]},
+  4: { title:'DISC-Based Matching System', cols:['owner','timing','action','mechanism'],
+    rows:[
+      { owner:'Sys', timing:'Within 2 hrs of inquiry', action:'Send DISC assessment link to parent', mech:'GC enrollment intake form includes DISC student assessment link. Sent automatically upon inquiry.' },
+      { owner:'Sys', timing:'Before trial scheduling', action:'Block scheduling until DISC submitted', mech:'System gates trial scheduling on DISC completion.', gate:'No DISC = no trial slot' },
+      { owner:'Sys', timing:'Immediately upon submission', action:'Calculate compatibility scores', mech:'GC Matching Engine ranks all available instructors by compatibility score. Top 3 presented.' },
+      { owner:'FD', timing:'Before scheduling confirmation', action:'Confirm top match availability', mech:'If top match unavailable: second-ranked match selected. Decision logged.' },
+      { owner:'Sys', timing:'Day 90 post-enrollment', action:'Log 90-day retention outcome', mech:'Student retention outcome logged against match score. Feeds Matching Engine improvement loop.' },
+    ]},
+  5: { title:'At-Risk Detection & Intervention System', cols:['owner','timing','action','mechanism'],
+    rows:[
+      { owner:'Sys', timing:'Nightly', action:'Monitor engagement signal threshold', mech:'3 consecutive lesson notes with signal ≤2: student flagged At-Risk in GC dashboard.' },
+      { owner:'Sys', timing:'Within 24 hrs of flag', action:'Send at-risk notification', mech:'Operations Manager receives at-risk roster. Instructor receives flag for affected student(s).' },
+      { owner:'Inst', timing:'Next scheduled lesson', action:'Adjust lesson plan for re-engagement', mech:'Adjusts based on DISC profile. Adds milestone visibility element to lesson.' },
+      { owner:'FD', timing:'Within 48 hrs of flag', action:'Parent check-in call', mech:'"We noticed [student\'s] engagement signals and wanted to share what we\'re doing to address it."' },
+      { owner:'Mgr', timing:'30 days after flag', action:'30-day intervention review', mech:'If improved: at-risk flag cleared. If static: escalate to instructor assignment review (potential re-match).' },
+    ]},
+  6: { title:'Operational Rhythm System', cols:['owner','timing','action','mechanism'],
+    rows:[
+      { owner:'Mgr', timing:'Every business day · 15 min', action:'Daily: Do', mech:'At-risk flags, overdue notes, unresolved reschedules, system alerts. All items must have an owner and same-day resolution target.' },
+      { owner:'Mgr+Team', timing:'Same day each week · 60 min', action:'Weekly: Improve', mech:'MSOI score, KPI review, note rates, trial conversion, at-risk roster. Written summary + one system improvement decision.', gate:'Documented output required' },
+      { owner:'Mgr+Owner', timing:'Last business day monthly · 90 min', action:'Monthly: Rethink', mech:'MSOI trend, LTV vs. benchmark, top 3 failures, next initiative. Documented decision with owner and 30-day implementation target.', gate:'Documented decision required' },
+    ]},
+};
+
+const OWNER_MAP = {
+  'Inst':'Instructor','Sys':'System','FD':'Front Desk','Mgr':'Ops Manager','Mgr+Team':'Ops Mgr + Team','Mgr+Owner':'Mgr + Owner','Parent/Sys':'Parent / System'
+};
+const OWNER_CLS = {
+  'Inst':'oc-inst','Sys':'oc-sys','FD':'oc-fd','Mgr':'oc-mgr','Mgr+Team':'oc-mgr','Mgr+Owner':'oc-mgr','Parent/Sys':'oc-parent'
+};
+
+function renderMap(id) {
+  const m = MAPS[id];
+  const colGrid = `grid-template-columns: 110px 140px 1fr 1fr`;
+  document.getElementById('map-container').innerHTML = `
+    <div style="font-size:13px;font-weight:600;color:#1D1D1F;margin-bottom:10px">Map ${id} — ${m.title}</div>
+    <div class="swimlane-wrap">
+      <div class="sl-header" style="${colGrid}">
+        <div class="sl-owner-head">Owner</div>
+        <div class="sl-timing-head">Timing</div>
+        <div class="sl-action-head">Action</div>
+        <div class="sl-mech-head">System Mechanism</div>
+      </div>
+      ${m.rows.map(r => `
+        <div class="sl-row" style="${colGrid}">
+          <div class="sl-cell"><span class="owner-chip ${OWNER_CLS[r.owner]||'oc-sys'}">${OWNER_MAP[r.owner]||r.owner}</span></div>
+          <div class="sl-cell"><span class="timing-val">${r.timing}</span></div>
+          <div class="sl-cell"><span class="action-val">${r.action}</span>${r.gate?`<div><span class="gate-chip">${r.gate}</span></div>`:''}</div>
+          <div class="sl-cell"><span class="mech-val">${r.mech}</span></div>
+        </div>`).join('')}
+    </div>
+    <div style="font-size:12px;color:#534AB7;background:#EEEDFE;border-radius:8px;padding:8px 12px;line-height:1.5">Rebuild challenge: close this panel and draw Map ${id} from memory in Lucidchart. Include owners, timing gates, and all system mechanism triggers. 15-minute time limit.</div>`;
+}
+
+function switchMap(id) {
+  for (let i=1;i<=6;i++) document.getElementById(`mt-${i}`).className='mtab'+(i===id?' act':'');
+  renderMap(id);
+}
+renderMap(1);
+</script>
+</body>
+</html>

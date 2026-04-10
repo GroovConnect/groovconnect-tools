@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 03 — LTV Formula Engine</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 640px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.formula-bar { background: #E6F1FB; border-radius: 10px; padding: 14px 18px; text-align: center; margin-bottom: 20px; }
+.formula-text { font-size: 20px; font-weight: 600; color: #0C447C; font-family: "SFMono-Regular", Menlo, monospace; letter-spacing: 1px; }
+.formula-sub { font-size: 12px; color: #185FA5; margin-top: 4px; }
+@media (prefers-color-scheme: dark) { .formula-bar { background: #0a1f3a; } .formula-text { color: #85B7EB; } .formula-sub { color: #B5D4F4; } }
+.inputs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+.input-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 10px; padding: 12px 14px; }
+@media (prefers-color-scheme: dark) { .input-card { background: #1e1e1e; border-color: #333; } }
+.inp-symbol { font-size: 22px; font-weight: 600; color: #185FA5; font-family: "SFMono-Regular", Menlo, monospace; }
+.inp-name { font-size: 12px; font-weight: 600; color: #1D1D1F; margin-top: 4px; margin-bottom: 3px; }
+@media (prefers-color-scheme: dark) { .inp-name { color: #e8e8e8; } }
+.inp-def { font-size: 11px; color: #6E6E73; line-height: 1.45; }
+.inp-default { font-size: 11px; color: #185FA5; margin-top: 4px; font-weight: 500; }
+.section-head { font-size: 13px; font-weight: 600; color: #1D1D1F; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 0.5px solid #D1D1D6; }
+@media (prefers-color-scheme: dark) { .section-head { color: #e8e8e8; border-bottom-color: #2a2a2a; } }
+.calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.calc-group { display: flex; flex-direction: column; gap: 8px; }
+.calc-label { font-size: 12px; color: #6E6E73; margin-bottom: 2px; }
+.calc-input-row { display: flex; align-items: center; gap: 8px; }
+.calc-input-row label { font-size: 13px; color: #1D1D1F; min-width: 90px; }
+@media (prefers-color-scheme: dark) { .calc-input-row label { color: #e8e8e8; } }
+input[type=number] { font-family: inherit; font-size: 14px; padding: 7px 10px; border: 0.5px solid #AEAEB2; border-radius: 8px; background: #fff; color: #1D1D1F; width: 90px; }
+@media (prefers-color-scheme: dark) { input[type=number] { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+.result-card { background: #E1F5EE; border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; }
+@media (prefers-color-scheme: dark) { .result-card { background: #052e1e; } }
+.result-label { font-size: 12px; font-weight: 600; color: #0F6E56; margin-bottom: 4px; }
+.result-value { font-size: 28px; font-weight: 500; color: #085041; font-variant-numeric: tabular-nums; }
+@media (prefers-color-scheme: dark) { .result-value { color: #9FE1CB; } }
+.result-breakdown { font-size: 12px; color: #0F6E56; margin-top: 6px; font-family: "SFMono-Regular", Menlo, monospace; line-height: 1.7; }
+.rounding-rule { font-size: 12px; color: #633806; background: #FAEEDA; border-left: 3px solid #BA7517; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 16px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .rounding-rule { background: #2a1a00; color: #FAC775; } }
+.ks-note { font-size: 12px; color: #A32D2D; background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 10px 14px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .ks-note { background: #2a0a0a; color: #F09595; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 03, Section 4 · Calculator</div>
+<h1>LTV Formula Engine — T × M × R</h1>
+<p class="sub">Three inputs. All stated before any calculation. No spreadsheet. No hidden math.</p>
+
+<div class="formula-bar">
+  <div class="formula-text">LTV = T × M × R</div>
+  <div class="formula-sub">Monthly Tuition × Gross Margin % × Months Retained</div>
+</div>
+
+<div class="inputs">
+  <div class="input-card"><div class="inp-symbol">T</div><div class="inp-name">Monthly Tuition</div><div class="inp-def">Average gross revenue per student per month. Use actual ARPU, not advertised rate.</div><div class="inp-default">Default: operator-stated</div></div>
+  <div class="input-card"><div class="inp-symbol">M</div><div class="inp-name">Gross Margin %</div><div class="inp-def">Tuition remaining after direct costs (instructor pay, room costs).</div><div class="inp-default">Default: 50% if not stated</div></div>
+  <div class="input-card"><div class="inp-symbol">R</div><div class="inp-name">Months Retained</div><div class="inp-def">Average enrollment duration. Or estimate: 1 ÷ Monthly Churn Rate.</div><div class="inp-default">Default: pull from CRM</div></div>
+</div>
+
+<div class="section-head">Calculate LTV leakage</div>
+<div class="calc-grid">
+  <div class="calc-group">
+    <div class="calc-input-row"><label>Monthly tuition ($)</label><input type="number" id="tuition" value="195" min="0" oninput="calc()"></div>
+    <div class="calc-input-row"><label>Gross margin (%)</label><input type="number" id="margin" value="52" min="0" max="100" oninput="calc()"></div>
+    <div class="calc-input-row"><label>Baseline months</label><input type="number" id="baseline_r" value="10" min="1" oninput="calc()"></div>
+  </div>
+  <div class="calc-group">
+    <div class="calc-input-row"><label>Failure-state months</label><input type="number" id="actual_r" value="7" min="1" oninput="calc()"></div>
+    <div class="calc-input-row"><label>Students affected</label><input type="number" id="students" value="120" min="1" oninput="calc()"></div>
+  </div>
+</div>
+
+<div class="result-card" id="result-card">
+  <div class="result-label">Annual LTV leakage</div>
+  <div class="result-value" id="result-value">—</div>
+  <div class="result-breakdown" id="result-breakdown"></div>
+</div>
+
+<div class="rounding-rule">Rounding rule: nearest $500 under $10K · nearest $1,000 under $100K · nearest $5,000 above $100K. State rounding convention explicitly if challenged.</div>
+<div class="ks-note">Kill Switch: trainee states a dollar figure without showing the formula derivation, or presents a gut-estimate without calculating. "Which formula produced that number? What are the three inputs?" A correct answer with hidden math receives zero credit in certification.</div>
+
+<script>
+function round(n) {
+  if (n < 10000) return Math.round(n / 500) * 500;
+  if (n < 100000) return Math.round(n / 1000) * 1000;
+  return Math.round(n / 5000) * 5000;
+}
+function fmt(n) { return '$' + n.toLocaleString(); }
+
+function calc() {
+  const T = parseFloat(document.getElementById('tuition').value) || 0;
+  const M = parseFloat(document.getElementById('margin').value) / 100 || 0;
+  const Rb = parseFloat(document.getElementById('baseline_r').value) || 0;
+  const Ra = parseFloat(document.getElementById('actual_r').value) || 0;
+  const S = parseFloat(document.getElementById('students').value) || 0;
+
+  const monthlyProfit = T * M;
+  const baselineLTV = monthlyProfit * Rb;
+  const actualLTV = monthlyProfit * Ra;
+  const lossPerStudent = baselineLTV - actualLTV;
+  const totalLoss = lossPerStudent * S;
+  const rounded = round(totalLoss);
+
+  document.getElementById('result-value').textContent = fmt(rounded) + '/year';
+  document.getElementById('result-breakdown').innerHTML =
+    `Monthly profit/student: ${fmt(T)} × ${(M*100).toFixed(0)}% = ${fmt(Math.round(monthlyProfit))}\n` +
+    `Baseline LTV: ${fmt(Math.round(monthlyProfit))} × ${Rb} mo = ${fmt(Math.round(baselineLTV))}\n` +
+    `Failure-state LTV: ${fmt(Math.round(monthlyProfit))} × ${Ra} mo = ${fmt(Math.round(actualLTV))}\n` +
+    `Loss per student: ${fmt(Math.round(lossPerStudent))}\n` +
+    `Total (${S} students): ${fmt(Math.round(totalLoss))} → rounded: ${fmt(rounded)}`;
+}
+calc();
+</script>
+</body>
+</html>

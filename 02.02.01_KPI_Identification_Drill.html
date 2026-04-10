@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 02 — KPI Identification Drill</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 640px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.rule { font-size: 13px; color: #0C447C; background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 20px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .rule { background: #0a1f3a; color: #B5D4F4; } }
+.score-pill { display: inline-flex; gap: 8px; background: #E6F1FB; border-radius: 99px; padding: 6px 16px; font-size: 13px; font-weight: 600; color: #185FA5; margin-bottom: 16px; }
+.card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 14px; padding: 20px 22px; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { .card { background: #1e1e1e; border-color: #333; } }
+.candidate { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 0.5px solid #F1EFE8; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .candidate { border-bottom-color: #2a2a2a; } }
+.candidate:last-child { border-bottom: none; padding-bottom: 0; }
+.candidate:hover .cand-text { text-decoration: underline; text-decoration-style: dotted; }
+.v-badge { width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+.v-valid { background: #E1F5EE; color: #085041; }
+.v-invalid { background: #FCEBEB; color: #A32D2D; }
+.v-unknown { background: #F1EFE8; color: #888780; border: 0.5px dashed #AEAEB2; }
+.cand-text { font-size: 14px; font-weight: 500; color: #1D1D1F; flex: 1; line-height: 1.4; }
+@media (prefers-color-scheme: dark) { .cand-text { color: #e8e8e8; } }
+.cand-reason { font-size: 12px; color: #6E6E73; margin-top: 4px; line-height: 1.5; display: none; }
+.cand-reason.show { display: block; }
+.cand-reason.valid { color: #0F6E56; }
+.cand-reason.invalid { color: #A32D2D; }
+.section-label { font-size: 11px; font-weight: 700; color: #8E8E93; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 10px; }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 02, Section 2 · Drill Tool</div>
+<h1>KPI Identification — the Spreadsheet Test</h1>
+<p class="sub">Tap any candidate to reveal whether it passes. Apply the Spreadsheet Test before allowing the diagnostic to proceed.</p>
+<div class="rule">The Spreadsheet Test: "Can this be tracked on a spreadsheet — one row per student or per week, one number per cell?" If no — it is not a KPI. The diagnostic cannot proceed.</div>
+
+<div class="score-pill" id="score-pill">0 / 10 revealed</div>
+
+<div class="section-label">Valid KPIs — tap to confirm</div>
+<div class="card" id="valid-card"></div>
+
+<div class="section-label" style="margin-top:16px">Invalid — not a KPI — tap to see why</div>
+<div class="card" id="invalid-card"></div>
+
+<div class="controls">
+  <button class="primary" onclick="revealAll()">Reveal all</button>
+  <button class="secondary" onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+const VALID = [
+  { text: 'Retention Rate %', reason: 'Monthly count of students who continue ÷ total active at period start. Baseline required.' },
+  { text: 'Trial Conversion Rate %', reason: 'Trials that result in enrollment ÷ total trials. 30-day window standard.' },
+  { text: 'Lesson Delivery Rate %', reason: 'Lessons delivered ÷ lessons scheduled. Identifies rollover accumulation.' },
+  { text: 'Instructor Retention %', reason: 'Students retained by a specific instructor vs. school average. Enables comparative diagnosis.' },
+  { text: 'Revenue Per Student', reason: 'Total monthly revenue ÷ active student count. Detects ARPU compression without headcount change.' },
+];
+const INVALID = [
+  { text: '"Engagement is low"', reason: 'Not a number. Translate to portal login rate, note receipt rate, or attendance rate.' },
+  { text: '"Parents are unhappy"', reason: 'Not a number. Translate to cancellation rate, complaint count, or 30-day churn rate.' },
+  { text: '"Morale is down"', reason: 'Not a number. Translate to absenteeism rate, note submission rate, or turnover rate.' },
+  { text: '"Student satisfaction"', reason: 'Not a KPI until scored on a defined scale with a baseline. "Satisfaction" is an aspiration.' },
+  { text: '"Parent happiness"', reason: 'Not a KPI until it is a portal login rate, a complaint count, or a renewal rate.' },
+];
+
+const revealed = { valid: new Array(VALID.length).fill(false), invalid: new Array(INVALID.length).fill(false) };
+let totalRevealed = 0;
+
+function render() {
+  const vc = document.getElementById('valid-card');
+  vc.innerHTML = VALID.map((item, i) => `
+    <div class="candidate" onclick="toggle('valid',${i})">
+      <div class="v-badge ${revealed.valid[i] ? 'v-valid' : 'v-unknown'}">${revealed.valid[i] ? '✓' : '?'}</div>
+      <div>
+        <div class="cand-text">${item.text}</div>
+        <div class="cand-reason valid ${revealed.valid[i] ? 'show' : ''}">${item.reason}</div>
+      </div>
+    </div>`).join('');
+
+  const ic = document.getElementById('invalid-card');
+  ic.innerHTML = INVALID.map((item, i) => `
+    <div class="candidate" onclick="toggle('invalid',${i})">
+      <div class="v-badge ${revealed.invalid[i] ? 'v-invalid' : 'v-unknown'}">${revealed.invalid[i] ? '✗' : '?'}</div>
+      <div>
+        <div class="cand-text">${item.text}</div>
+        <div class="cand-reason invalid ${revealed.invalid[i] ? 'show' : ''}">${item.reason}</div>
+      </div>
+    </div>`).join('');
+
+  totalRevealed = revealed.valid.filter(Boolean).length + revealed.invalid.filter(Boolean).length;
+  document.getElementById('score-pill').textContent = `${totalRevealed} / 10 revealed`;
+}
+
+function toggle(type, i) {
+  revealed[type][i] = !revealed[type][i];
+  render();
+}
+function revealAll() { revealed.valid.fill(true); revealed.invalid.fill(true); render(); }
+function resetAll() { revealed.valid.fill(false); revealed.invalid.fill(false); render(); }
+render();
+</script>
+</body>
+</html>

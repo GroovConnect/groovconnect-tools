@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 09 — Drift Detection & Recovery</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.drift-def { font-size: 13px; color: #634AB; background: #EEEDFE; border-left: 3px solid #534AB7; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 8px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .drift-def { background: #1a1730; color: #CECBF6; } }
+.view-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 13px; font-weight: 500; padding: 7px 18px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.active-ref { background: #EEEDFE; border-color: #534AB7; color: #534AB7; font-weight: 600; }
+.tab.active-drill { background: #FAEEDA; border-color: #BA7517; color: #854F0B; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+.lever-card { border-radius: 12px; padding: 14px 18px; margin-bottom: 6px; cursor: pointer; transition: opacity .12s; }
+.lever-card:hover { opacity: .93; }
+.lever-card.open { outline: 1.5px solid rgba(0,0,0,.12); }
+.lever-header { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+.lever-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px; white-space: nowrap; flex-shrink: 0; }
+.lever-signal { font-size: 13px; line-height: 1.4; flex: 1; }
+.lever-detail { margin-top: 10px; display: none; }
+.lever-detail.show { display: block; }
+.lever-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.lever-block { border-radius: 8px; padding: 8px 12px; }
+.lb-label { font-size: 10px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 3px; }
+.lb-text { font-size: 12px; line-height: 1.5; }
+
+.l-friction { background: #FCEBEB; } .l-friction .lever-badge { background: #A32D2D; color: #fff; } .l-friction .lever-signal { color: #791F1F; } .l-friction .lever-block { background: #F7C1C1; } .l-friction .lb-label { color: #791F1F; } .l-friction .lb-text { color: #501313; }
+.l-visibility { background: #FAEEDA; } .l-visibility .lever-badge { background: #BA7517; color: #fff; } .l-visibility .lever-signal { color: #633806; } .l-visibility .lever-block { background: #FAC775; } .l-visibility .lb-label { color: #633806; } .l-visibility .lb-text { color: #412402; }
+.l-accountability { background: #EEEDFE; } .l-accountability .lever-badge { background: #534AB7; color: #fff; } .l-accountability .lever-signal { color: #26215C; } .l-accountability .lever-block { background: #CECBF6; } .l-accountability .lb-label { color: #3C3489; } .l-accountability .lb-text { color: #26215C; }
+.l-incentive { background: #E1F5EE; } .l-incentive .lever-badge { background: #0F6E56; color: #fff; } .l-incentive .lever-signal { color: #085041; } .l-incentive .lever-block { background: #9FE1CB; } .l-incentive .lb-label { color: #085041; } .l-incentive .lb-text { color: #04342C; }
+
+@media (prefers-color-scheme: dark) {
+  .l-friction{background:#2a0a0a}.l-friction .lever-signal{color:#F09595}.l-friction .lever-block{background:#3a1010}.l-friction .lb-text{color:#F7C1C1}
+  .l-visibility{background:#2a1a00}.l-visibility .lever-signal{color:#FAC775}.l-visibility .lever-block{background:#3a2200}.l-visibility .lb-text{color:#FAC775}
+  .l-accountability{background:#1a1730}.l-accountability .lever-signal{color:#CECBF6}.l-accountability .lever-block{background:#26215C}.l-accountability .lb-text{color:#CECBF6}
+  .l-incentive{background:#052e1e}.l-incentive .lever-signal{color:#9FE1CB}.l-incentive .lever-block{background:#085041}.l-incentive .lb-text{color:#9FE1CB}
+}
+/* Drill panel */
+.pips { display: flex; gap: 8px; margin-bottom: 14px; align-items: center; }
+.pip { width: 8px; height: 8px; border-radius: 50%; background: #D1D1D6; transition: background .2s; flex-shrink: 0; }
+@media (prefers-color-scheme: dark) { .pip { background: #3a3a3a; } }
+.pip.on { background: #534AB7; transform: scale(1.3); }
+.pip-label { font-size: 12px; color: #8E8E93; margin-left: 4px; }
+.drill-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { .drill-card { background: #1e1e1e; border-color: #333; } }
+.drill-label { font-size: 11px; font-weight: 700; color: #8E8E93; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 8px; }
+.drill-signal { font-size: 16px; font-weight: 500; color: #1D1D1F; line-height: 1.45; margin-bottom: 14px; }
+@media (prefers-color-scheme: dark) { .drill-signal { color: #e8e8e8; } }
+.lever-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.lever-btn { font-family: inherit; font-size: 12px; font-weight: 500; padding: 7px 14px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .lever-btn { background: #2a2a2a; border-color: #444; color: #9a9a9a; } }
+.drill-feedback { margin-top: 12px; border-radius: 8px; padding: 10px 14px; display: none; }
+.drill-feedback.show { display: block; }
+.drill-feedback.correct { background: #E1F5EE; }
+.drill-feedback.wrong { background: #FAEEDA; }
+.drill-feedback.correct .fb-head { color: #085041; font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.drill-feedback.wrong .fb-head { color: #633806; font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.fb-body { font-size: 13px; line-height: 1.55; color: #6E6E73; }
+.drill-feedback.correct .fb-body { color: #0F6E56; }
+.drill-feedback.wrong .fb-body { color: #854F0B; }
+@media (prefers-color-scheme: dark) { .drill-feedback.correct{background:#052e1e}.drill-feedback.correct .fb-body{color:#9FE1CB} .drill-feedback.wrong{background:#2a1a00}.drill-feedback.wrong .fb-body{color:#FAC775} }
+.score-pill { display: inline-flex; background: #EEEDFE; border-radius: 99px; padding: 6px 16px; font-size: 13px; font-weight: 600; color: #534AB7; margin-bottom: 14px; }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 09, Section 5 · Reference & Drill</div>
+<h1>Drift Detection & Recovery</h1>
+<p class="sub">Drift is structural — not motivational. Classify the lever, execute the protocol.</p>
+<div class="drift-def" style="color:#534AB7">Drift definition: any adoption metric that fails to improve by 3 or more percentage points across 3 consecutive weekly reviews. The analyst does not improvise a response — they classify the lever and execute the protocol.</div>
+
+<div class="view-tabs">
+  <button class="tab active-ref" id="tab-ref" onclick="switchView('ref')">4 drift levers</button>
+  <button class="tab" id="tab-drill" onclick="switchView('drill')">Classification drill</button>
+</div>
+
+<!-- REFERENCE -->
+<div class="panel active" id="panel-ref">
+  <div id="levers"></div>
+  <div class="controls" style="margin-top:12px">
+    <button class="primary" onclick="revealAll()">Reveal all</button>
+    <button class="secondary" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<!-- DRILL -->
+<div class="panel" id="panel-drill">
+  <div class="score-pill" id="score-pill">Score: 0 / 5</div>
+  <div class="pips" id="drill-pips"></div>
+  <div id="drill-area"></div>
+  <div class="controls">
+    <button class="primary" id="drill-next" onclick="drillNext()">Next signal</button>
+    <button class="secondary" onclick="drillReset()">Reset</button>
+  </div>
+</div>
+
+<script>
+const LEVERS = [
+  { cls:'l-friction', name:'Friction', signal:'Usage drops because the process feels burdensome — step count too high, form too long, submission path unclear.', diag:'Audit the process steps. Count the clicks, fields, and decisions required.', recovery:'Identify and remove the highest-friction step. The system should not require willpower to use.' },
+  { cls:'l-visibility', name:'Visibility', signal:'Usage drops because non-compliance is invisible — no dashboard, no name-visible tracking, no weekly review.', diag:'Is non-compliance visible? Are individual names attached to non-completion data?', recovery:'Restore name-visible tracking. Ensure the dashboard is reviewed in the Weekly Rhythm. Invisible compliance is invisible non-compliance.' },
+  { cls:'l-accountability', name:'Accountability', signal:'Usage drops because there are no consequences for non-compliance — the social accountability layer is absent.', diag:'Has any accountability consequence been applied to a visible case of non-compliance?', recovery:'Apply the defined accountability consequence to the first visible case, publicly. Non-compliance without consequence is implicit permission.' },
+  { cls:'l-incentive', name:'Incentive Misalignment', signal:'Usage drops because the system requirements conflict with how performance is rewarded or recognized.', diag:'Does the reward structure conflict with the required system behavior? What is the user incentivized to do instead?', recovery:'Audit the incentive structure. Align rewards with the desired system behavior. A system that punishes compliance will not be used.' },
+];
+const leverOpen = new Array(LEVERS.length).fill(false);
+function renderLevers() {
+  document.getElementById('levers').innerHTML = LEVERS.map((l, i) => `
+    <div class="lever-card ${l.cls}${leverOpen[i]?' open':''}" onclick="toggleLever(${i})">
+      <div class="lever-header"><span class="lever-badge">${l.name}</span><span class="lever-signal">${l.signal}</span><span style="font-size:11px;color:#AEAEB2">${leverOpen[i]?'▲':'▼'}</span></div>
+      <div class="lever-detail${leverOpen[i]?' show':''}">
+        <div class="lever-row">
+          <div class="lever-block"><div class="lb-label">Diagnostic question</div><div class="lb-text">${l.diag}</div></div>
+          <div class="lever-block"><div class="lb-label">Recovery action</div><div class="lb-text">${l.recovery}</div></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function toggleLever(i) { leverOpen[i]=!leverOpen[i]; renderLevers(); }
+function revealAll() { leverOpen.fill(true); renderLevers(); }
+function resetAll() { leverOpen.fill(false); renderLevers(); }
+renderLevers();
+
+// Drill
+const DRILL_SIGNALS = [
+  { signal:'Lesson note submission dropped from 84% to 76% over 3 weeks. The instructor feedback form requires 20 fields and takes 8 minutes to complete.', answer:'Friction', recovery:'Shorten the form. Remove all fields not directly required for the student engagement tracking. Target: ≤7 fields, ≤2 minutes to complete.' },
+  { signal:'Trial follow-up completion rate dropped from 93% to 81% over 3 weeks. The weekly completion report shows individual names but the manager has not reviewed it in 4 weeks.', answer:'Visibility', recovery:'Restore the weekly rhythm meeting. The manager must review name-visible completion data in the Weekly Rhythm. Non-compliance that is invisible has no accountability.' },
+  { signal:'Scheduling system compliance dropped from 89% to 79% over 3 weeks. The SOP is clear, tracking is name-visible, but no staff member has experienced a consequence for non-compliance.', answer:'Accountability', recovery:'Apply the defined accountability consequence to the first visible case of non-compliance, publicly. This resets the standard for the team.' },
+  { signal:'Parent portal activation dropped from 38% to 28% over 3 weeks. Investigation reveals that instructors who submit lesson notes through the portal receive no recognition, while instructors who use the old email method are praised for responsiveness.', answer:'Incentive Misalignment', recovery:'Audit the reward structure. Align recognition with portal-based note submission. Remove the implicit reward for the non-compliant behavior.' },
+  { signal:'Dashboard weekly review completion dropped from 100% to 60% over 3 weeks. There is no automated reminder, no shared calendar event, and the management meeting that included the review was cancelled without being rescheduled.', answer:'Visibility', recovery:'Restore name-visible scheduling: add the weekly review to a shared calendar with automated reminders. The management commitment is missing from the accountability structure.' },
+];
+let drillCur = 0, drillScore = 0;
+const drillAnswered = new Array(DRILL_SIGNALS.length).fill(null);
+function renderDrill() {
+  document.getElementById('drill-pips').innerHTML =
+    DRILL_SIGNALS.map((_,i) => `<div class="pip${i<=drillCur?' on':''}"></div>`).join('') +
+    `<span class="pip-label">${drillCur+1} of ${DRILL_SIGNALS.length}</span>`;
+  if (drillCur >= DRILL_SIGNALS.length) {
+    document.getElementById('drill-area').innerHTML = `<div style="text-align:center;padding:28px 0"><p style="font-size:18px;font-weight:500">${drillScore}/5 correct</p><p style="font-size:13px;color:#6E6E73;margin-top:8px">${drillScore >= 4 ? 'Pass — zero misclassifications on final evaluation required.' : 'Re-run until all 5 correct.'}</p></div>`;
+    document.getElementById('drill-next').style.display='none'; return;
+  }
+  document.getElementById('drill-next').style.display='';
+  document.getElementById('drill-next').textContent = drillCur===DRILL_SIGNALS.length-1?'Finish':'Next signal';
+  const d = DRILL_SIGNALS[drillCur];
+  const done = drillAnswered[drillCur] !== null;
+  const correct = drillAnswered[drillCur] === d.answer;
+  document.getElementById('drill-area').innerHTML = `
+    <div class="drill-card">
+      <div class="drill-label">Classify this drift signal</div>
+      <div class="drill-signal">${d.signal}</div>
+      ${done ? '' : `<div class="lever-btns">${['Friction','Visibility','Accountability','Incentive Misalignment'].map(l=>`<button class="lever-btn" onclick="classifyDrift('${l}')">${l}</button>`).join('')}</div>`}
+      <div class="drill-feedback${done?' show '+(correct?'correct':'wrong'):''}">
+        ${done ? `<div class="fb-head">${correct?'✓ Correct':'✗ Incorrect — '+d.answer}</div><div class="fb-body">${d.recovery}</div>` : ''}
+      </div>
+    </div>`;
+  document.getElementById('score-pill').textContent = `Score: ${drillScore} / ${DRILL_SIGNALS.length}`;
+}
+function classifyDrift(choice) { if (choice === DRILL_SIGNALS[drillCur].answer) drillScore++; drillAnswered[drillCur]=choice; renderDrill(); }
+function drillNext() { drillCur++; renderDrill(); }
+function drillReset() { drillCur=0; drillScore=0; drillAnswered.fill(null); renderDrill(); document.getElementById('drill-next').style.display=''; }
+renderDrill();
+
+function switchView(v) {
+  document.getElementById('panel-ref').classList.toggle('active', v==='ref');
+  document.getElementById('panel-drill').classList.toggle('active', v==='drill');
+  document.getElementById('tab-ref').className='tab'+(v==='ref'?' active-ref':'');
+  document.getElementById('tab-drill').className='tab'+(v==='drill'?' active-drill':'');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 09 — Practice Block</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 660px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 20px; }
+.sim-tabs { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 16px; }
+.tab { font-family: inherit; font-size: 12px; font-weight: 500; padding: 6px 12px; border-radius: 8px; border: 0.5px solid #D1D1D6; background: #fff; color: #6E6E73; cursor: pointer; }
+@media (prefers-color-scheme: dark) { .tab { background: #1e1e1e; border-color: #333; color: #9a9a9a; } }
+.tab.act { background: #E6F1FB; border-color: #185FA5; color: #185FA5; font-weight: 600; }
+.tab.act-adv { background: #FCEBEB; border-color: #A32D2D; color: #A32D2D; font-weight: 600; }
+.panel { display: none; }
+.panel.active { display: block; }
+.scenario-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { .scenario-card { background: #1e1e1e; border-color: #333; } }
+.sc-label { font-size: 11px; font-weight: 700; color: #8E8E93; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 8px; }
+.sc-text { font-size: 15px; font-weight: 500; color: #1D1D1F; line-height: 1.5; margin-bottom: 6px; }
+@media (prefers-color-scheme: dark) { .sc-text { color: #e8e8e8; } }
+.sc-detail { font-size: 12px; color: #6E6E73; line-height: 1.5; }
+.gold-block { display: none; margin-top: 12px; }
+.gold-block.show { display: block; }
+.gold-section { margin-bottom: 8px; }
+.gold-label { font-size: 10px; font-weight: 700; color: #0F6E56; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 4px; }
+.gold-text { font-size: 13px; color: #085041; background: #E1F5EE; border-radius: 8px; padding: 8px 12px; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { .gold-text { background: #052e1e; color: #9FE1CB; } }
+.reveal-btn { font-family: inherit; font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: 8px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; margin-top: 10px; }
+@media (prefers-color-scheme: dark) { .reveal-btn { background: #2a2a2a; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 09, Section 6 · Practice Block</div>
+<h1>Practice Block — Simulations 1–4</h1>
+<p class="sub">Run Sims 1–3 before Sim 4. The adversarial scenario requires the Phase framework and drift system as anchors.</p>
+
+<div class="sim-tabs">
+  <button class="tab act" id="tab-s1" onclick="switchSim('s1')">Sim 1 — Phase Plan</button>
+  <button class="tab" id="tab-s2" onclick="switchSim('s2')">Sim 2 — Benchmarks</button>
+  <button class="tab" id="tab-s3" onclick="switchSim('s3')">Sim 3 — Drift</button>
+  <button class="tab act-adv" id="tab-s4" onclick="switchSim('s4')">Sim 4 — Adversarial</button>
+</div>
+
+<!-- SIM 1 -->
+<div class="panel active" id="panel-s1">
+  <div class="scenario-card">
+    <div class="sc-label">Sim 1 · Phase 1–4 Plan Construction</div>
+    <div class="sc-text">A school has accepted the recommendation to install the Matching Engine. The owner has committed to a 90-day rollout. Design the complete Phase 1–4 plan.</div>
+    <div class="sc-detail">All four phases required. Phase 1 must name an owner and an audit mechanism. Phase 3 must name a drift threshold and a review cadence.</div>
+    <button class="reveal-btn" id="rb-s1" onclick="reveal('s1')">Reveal gold standard plan</button>
+    <div class="gold-block" id="gold-s1">
+      <div class="gold-section"><div class="gold-label">Phase 1 — Preparation (days 1–7)</div><div class="gold-text">Blueprint finalized. Sole owner: Front Desk Coordinator (ACA data collection). 30-day adoption target: 80% of new students with ACA profile by day 30. Audit mechanism: CRM weekly report — % of new students with completed ACA. Early adopter identified and briefed.</div></div>
+      <div class="gold-section"><div class="gold-label">Phase 2 — Deployment (days 8–14)</div><div class="gold-text">30-minute role-based training on ACA collection and CRM entry. SOP printed and posted at front desk. Analyst available for first-week questions. All issues documented for Phase 3.</div></div>
+      <div class="gold-section"><div class="gold-label">Phase 3 — Stabilization (days 15–60)</div><div class="gold-text">Weekly Rhythm review: ACA completion rate vs. 80% target. Drift threshold: any week where completion rate fails to improve 3+ pts across 3 consecutive reviews. Friction audit if below 60% at week 2.</div></div>
+      <div class="gold-section"><div class="gold-label">Phase 4 — Optimization (days 61–90)</div><div class="gold-text">Month 2 MSOI recalculation vs. pre-implementation baseline. Match score distribution reviewed. Next priority failure identified. ACA completion data fed into GC Intelligence Layer.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SIM 2 -->
+<div class="panel" id="panel-s2">
+  <div class="scenario-card">
+    <div class="sc-label">Sim 2 · Adoption Benchmark Application · No reference cards</div>
+    <div class="sc-text">Three systems. Three current adoption rates. For each: cite the 30-day benchmark, determine pass/fail, and name the drift lever if drift has occurred.</div>
+    <button class="reveal-btn" id="rb-s2" onclick="reveal('s2')">Reveal answers</button>
+    <div class="gold-block" id="gold-s2">
+      <div class="gold-section"><div class="gold-label">Scenario A: Lesson note submission at 61% — week 4</div><div class="gold-text">Benchmark: ≥90% by day 30. Status: FAILED — 29 points below target. Drift lever: Friction (below 70% at week 2 threshold). Recovery: friction audit immediately — form likely too long or submission path too complex.</div></div>
+      <div class="gold-section"><div class="gold-label">Scenario B: Trial follow-up at 88% — week 1</div><div class="gold-text">Benchmark: 85%+ by end of week 1. Status: PASS — 3 points above target. No drift action required. Continue to 95% by day 30.</div></div>
+      <div class="gold-section"><div class="gold-label">Scenario C: Dashboard weekly review at 75% — week 2</div><div class="gold-text">Benchmark: 100% from week 1. Status: FAILED — 25 points below target from day 1. Drift lever: Accountability (management commitment from Module 08 was not genuine). Return to the commitment sequence with the management team.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SIM 3 -->
+<div class="panel" id="panel-s3">
+  <div class="scenario-card">
+    <div class="sc-label">Sim 3 · Drift Classification · 3 signals · Zero misclassifications required</div>
+    <div class="sc-text">For each signal: name the drift lever, cite the evidence that confirms the lever, and state the specific Recovery Action.</div>
+    <button class="reveal-btn" id="rb-s3" onclick="reveal('s3')">Reveal gold standard</button>
+    <div class="gold-block" id="gold-s3">
+      <div class="gold-section"><div class="gold-label">Signal 1: Follow-up rate dropped 72% → 61% over 3 weeks. CRM shows each staff member's completion, reviewed weekly. No consequence has been applied to non-compliant staff.</div><div class="gold-text">Lever: Accountability. Evidence: visibility exists (name-visible CRM), but no consequence has been applied. Recovery: apply the defined consequence to the first visible non-compliance case, publicly, this week.</div></div>
+      <div class="gold-section"><div class="gold-label">Signal 2: Note submission dropped 88% → 79% over 3 weeks. Investigation shows instructors who submit notes receive no acknowledgment, while instructors who email notes directly are praised for communication.</div><div class="gold-text">Lever: Incentive Misalignment. Evidence: reward structure conflicts with required behavior — email is rewarded, portal submission is not. Recovery: align recognition with portal-based submission. Remove the implicit reward for the non-compliant path.</div></div>
+      <div class="gold-section"><div class="gold-label">Signal 3: Portal activation dropped 40% → 31% over 3 weeks. There is no weekly report and no staff member knows their individual activation rate.</div><div class="gold-text">Lever: Visibility. Evidence: non-compliance is invisible — no name-visible tracking, no weekly review. Recovery: install name-visible activation tracking. Add portal review to Weekly Rhythm meeting.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SIM 4 -->
+<div class="panel" id="panel-s4">
+  <div class="scenario-card">
+    <div class="sc-label">Sim 4 · Adversarial — democratic rollout suggestion</div>
+    <div class="sc-text" style="font-style:italic">"Before we roll this out, I think we should get the team's buy-in. Maybe we vote on it at the next staff meeting."</div>
+    <div class="sc-detail">Trainee must redirect to the diagnostic origin of the implementation requirement without blaming the manager or validating the democratic framing.</div>
+    <button class="reveal-btn" id="rb-s4" onclick="reveal('s4')">Reveal gold standard response</button>
+    <div class="gold-block" id="gold-s4">
+      <div class="gold-section"><div class="gold-label">Gold standard response</div><div class="gold-text">"I understand the instinct — team buy-in matters. What I want to make sure is that we're framing this correctly for the meeting. The implementation is happening because the diagnostic confirmed a specific structural failure costing the school [X dollars] per year. The question for the team isn't whether to fix it — it's how to make the fix as easy as possible for everyone to adopt. That's a much more productive conversation than a vote."</div></div>
+      <div class="gold-section"><div class="gold-label">What this response does</div><div class="gold-text">Acknowledges the instinct without validating the framing. Redirects from a choice about whether to implement to a conversation about how to implement well. Returns authority to the diagnostic — not the manager's preference, and not the team's vote.</div></div>
+      <div class="gold-section"><div class="gold-label">What trainee must not do</div><div class="gold-text">Validate the democratic framing ("that's a great idea"). Blame the manager for suggesting it. Agree to a vote. Or reduce the structural requirement to an option. The implementation is not optional — only the adoption strategy is flexible.</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function reveal(id) { document.getElementById(`gold-${id}`).classList.add('show'); document.getElementById(`rb-${id}`).style.display='none'; }
+function switchSim(id) {
+  ['s1','s2','s3','s4'].forEach(s => {
+    document.getElementById(`panel-${s}`).classList.toggle('active', s===id);
+    const cls = s==='s4' ? 'act-adv' : 'act';
+    document.getElementById(`tab-${s}`).className='tab'+(s===id?' '+cls:'');
+  });
+}
+</script>
+</body>
+</html>

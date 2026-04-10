@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 07 — Logic Gate Test</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #f5f5f7; color: #1D1D1F; padding: 32px 24px; max-width: 640px; margin: 0 auto; min-height: 100vh; }
+@media (prefers-color-scheme: dark) { body { background: #111; color: #e8e8e8; } }
+.meta { font-size: 12px; color: #8E8E93; margin-bottom: 4px; }
+h1 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: #6E6E73; margin-bottom: 8px; }
+.gate-q { font-size: 16px; font-weight: 600; color: #1D1D1F; background: #F1EFE8; border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; line-height: 1.5; }
+@media (prefers-color-scheme: dark) { .gate-q { background: #222; color: #e8e8e8; } }
+.result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+.result-card { border-radius: 10px; padding: 14px 16px; }
+.yes-card { background: #FCEBEB; border: 1px solid #A32D2D; }
+.no-card { background: #E1F5EE; border: 1px solid #0F6E56; }
+.result-head { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.yes-card .result-head { color: #791F1F; }
+.no-card .result-head { color: #085041; }
+.result-action { font-size: 12px; line-height: 1.55; }
+.yes-card .result-action { color: #A32D2D; }
+.no-card .result-action { color: #0F6E56; }
+@media (prefers-color-scheme: dark) { .yes-card { background: #2a0a0a; } .yes-card .result-head { color: #F7C1C1; } .yes-card .result-action { color: #F09595; } .no-card { background: #052e1e; } .no-card .result-head { color: #9FE1CB; } .no-card .result-action { color: #5DCAA5; } }
+.pips { display: flex; gap: 8px; margin-bottom: 14px; align-items: center; }
+.pip { width: 8px; height: 8px; border-radius: 50%; background: #D1D1D6; transition: background .2s; flex-shrink: 0; }
+@media (prefers-color-scheme: dark) { .pip { background: #3a3a3a; } }
+.pip.on { background: #185FA5; transform: scale(1.3); }
+.pip-label { font-size: 12px; color: #8E8E93; margin-left: 4px; }
+.scenario-card { background: #fff; border: 0.5px solid #D1D1D6; border-radius: 14px; padding: 20px 22px; margin-bottom: 12px; }
+@media (prefers-color-scheme: dark) { .scenario-card { background: #1e1e1e; border-color: #333; } }
+.sc-label { font-size: 11px; font-weight: 700; color: #8E8E93; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 8px; }
+.sc-failure { font-size: 16px; font-weight: 500; color: #1D1D1F; margin-bottom: 14px; line-height: 1.4; }
+@media (prefers-color-scheme: dark) { .sc-failure { color: #e8e8e8; } }
+.gate-btn-row { display: flex; gap: 8px; margin-bottom: 0; }
+.btn-yes { font-family: inherit; font-size: 13px; font-weight: 600; padding: 9px 20px; border-radius: 8px; border: 1px solid #A32D2D; background: #FCEBEB; color: #791F1F; cursor: pointer; }
+.btn-no { font-family: inherit; font-size: 13px; font-weight: 600; padding: 9px 20px; border-radius: 8px; border: 1px solid #0F6E56; background: #E1F5EE; color: #085041; cursor: pointer; }
+.feedback { margin-top: 12px; border-radius: 8px; padding: 12px 14px; display: none; }
+.feedback.show { display: block; }
+.feedback.correct-no { background: #E1F5EE; }
+.feedback.correct-yes { background: #FCEBEB; }
+.feedback.wrong { background: #FAEEDA; }
+.fb-head { font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+.feedback.correct-no .fb-head { color: #085041; }
+.feedback.correct-yes .fb-head { color: #A32D2D; }
+.feedback.wrong .fb-head { color: #633806; }
+.fb-body { font-size: 13px; line-height: 1.55; }
+.feedback.correct-no .fb-body { color: #0F6E56; }
+.feedback.correct-yes .fb-body { color: #791F1F; }
+.feedback.wrong .fb-body { color: #854F0B; }
+.score-pill { display: inline-flex; background: #E6F1FB; border-radius: 99px; padding: 6px 16px; font-size: 13px; font-weight: 600; color: #185FA5; margin-bottom: 14px; }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; }
+button.primary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: none; background: #1D1D1F; color: #fff; cursor: pointer; }
+button.secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 9px; border: 0.5px solid #AEAEB2; background: #fff; color: #1D1D1F; cursor: pointer; }
+@media (prefers-color-scheme: dark) { button.primary { background: #e8e8e8; color: #111; } button.secondary { background: #1e1e1e; border-color: #444; color: #e8e8e8; } }
+</style>
+</head>
+<body>
+<div class="meta">GroovConnect OAS™ · Module 07, Section 3 · Logic Gate Drill</div>
+<h1>Logic Gate Test</h1>
+<p class="sub">Applied to every capability mapping before the recommendation is delivered.</p>
+
+<div class="gate-q">"Could this problem be solved without GroovConnect — through manual effort alone?"</div>
+
+<div class="result-grid">
+  <div class="result-card yes-card">
+    <div class="result-head">Yes → Return to diagnosis</div>
+    <div class="result-action">The analyst has not found the systemic root cause yet. A problem solvable by manual effort alone is a symptom — not a structural failure.</div>
+  </div>
+  <div class="result-card no-card">
+    <div class="result-head">No → Proceed to mapping</div>
+    <div class="result-action">Identify the specific data aggregation or automation that only a system can provide. State the scaling constraint explicitly.</div>
+  </div>
+</div>
+
+<div class="score-pill" id="score-pill">Score: 0 / 6</div>
+<div class="pips" id="pips"></div>
+<div id="card-area"></div>
+<div class="controls">
+  <button class="primary" id="next-btn" onclick="next()">Next scenario</button>
+  <button class="secondary" onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+const SCENARIOS = [
+  { failure: 'No automated 24-hour trial follow-up trigger', answer: 'no', cap: 'Enrollment System — Automated Follow-Up Trigger', why: 'Manual effort cannot maintain ≥95% completion at volume, cannot auto-generate tasks on trial completion, and cannot produce time-stamped completion data without human input. The scaling constraint fails at 30+ trials/month.' },
+  { failure: 'Retention is low — students are leaving', answer: 'yes', why: 'This is a symptom, not a root cause. Return to the diagnostic chain. "Low retention" is a KPI signal. Identify the system failure: Matching, Engagement, Standardization, or Scheduling.' },
+  { failure: 'No DISC-based compatibility matching for instructors', answer: 'no', cap: 'Matching Engine (ACA/DISC)', why: 'DISC matching can be done manually for 10–15 students. It cannot maintain algorithmic feedback loops, detect declining match quality over time, or scale past 50 students without a system. The data aggregation requirement fails manual effort.' },
+  { failure: 'Instructor doesn\'t submit lesson notes consistently', answer: 'yes', why: 'This is an Ownership or Clarity Failure — the root cause is a missing submission gate, not a missing system. Return to the six-component model. Install the gate before mapping a capability.' },
+  { failure: 'No at-risk student detection before the cancellation window', answer: 'no', cap: 'Engagement Tracking — Risk Alert Engine', why: 'A human cannot monitor behavioral signals — practice frequency, portal logins, attendance consistency — across 200 students simultaneously and flag declining engagement 30+ days before cancellation. The detection window requires automated data aggregation.' },
+  { failure: 'No parent progress visibility between lessons', answer: 'no', cap: 'Parent Portal — Progress Visibility Layer', why: 'Manual progress reports can work for 20 students. They cannot scale to 200, cannot be delivered on a consistent cadence without automation, and cannot produce the portal login rate needed to verify engagement.' },
+];
+
+let cur = 0, score = 0;
+const answered = new Array(SCENARIOS.length).fill(null);
+
+function render() {
+  document.getElementById('pips').innerHTML =
+    SCENARIOS.map((_, i) => `<div class="pip${i <= cur ? ' on' : ''}"></div>`).join('') +
+    `<span class="pip-label">${cur + 1} of ${SCENARIOS.length}</span>`;
+
+  if (cur >= SCENARIOS.length) {
+    document.getElementById('card-area').innerHTML = `<div style="text-align:center;padding:32px 0"><p style="font-size:18px;font-weight:500">${score}/6 correct</p><p style="font-size:13px;color:#6E6E73;margin-top:8px">${score >= 5 ? 'Pass.' : 'Re-run until 5 of 6.'}</p></div>`;
+    document.getElementById('next-btn').style.display = 'none'; return;
+  }
+
+  document.getElementById('next-btn').style.display = '';
+  document.getElementById('next-btn').textContent = cur === SCENARIOS.length - 1 ? 'Finish' : 'Next';
+  const s = SCENARIOS[cur];
+  const done = answered[cur] !== null;
+  document.getElementById('card-area').innerHTML = `
+    <div class="scenario-card">
+      <div class="sc-label">Could this be solved without GroovConnect?</div>
+      <div class="sc-failure">${s.failure}</div>
+      ${done ? '' : `<div class="gate-btn-row"><button class="btn-yes" onclick="answer('yes')">Yes — manual effort can solve this</button><button class="btn-no" onclick="answer('no')">No — system required</button></div>`}
+      <div class="feedback${done ? ' show ' + (answered[cur] === s.answer ? (s.answer==='no'?'correct-no':'correct-yes') : 'wrong') : ''}" id="fb">
+        ${done ? `<div class="fb-head">${answered[cur] === s.answer ? '✓ Correct' : '✗ Incorrect — answer is "' + s.answer + '"'}</div><div class="fb-body">${s.why}${s.cap ? '<br><br><strong>GC Capability:</strong> ' + s.cap : ''}</div>` : ''}
+      </div>
+    </div>`;
+  document.getElementById('score-pill').textContent = `Score: ${score} / ${SCENARIOS.length}`;
+}
+
+function answer(choice) {
+  const s = SCENARIOS[cur];
+  if (choice === s.answer) score++;
+  answered[cur] = choice;
+  render();
+}
+function next() { cur++; render(); }
+function resetAll() { cur = 0; score = 0; answered.fill(null); render(); document.getElementById('next-btn').style.display = ''; }
+render();
+</script>
+</body>
+</html>
